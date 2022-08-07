@@ -1,0 +1,682 @@
+<!doctype html>
+<html class="no-js" lang="en">
+  <head><meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+<link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="Slurm Workload Manager" href="../slurm/slurm-overview.html" /><link rel="prev" title="GitLab Deployment Guide" href="gitlab-deployment-guide.html" />
+
+    <meta name="generator" content="sphinx-5.0.2, furo 2022.06.21"/>
+        <title>GitLab Configuration Guide - Engineering Workstation Cluster Deployment Guide documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?digest=40978830699223671f4072448e654b5958f38b89" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?digest=30d1aed668e5c3a91c3e3bf6a60b675221979f0e" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #f8f8f8;
+  --color-code-foreground: black;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-half" viewBox="0 0 24 24">
+    <title>Auto light/dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-shadow">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M13 12h5" />
+      <path d="M13 15h4" />
+      <path d="M13 18h1" />
+      <path d="M13 9h4" />
+      <path d="M13 6h1" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
+<label class="overlay sidebar-overlay" for="__navigation">
+  <div class="visually-hidden">Hide navigation sidebar</div>
+</label>
+<label class="overlay toc-overlay" for="__toc">
+  <div class="visually-hidden">Hide table of contents sidebar</div>
+</label>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <div class="visually-hidden">Toggle site navigation sidebar</div>
+        <i class="icon"><svg><use href="#svg-menu"></use></svg></i>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../index.html"><div class="brand">Engineering Workstation Cluster Deployment Guide  documentation</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle">
+          <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+          <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <div class="visually-hidden">Toggle table of contents sidebar</div>
+        <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="../index.html">
+  
+  
+  <span class="sidebar-brand-text">Engineering Workstation Cluster Deployment Guide  documentation</span>
+  
+</a><form class="sidebar-search-container" method="get" action="../search.html" role="search">
+  <input class="sidebar-search" placeholder=Search name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <p class="caption" role="heading"><span class="caption-text">Overview:</span></p>
+<ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../topology.html">Cluster Topology</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="simple">
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../acryonms.html">Acronyms and Abbreviations</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="simple">
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../assumptions.html">Assumptions and Warnings</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../license.html">License</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="simple">
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">VMM</span></p>
+<ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../vmm/vmm-overview.html">Virtual Machine Manager</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="simple">
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../vmm/vmm-os-installation-guide.html">Virtual Machine Manager OS Installation Guide</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="simple">
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../vmm/vmm-deployment-guide.html">Virtual Machine Manager Deployment Guide</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="simple">
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">NFS</span></p>
+<ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../nfs/nfs-overview.html">Network File System</a><input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" role="switch" type="checkbox"/><label for="toctree-checkbox-7"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="simple">
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../nfs/nfs-server-os-installation-guide.html">NFS Server OS Installation Guide</a><input class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" role="switch" type="checkbox"/><label for="toctree-checkbox-8"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="simple">
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../nfs/nfs-server-deployment-guide.html">NFS Server Deployment Guide</a><input class="toctree-checkbox" id="toctree-checkbox-9" name="toctree-checkbox-9" role="switch" type="checkbox"/><label for="toctree-checkbox-9"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="simple">
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../nfs/nfs-client-deployment-guide.html">NFS Client Deployment Guide</a><input class="toctree-checkbox" id="toctree-checkbox-10" name="toctree-checkbox-10" role="switch" type="checkbox"/><label for="toctree-checkbox-10"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="simple">
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">IdM</span></p>
+<ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../idm/idm-overview.html">Identity Management</a><input class="toctree-checkbox" id="toctree-checkbox-11" name="toctree-checkbox-11" role="switch" type="checkbox"/><label for="toctree-checkbox-11"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="simple">
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../idm/idm-server-os-installation-guide.html">IdM Server OS Installation Guide</a><input class="toctree-checkbox" id="toctree-checkbox-12" name="toctree-checkbox-12" role="switch" type="checkbox"/><label for="toctree-checkbox-12"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="simple">
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../idm/idm-server-deployment-guide.html">IdM Server Deployment Guide</a><input class="toctree-checkbox" id="toctree-checkbox-13" name="toctree-checkbox-13" role="switch" type="checkbox"/><label for="toctree-checkbox-13"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="simple">
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../idm/idm-client-deployment-guide.html">IdM Client Deployment Guide</a><input class="toctree-checkbox" id="toctree-checkbox-14" name="toctree-checkbox-14" role="switch" type="checkbox"/><label for="toctree-checkbox-14"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="simple">
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../idm/passwordless-ssh-deployment-guide.html">Passwordless SSH Deployment Guide</a><input class="toctree-checkbox" id="toctree-checkbox-15" name="toctree-checkbox-15" role="switch" type="checkbox"/><label for="toctree-checkbox-15"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="simple">
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../idm/idm-server-usage-guide.html">IdM Server Usage Guide</a><input class="toctree-checkbox" id="toctree-checkbox-16" name="toctree-checkbox-16" role="switch" type="checkbox"/><label for="toctree-checkbox-16"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="simple">
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">GitLab</span></p>
+<ul class="current">
+<li class="toctree-l1 has-children"><a class="reference internal" href="gitlab-overview.html">GitLab</a><input class="toctree-checkbox" id="toctree-checkbox-17" name="toctree-checkbox-17" role="switch" type="checkbox"/><label for="toctree-checkbox-17"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="simple">
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="gitlab-os-installation-guide.html">GitLab OS Installation Guide</a><input class="toctree-checkbox" id="toctree-checkbox-18" name="toctree-checkbox-18" role="switch" type="checkbox"/><label for="toctree-checkbox-18"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="simple">
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="gitlab-deployment-guide.html">GitLab Deployment Guide</a><input class="toctree-checkbox" id="toctree-checkbox-19" name="toctree-checkbox-19" role="switch" type="checkbox"/><label for="toctree-checkbox-19"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="simple">
+</ul>
+</li>
+<li class="toctree-l1 current has-children current-page"><a class="current reference internal" href="#">GitLab Configuration Guide</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-20" name="toctree-checkbox-20" role="switch" type="checkbox"/><label for="toctree-checkbox-20"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="simple">
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Slurm</span></p>
+<ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../slurm/slurm-overview.html">Slurm Workload Manager</a><input class="toctree-checkbox" id="toctree-checkbox-21" name="toctree-checkbox-21" role="switch" type="checkbox"/><label for="toctree-checkbox-21"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="simple">
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../slurm/slurm-controller-os-installation-guide.html">Slurm Controller OS Installation Guide</a><input class="toctree-checkbox" id="toctree-checkbox-22" name="toctree-checkbox-22" role="switch" type="checkbox"/><label for="toctree-checkbox-22"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="simple">
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../slurm/slurm-controller-deployment-guide.html">Slurm Controller Deployment Guide</a><input class="toctree-checkbox" id="toctree-checkbox-23" name="toctree-checkbox-23" role="switch" type="checkbox"/><label for="toctree-checkbox-23"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="simple">
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../slurm/slurm-compute-node-deployment-guide.html">Slurm Compute Node Deployment Guide</a><input class="toctree-checkbox" id="toctree-checkbox-24" name="toctree-checkbox-24" role="switch" type="checkbox"/><label for="toctree-checkbox-24"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="simple">
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../slurm/slurm-controller-usage-guide.html">Slurm Controller Usage Guide</a><input class="toctree-checkbox" id="toctree-checkbox-25" name="toctree-checkbox-25" role="switch" type="checkbox"/><label for="toctree-checkbox-25"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="simple">
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../slurm/slurm-compute-node-usage-guide.html">Slurm Compute Node Usage Guide</a><input class="toctree-checkbox" id="toctree-checkbox-26" name="toctree-checkbox-26" role="switch" type="checkbox"/><label for="toctree-checkbox-26"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="simple">
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Ansible</span></p>
+<ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../ansible/ansible-overview.html">Ansible</a><input class="toctree-checkbox" id="toctree-checkbox-27" name="toctree-checkbox-27" role="switch" type="checkbox"/><label for="toctree-checkbox-27"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="simple">
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../ansible/ansible-control-node-os-installation-guide.html">Ansible Control Node OS Installation Guide</a><input class="toctree-checkbox" id="toctree-checkbox-28" name="toctree-checkbox-28" role="switch" type="checkbox"/><label for="toctree-checkbox-28"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="simple">
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../ansible/ansible-control-node-deployment-guide.html">Ansible Control Node Deployment Guide</a><input class="toctree-checkbox" id="toctree-checkbox-29" name="toctree-checkbox-29" role="switch" type="checkbox"/><label for="toctree-checkbox-29"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="simple">
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../ansible/ansible-control-node-usage-guide.html">Ansible Control Node Usage Guide</a><input class="toctree-checkbox" id="toctree-checkbox-30" name="toctree-checkbox-30" role="switch" type="checkbox"/><label for="toctree-checkbox-30"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="simple">
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">InfluxDB</span></p>
+<ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../influxdb/influxdb-overview.html">InfluxDB</a><input class="toctree-checkbox" id="toctree-checkbox-31" name="toctree-checkbox-31" role="switch" type="checkbox"/><label for="toctree-checkbox-31"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="simple">
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../influxdb/influxdb-os-installation-guide.html">InfluxDB OS Installation Guide</a><input class="toctree-checkbox" id="toctree-checkbox-32" name="toctree-checkbox-32" role="switch" type="checkbox"/><label for="toctree-checkbox-32"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="simple">
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../influxdb/influxdb-deployment-guide.html">InfluxDB Deployment Guide</a><input class="toctree-checkbox" id="toctree-checkbox-33" name="toctree-checkbox-33" role="switch" type="checkbox"/><label for="toctree-checkbox-33"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="simple">
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../influxdb/telegraf-deployment-guide.html">Telegraf Deployment Guide</a><input class="toctree-checkbox" id="toctree-checkbox-34" name="toctree-checkbox-34" role="switch" type="checkbox"/><label for="toctree-checkbox-34"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="simple">
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../influxdb/influxdb-usage-guide.html">InfluxDB Usage Guide</a><input class="toctree-checkbox" id="toctree-checkbox-35" name="toctree-checkbox-35" role="switch" type="checkbox"/><label for="toctree-checkbox-35"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="simple">
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Grafana</span></p>
+<ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../grafana/grafana-overview.html">Grafana</a><input class="toctree-checkbox" id="toctree-checkbox-36" name="toctree-checkbox-36" role="switch" type="checkbox"/><label for="toctree-checkbox-36"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="simple">
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../grafana/grafana-os-installation-guide.html">Grafana OS Installation Guide</a><input class="toctree-checkbox" id="toctree-checkbox-37" name="toctree-checkbox-37" role="switch" type="checkbox"/><label for="toctree-checkbox-37"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="simple">
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../grafana/grafana-deployment-guide.html">Grafana Deployment Guide</a><input class="toctree-checkbox" id="toctree-checkbox-38" name="toctree-checkbox-38" role="switch" type="checkbox"/><label for="toctree-checkbox-38"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="simple">
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../grafana/grafana-usage-guide.html">Grafana Usage Guide</a><input class="toctree-checkbox" id="toctree-checkbox-39" name="toctree-checkbox-39" role="switch" type="checkbox"/><label for="toctree-checkbox-39"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="simple">
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Docker</span></p>
+<ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../docker/docker-overview.html">Docker</a><input class="toctree-checkbox" id="toctree-checkbox-40" name="toctree-checkbox-40" role="switch" type="checkbox"/><label for="toctree-checkbox-40"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="simple">
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../docker/docker-os-installation-guide.html">Docker OS Installation Guide</a><input class="toctree-checkbox" id="toctree-checkbox-41" name="toctree-checkbox-41" role="switch" type="checkbox"/><label for="toctree-checkbox-41"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="simple">
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../docker/docker-deployment-guide.html">Docker Deployment Guide</a><input class="toctree-checkbox" id="toctree-checkbox-42" name="toctree-checkbox-42" role="switch" type="checkbox"/><label for="toctree-checkbox-42"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="simple">
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">User/Compute Nodes</span></p>
+<ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../user/user-overview.html">User/Compute Nodes</a><input class="toctree-checkbox" id="toctree-checkbox-43" name="toctree-checkbox-43" role="switch" type="checkbox"/><label for="toctree-checkbox-43"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="simple">
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../user/user-os-installation-guide.html">User/Compute Node OS Installation Guide</a><input class="toctree-checkbox" id="toctree-checkbox-44" name="toctree-checkbox-44" role="switch" type="checkbox"/><label for="toctree-checkbox-44"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="simple">
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../user/user-deployment-guide.html">User/Compute Node Deployment Guide</a><input class="toctree-checkbox" id="toctree-checkbox-45" name="toctree-checkbox-45" role="switch" type="checkbox"/><label for="toctree-checkbox-45"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="simple">
+</ul>
+</li>
+</ul>
+
+</div>
+</div>
+
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          <div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle">
+              <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+              <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+            <div class="visually-hidden">Toggle table of contents sidebar</div>
+            <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+          </label>
+        </div>
+        <article role="main">
+          <section id="gitlab-configuration-guide">
+<h1>GitLab Configuration Guide<a class="headerlink" href="#gitlab-configuration-guide" title="Permalink to this heading">#</a></h1>
+<div class="toctree-wrapper compound">
+</div>
+<section id="prerequisites">
+<h2>Prerequisites<a class="headerlink" href="#prerequisites" title="Permalink to this heading">#</a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="gitlab-deployment-guide.html"><span class="doc">GitLab Deployment Guide</span></a></p></li>
+</ul>
+</section>
+<section id="configuration-notes">
+<h2>Configuration Notes<a class="headerlink" href="#configuration-notes" title="Permalink to this heading">#</a></h2>
+<div class="admonition caution">
+<p class="admonition-title">Caution</p>
+<p>Dependency Confusion Attacks in Python’s PyPI and Node Package Manager (NPM) are a threat to
+system security and disabling access to them from CI/CD pipelines is recommended.  The
+CE and EE free tier of GitLab do not allow you to disable forwarding of PyPI and NPM packages
+requests that are not in the local GitLab Package Registry.  Firewall rules will need to be
+used to disable access to <code class="docutils literal notranslate"><span class="pre">pypi.python.org</span></code>, <code class="docutils literal notranslate"><span class="pre">pypi.org</span></code>, <code class="docutils literal notranslate"><span class="pre">pythonhosted.org</span></code>, and
+<code class="docutils literal notranslate"><span class="pre">registry.npmjs.org</span></code>.</p>
+</div>
+<blockquote>
+<div><p>The following guide is just an example.  Restrictions and changes should be based on your
+work flow and sensitivity of the data within GitLab.</p>
+</div></blockquote>
+<blockquote>
+<div><p>After installation, to log into GitLab’s web interface use user name <code class="docutils literal notranslate"><span class="pre">root</span></code> and the
+password located in file <code class="docutils literal notranslate"><span class="pre">/etc/gitlab/initial_root_password</span></code>.  The initial_root_password
+file will only remain for 24 hours after installation.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">root</span></code> GitLab account creating during installation should be deleted in favor of
+named administrator account.</p>
+</div></blockquote>
+<blockquote>
+<div><p>GitLab accounts can be managed through IdM instead of using GitLab’s native account
+management.  More information can be found here: <br />
+<a class="reference external" href="https://dev.to/kenmoini/ldap-on-gitlab-with-red-hat-identity-management-freeipa-3f5l">https://dev.to/kenmoini/ldap-on-gitlab-with-red-hat-identity-management-freeipa-3f5l</a></p>
+<p>This guide assumes GitLab managed accounts.</p>
+</div></blockquote>
+</section>
+<section id="configuration-steps">
+<h2>Configuration Steps<a class="headerlink" href="#configuration-steps" title="Permalink to this heading">#</a></h2>
+<ol class="arabic simple">
+<li><p>Log into GitLab using the <code class="docutils literal notranslate"><span class="pre">root</span></code> account and password generated during deployment:</p></li>
+</ol>
+<blockquote>
+<div><p><a class="reference external" href="https://gitlab.engwsc.example.com">https://gitlab.engwsc.example.com</a></p>
+</div></blockquote>
+<ol class="arabic simple" start="2">
+<li><p>Create Administrator User:</p></li>
+</ol>
+<blockquote>
+<div><p>Go to: <a class="reference external" href="https://gitlab.engwsc.example.com/admin/users/new">https://gitlab.engwsc.example.com/admin/users/new</a></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">*</span> <span class="n">Create</span> <span class="n">administrator</span> <span class="n">New</span> <span class="n">User</span><span class="s2">&quot;</span>
+<span class="o">*</span> <span class="n">Use</span> <span class="n">a</span> <span class="s2">&quot;username&quot;</span> <span class="n">that</span> <span class="ow">is</span> <span class="n">used</span> <span class="k">for</span> <span class="n">administrative</span> <span class="n">purposes</span> <span class="n">only</span>
+  <span class="o">-</span> <span class="n">For</span> <span class="n">example</span><span class="p">,</span> <span class="s2">&quot;a123456&quot;</span>
+<span class="o">*</span> <span class="n">Change</span> <span class="s2">&quot;Access level&quot;</span> <span class="n">to</span> <span class="s2">&quot;Administrator&quot;</span>
+<span class="o">*</span> <span class="n">Select</span> <span class="s2">&quot;User is validated and can use free CI minutes on shared runners.&quot;</span>
+<span class="o">*</span> <span class="n">Click</span> <span class="s2">&quot;Create user&quot;</span>
+<span class="o">*</span> <span class="n">Go</span> <span class="n">to</span><span class="p">:</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">gitlab</span><span class="o">.</span><span class="n">engwsc</span><span class="o">.</span><span class="n">example</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">admin</span><span class="o">/</span><span class="n">users</span><span class="o">/</span>
+<span class="o">*</span> <span class="n">Click</span> <span class="n">on</span> <span class="n">Edit</span> <span class="n">to</span> <span class="n">the</span> <span class="n">right</span> <span class="n">of</span> <span class="n">the</span> <span class="n">new</span> <span class="n">user</span>
+<span class="o">*</span> <span class="n">Assign</span> <span class="n">user</span> <span class="n">a</span> <span class="n">password</span>
+<span class="o">*</span> <span class="n">Confirm</span> <span class="n">user</span> <span class="n">password</span>
+<span class="o">*</span> <span class="n">Click</span> <span class="s2">&quot;Save Changes&quot;</span>
+<span class="o">*</span> <span class="n">Log</span><span class="o">-</span><span class="n">out</span> <span class="n">of</span> <span class="n">GitLab</span>
+<span class="o">*</span> <span class="n">Sign</span> <span class="ow">in</span> <span class="k">as</span> <span class="n">new</span> <span class="n">user</span>
+</pre></div>
+</div>
+</div></blockquote>
+<ol class="arabic simple" start="3">
+<li><p>Remove “root” User:</p></li>
+</ol>
+<blockquote>
+<div><p>Go to: <a class="reference external" href="https://gitlab.engwsc.example.com/admin/users">https://gitlab.engwsc.example.com/admin/users</a></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">*</span> <span class="n">Click</span> <span class="n">on</span> <span class="s2">&quot;...&quot;</span> <span class="n">drop</span><span class="o">-</span><span class="n">down</span> <span class="n">associated</span> <span class="k">with</span> <span class="n">user</span> <span class="s2">&quot;Administrator&quot;</span>
+<span class="o">*</span> <span class="n">Click</span> <span class="s2">&quot;Delete user and contributions&quot;</span>
+<span class="o">*</span> <span class="n">Type</span> <span class="ow">in</span> <span class="s2">&quot;Administrator&quot;</span>
+<span class="o">*</span> <span class="n">Click</span> <span class="s2">&quot;Delete user and contributions&quot;</span>
+</pre></div>
+</div>
+</div></blockquote>
+<ol class="arabic simple" start="4">
+<li><p>Disable User Sign Up:</p></li>
+</ol>
+<blockquote>
+<div><p>Go to: <a class="reference external" href="https://gitlab.engwsc.example.com/admin/application_settings/general#js-signup-settings">https://gitlab.engwsc.example.com/admin/application_settings/general#js-signup-settings</a></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">*</span> <span class="n">Expand</span> <span class="s2">&quot;Sign-up restrictions&quot;</span> <span class="n">section</span>
+<span class="o">*</span> <span class="n">Deselect</span> <span class="s2">&quot;Sign-up enabled&quot;</span>
+<span class="o">*</span> <span class="n">Select</span> <span class="s2">&quot;Require admin approval for new sign-ups&quot;</span>
+<span class="o">*</span> <span class="n">Click</span> <span class="s2">&quot;Save changes&quot;</span>
+</pre></div>
+</div>
+</div></blockquote>
+<ol class="arabic simple" start="5">
+<li><p><code class="docutils literal notranslate"><span class="pre">Optional</span></code> Set Default Restricted visibility levels:</p></li>
+</ol>
+<blockquote>
+<div><div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>See official documentation for more information: <br />
+<a class="reference external" href="https://docs.gitlab.com/ee/user/admin_area/settings/visibility_and_access_controls.html">https://docs.gitlab.com/ee/user/admin_area/settings/visibility_and_access_controls.html</a></p>
+</div>
+<p>Go to: <a class="reference external" href="https://gitlab.engwsc.example.com/admin/application_settings/general#js-visibility-settings">https://gitlab.engwsc.example.com/admin/application_settings/general#js-visibility-settings</a></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">*</span> <span class="n">Expand</span> <span class="s2">&quot;Visibility and access controls&quot;</span> <span class="n">section</span>
+<span class="o">*</span> <span class="n">Under</span> <span class="s2">&quot;Default branch protection&quot;</span>
+<span class="o">*</span> <span class="n">Select</span> <span class="s2">&quot;Partially protected&quot;</span>
+<span class="o">*</span> <span class="n">Under</span> <span class="s2">&quot;Default project creation protection&quot;</span>
+<span class="o">*</span> <span class="n">Select</span> <span class="s2">&quot;Maintainers&quot;</span>
+<span class="o">*</span> <span class="n">Under</span> <span class="s2">&quot;Default project visibility&quot;</span>
+<span class="o">*</span> <span class="n">Select</span> <span class="s2">&quot;Private&quot;</span>
+<span class="o">*</span> <span class="n">Under</span> <span class="s2">&quot;Default snippet visibility&quot;</span>
+<span class="o">*</span> <span class="n">Select</span> <span class="s2">&quot;Private&quot;</span>
+<span class="o">*</span> <span class="n">Under</span> <span class="s2">&quot;Default group visibility</span>
+<span class="o">*</span> <span class="n">Select</span> <span class="n">Private</span>
+<span class="o">*</span> <span class="n">Under</span> <span class="s2">&quot;Restricted visibility levels&quot;</span>
+<span class="o">*</span> <span class="n">Select</span> <span class="s2">&quot;Internal, Public&quot;</span> <span class="p">(</span><span class="n">Private</span> <span class="ow">is</span> <span class="n">unselected</span><span class="p">)</span>
+<span class="o">*</span> <span class="n">Under</span> <span class="s2">&quot;Import sources&quot;</span>
+<span class="o">*</span> <span class="n">Deselect</span> <span class="nb">all</span> <span class="kn">import</span> <span class="nn">sources</span> <span class="p">(</span><span class="n">GitHub</span><span class="p">,</span> <span class="n">Bitbucket</span> <span class="n">Cloud</span><span class="p">,</span> <span class="o">...</span><span class="p">)</span>
+<span class="o">*</span> <span class="n">Deselect</span> <span class="s2">&quot;Allow group owners to manage LDAP-related settings&quot;</span>
+<span class="o">*</span> <span class="n">Deselect</span> <span class="s2">&quot;Project export enabled&quot;</span>
+<span class="o">*</span> <span class="n">Select</span> <span class="s2">&quot;Disable feed token&quot;</span>
+<span class="o">*</span> <span class="n">Click</span> <span class="s2">&quot;Save changes&quot;</span>
+</pre></div>
+</div>
+</div></blockquote>
+<ol class="arabic simple" start="6">
+<li><p>Enable Admin Mode, Disable “sign-in location is not recognized” emails:</p></li>
+</ol>
+<blockquote>
+<div><div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>After this step it is recommended that you refresh the page.  GitLab will then ask
+you to confirm your password before continuing.</p>
+</div>
+<p>Go to: <a class="reference external" href="https://gitlab.engwsc.example.com/admin/application_settings/general#js-signin-settings">https://gitlab.engwsc.example.com/admin/application_settings/general#js-signin-settings</a></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">*</span> <span class="n">Expand</span> <span class="s2">&quot;Sign-in restrictions&quot;</span> <span class="n">section</span>
+<span class="o">*</span> <span class="n">Under</span> <span class="s2">&quot;Admin Mode&quot;</span>
+<span class="o">*</span> <span class="n">Select</span> <span class="s2">&quot;Enable admin mode&quot;</span>
+<span class="o">*</span> <span class="n">Under</span> <span class="s2">&quot;Email notification for unknown sign-ins&quot;</span>
+<span class="o">*</span> <span class="n">Deselect</span> <span class="s2">&quot;Enable email notification&quot;</span>
+<span class="o">*</span> <span class="n">Click</span> <span class="s2">&quot;Save changes&quot;</span>
+</pre></div>
+</div>
+</div></blockquote>
+<ol class="arabic simple" start="7">
+<li><p>Disable Gravatar, Disable User OAuth applications:</p></li>
+</ol>
+<blockquote>
+<div><p>Go to: <a class="reference external" href="https://gitlab.engwsc.example.com/admin/application_settings/general#js-account-settings">https://gitlab.engwsc.example.com/admin/application_settings/general#js-account-settings</a></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">*</span> <span class="n">Expand</span> <span class="s2">&quot;Account and limit&quot;</span> <span class="n">section</span>
+<span class="o">*</span> <span class="n">Deselect</span> <span class="s2">&quot;Gravatar enabled&quot;</span>
+<span class="o">*</span> <span class="n">Deselect</span> <span class="s2">&quot;Allow users to register any application to use GitLab as an OAuth provider&quot;</span>
+<span class="o">*</span> <span class="n">Under</span> <span class="s2">&quot;Dormant users&quot;</span>
+<span class="o">*</span> <span class="n">Select</span> <span class="s2">&quot;Deactivate dormant users after 90 days of inactivity&quot;</span>
+<span class="o">*</span> <span class="n">Click</span> <span class="s2">&quot;Save changes&quot;</span>
+</pre></div>
+</div>
+</div></blockquote>
+<ol class="arabic simple" start="8">
+<li><p>Ensure all third-party integrations are disabled (They are disabled by default):</p></li>
+</ol>
+<blockquote>
+<div><p>Go to: <a class="reference external" href="https://gitlab.engwsc.example.com/admin/application_settings/general">https://gitlab.engwsc.example.com/admin/application_settings/general</a></p>
+<p>Ensure the following are disabled in each sub-section:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">*</span> <span class="n">Gitpod</span>                          <span class="p">(</span><span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">gitlab</span><span class="o">.</span><span class="n">engwsc</span><span class="o">.</span><span class="n">example</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">admin</span><span class="o">/</span><span class="n">application_settings</span><span class="o">/</span><span class="n">general</span><span class="c1">#js-gitpod-settings)</span>
+<span class="o">*</span> <span class="n">Kroki</span>                           <span class="p">(</span><span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">gitlab</span><span class="o">.</span><span class="n">engwsc</span><span class="o">.</span><span class="n">example</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">admin</span><span class="o">/</span><span class="n">application_settings</span><span class="o">/</span><span class="n">general</span><span class="c1">#js-kroki-settings)</span>
+<span class="o">*</span> <span class="n">Mailgun</span>                         <span class="p">(</span><span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">gitlab</span><span class="o">.</span><span class="n">engwsc</span><span class="o">.</span><span class="n">example</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">admin</span><span class="o">/</span><span class="n">application_settings</span><span class="o">/</span><span class="n">general</span><span class="c1">#js-mailgun-settings)</span>
+<span class="o">*</span> <span class="n">PlantUML</span>                        <span class="p">(</span><span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">gitlab</span><span class="o">.</span><span class="n">engwsc</span><span class="o">.</span><span class="n">example</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">admin</span><span class="o">/</span><span class="n">application_settings</span><span class="o">/</span><span class="n">general</span><span class="c1">#js-plantuml-settings)</span>
+<span class="o">*</span> <span class="n">Snowplow</span>                        <span class="p">(</span><span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">gitlab</span><span class="o">.</span><span class="n">engwsc</span><span class="o">.</span><span class="n">example</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">admin</span><span class="o">/</span><span class="n">application_settings</span><span class="o">/</span><span class="n">general</span><span class="c1">#js-snowplow-settings)</span>
+<span class="o">*</span> <span class="n">Amazon</span> <span class="n">EKS</span>                      <span class="p">(</span><span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">gitlab</span><span class="o">.</span><span class="n">engwsc</span><span class="o">.</span><span class="n">example</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">admin</span><span class="o">/</span><span class="n">application_settings</span><span class="o">/</span><span class="n">general</span><span class="c1">#js-eks-settings)</span>
+<span class="o">*</span> <span class="n">Federated</span> <span class="n">Learning</span> <span class="n">of</span> <span class="n">Cohorts</span>   <span class="p">(</span><span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">gitlab</span><span class="o">.</span><span class="n">engwsc</span><span class="o">.</span><span class="n">example</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">admin</span><span class="o">/</span><span class="n">application_settings</span><span class="o">/</span><span class="n">general</span><span class="c1">#js-floc-settings)</span>
+</pre></div>
+</div>
+</div></blockquote>
+<ol class="arabic simple" start="9">
+<li><p>Ensure Third-party offers are disabled:</p></li>
+</ol>
+<blockquote>
+<div><p>Go to: <a class="reference external" href="https://gitlab.engwsc.example.com/admin/application_settings/general#js-third-party-offers-settings">https://gitlab.engwsc.example.com/admin/application_settings/general#js-third-party-offers-settings</a></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">*</span> <span class="n">Expand</span> <span class="s2">&quot;Customer experience improvement and third-party offers&quot;</span> <span class="n">section</span>
+<span class="o">*</span> <span class="n">Select</span> <span class="s2">&quot;Do not display content for customer experience improvement and offers from third parties&quot;</span>
+<span class="o">*</span> <span class="n">Click</span> <span class="s2">&quot;Save changes&quot;</span>
+</pre></div>
+</div>
+</div></blockquote>
+<ol class="arabic simple" start="10">
+<li><p>Disable non-administrator mirroring:</p></li>
+</ol>
+<blockquote>
+<div><p>Go to: <a class="reference external" href="https://gitlab.engwsc.example.com/admin/application_settings/repository#js-mirror-settings">https://gitlab.engwsc.example.com/admin/application_settings/repository#js-mirror-settings</a></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">*</span> <span class="n">Expand</span> <span class="s2">&quot;Repository mirroring&quot;</span> <span class="n">section</span>
+<span class="o">*</span> <span class="n">Deselect</span> <span class="s2">&quot;Allow project maintainers to configure repository mirroring&quot;</span>
+<span class="o">*</span> <span class="n">Click</span> <span class="s2">&quot;Save changes&quot;</span>
+</pre></div>
+</div>
+</div></blockquote>
+<ol class="arabic simple" start="11">
+<li><p>Disable Service Ping:</p></li>
+</ol>
+<blockquote>
+<div><p>Go to: <a class="reference external" href="https://gitlab.engwsc.example.com/admin/application_settings/metrics_and_profiling#js-usage-settings">https://gitlab.engwsc.example.com/admin/application_settings/metrics_and_profiling#js-usage-settings</a></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">*</span> <span class="n">Expand</span> <span class="s2">&quot;Usage statistics&quot;</span> <span class="n">section</span>
+<span class="o">*</span> <span class="n">Select</span> <span class="s2">&quot;Enable version check&quot;</span>
+<span class="o">*</span> <span class="n">Deselect</span> <span class="s2">&quot;Enable Service Ping&quot;</span>
+<span class="o">*</span> <span class="n">Deselect</span> <span class="s2">&quot;Enable Registration Features&quot;</span>
+<span class="o">*</span> <span class="n">Click</span> <span class="s2">&quot;Save changes&quot;</span>
+</pre></div>
+</div>
+</div></blockquote>
+<ol class="arabic simple" start="12">
+<li><p>Disable Email Marketing:</p></li>
+</ol>
+<blockquote>
+<div><p>Go to: <a class="reference external" href="https://gitlab.engwsc.example.com/admin/application_settings/preferences#js-email-settings">https://gitlab.engwsc.example.com/admin/application_settings/preferences#js-email-settings</a></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">*</span> <span class="n">Expand</span> <span class="s2">&quot;Email&quot;</span> <span class="n">section</span>
+<span class="o">*</span> <span class="n">Deselect</span> <span class="s2">&quot;Enable in-product marketing emails&quot;</span>
+<span class="o">*</span> <span class="n">Deselect</span> <span class="s2">&quot;Enable user deactivation emails&quot;</span>
+<span class="o">*</span> <span class="n">Click</span> <span class="s2">&quot;Save changes&quot;</span>
+</pre></div>
+</div>
+</div></blockquote>
+<ol class="arabic simple" start="13">
+<li><p>Enable Grafana Link:</p></li>
+</ol>
+<blockquote>
+<div><p>Go to: <a class="reference external" href="https://gitlab.engwsc.example.com/admin/application_settings/metrics_and_profiling#js-grafana-settings">https://gitlab.engwsc.example.com/admin/application_settings/metrics_and_profiling#js-grafana-settings</a></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">*</span> <span class="n">Expand</span> <span class="s2">&quot;Metrics - Grafana&quot;</span> <span class="n">section</span>
+<span class="o">*</span> <span class="n">Select</span> <span class="s2">&quot;Add a link to Grafana&quot;</span>
+<span class="o">*</span> <span class="n">Click</span> <span class="s2">&quot;Save changes&quot;</span>
+</pre></div>
+</div>
+</div></blockquote>
+<ol class="arabic simple" start="14">
+<li><p>Disable What’s new:</p></li>
+</ol>
+<blockquote>
+<div><p>Go to: <a class="reference external" href="https://gitlab.engwsc.example.com/admin/application_settings/preferences#js-whats-new-settings">https://gitlab.engwsc.example.com/admin/application_settings/preferences#js-whats-new-settings</a></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">*</span> <span class="n">Expand</span> <span class="s2">&quot;What&#39;s new&quot;</span> <span class="n">section</span>
+<span class="o">*</span> <span class="n">Select</span> <span class="s2">&quot;Disable What&#39;s new&quot;</span>
+<span class="o">*</span> <span class="n">Click</span> <span class="s2">&quot;Save changes&quot;</span>
+</pre></div>
+</div>
+</div></blockquote>
+</section>
+</section>
+
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          <a class="next-page" href="../slurm/slurm-overview.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">Slurm Workload Manager</div>
+              </div>
+              <svg><use href="#svg-arrow-right"></use></svg>
+            </a>
+          <a class="prev-page" href="gitlab-deployment-guide.html">
+              <svg><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">GitLab Deployment Guide</div>
+                
+              </div>
+            </a>
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; CC BY-SA 4.0
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            <div class="icons">
+              
+            </div>
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer">
+      
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            Contents
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">GitLab Configuration Guide</a><ul>
+<li><a class="reference internal" href="#prerequisites">Prerequisites</a></li>
+<li><a class="reference internal" href="#configuration-notes">Configuration Notes</a></li>
+<li><a class="reference internal" href="#configuration-steps">Configuration Steps</a></li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
+      
+      
+    </aside>
+  </div>
+</div><script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/scripts/furo.js"></script>
+    </body>
+</html>

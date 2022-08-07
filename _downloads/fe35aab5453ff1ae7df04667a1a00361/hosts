@@ -1,0 +1,26 @@
+127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4
+::1         localhost localhost.localdomain localhost6 localhost6.localdomain6
+
+192.168.1.50    nfs01.engwsc.example.com        nsf01
+192.168.1.51    vmm01.engwsc.example.com        vmm01
+192.168.1.52    vmm02.engwsc.example.com        vmm02
+
+192.168.1.60    user01.engwsc.example.com       user01
+192.168.1.61    user02.engwsc.example.com       user02
+192.168.1.62    user03.engwsc.example.com       user03
+192.168.1.63    user04.engwsc.example.com       user04
+192.168.1.64    comp01.engwsc.example.com       comp01
+192.168.1.65    comp02.engwsc.example.com       comp02
+192.168.1.66    comp03.engwsc.example.com       comp03
+192.168.1.67    comp04.engwsc.example.com       comp04
+
+192.168.1.80    idm.engwsc.example.com          idm
+192.168.1.81    gitlab.engwsc.example.com       gitlab
+192.168.1.82    slurm.engwsc.example.com        slurm
+192.168.1.83    graylog.engwsc.example.com      graylog
+192.168.1.84    ansible.engwsc.example.com      ansible
+192.168.1.85    influxdb.engwsc.example.com     influxdb
+192.168.1.86    grafana.engwsc.example.com      grafana
+192.168.1.87    docker.engwsc.example.com       docker
+192.168.1.88    mirror.engwsc.example.com       mirror
+192.168.1.89    vmg01.engwsc.example.com        vmg01

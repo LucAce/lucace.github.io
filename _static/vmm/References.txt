@@ -1,0 +1,12 @@
+Configure KVM
+- https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/8/html/composing_a_customized_rhel_system_image/preparing-and-deploying-kvm-guest-images-with-image-builder_composing-a-customized-rhel-system-image
+- https://www.tecmint.com/kvm-management-tools-to-manage-virtual-machines/
+- https://access.redhat.com/solutions/5074601
+
+Create Virtual Machine Bridge
+- https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/8/html/configuring_and_managing_virtualization/configuring-virtual-machine-network-connections_configuring-and-managing-virtualization#virtual-networking-bridged-mode_types-of-virtual-machine-network-connections
+- https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/8/html/configuring_and_managing_virtualization/configuring-virtual-machine-network-connections_configuring-and-managing-virtualization#configuring-externally-visible-virtual-machines-using-the-command-line-interface_recommended-virtual-machine-networking-configurations-using-the-command-line-interface
+- https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/8/html/configuring_and_managing_networking/configuring-a-network-bridge_configuring-and-managing-networking#configuring-a-network-bridge-using-nmcli-commands_configuring-a-network-bridge
+- https://www.tecmint.com/create-network-bridge-in-rhel-centos-8/#nmcli
+- https://www.cyberciti.biz/faq/centos-8-add-network-bridge-br0-with-nmcli-command/
+- https://www.techotopia.com/index.php/Creating_a_RHEL_KVM_Networked_Bridge_Interface

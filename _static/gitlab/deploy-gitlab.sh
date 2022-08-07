@@ -1,0 +1,95 @@
+#!/bin/bash
+
+# Ensure running as root or sudo
+if [ "$EUID" -ne 0 ]; then
+  echo -e "ERROR: Please run as root or use sudo\n"
+  exit
+fi
+
+
+###############################################################################
+# Script Configuration Options
+###############################################################################
+
+# Configure which GitLab edition to use (Lower case)
+# ce: Community Edition
+# ee: Enterprise Edition
+GITLAB_EDITION="ce"
+
+# GitLab FQDN
+GITLAB_FQDN='gitlab.engwsc.example.com'
+
+# GitLab Initial URL, Use "http://"
+GITLAB_EXTERNAL_URL="http://${GITLAB_FQDN}"
+
+# Set Allowed IPv4 Addresses (Include subnet mask)
+ALLOWED_IPV4="192.168.1.0/24"
+
+
+###############################################################################
+# Installation Commands
+###############################################################################
+
+# Ensure edition is lower case
+GITLAB_EDITION=$(echo $GITLAB_EDITION | tr '[:upper:]' '[:lower:]')
+
+# Update System
+dnf -y update
+
+# Install and configure the necessary dependencies
+dnf -y install curl policycoreutils openssh-server perl postfix yum-utils
+
+# Enable OpenSSH server daemon
+systemctl enable --now sshd
+
+# Configure firewalld
+firewall-cmd --new-zone=gitlab --permanent
+firewall-cmd --zone=gitlab --add-source=${ALLOWED_IPV4} --permanent
+firewall-cmd --zone=gitlab --add-service={http,https} --permanent
+firewall-cmd --reload
+
+# Enable postfix
+systemctl enable --now postfix
+
+# Add the GitLab package repository
+echo "Configuring \"${GITLAB_EDITION}\" GitLab Edition"
+
+tmp_dir=$(mktemp -d -t gitlab-XXXXXXXXXX --tmpdir=/tmp)
+cd $tmp_dir
+curl https://packages.gitlab.com/install/repositories/gitlab/gitlab-${GITLAB_EDITION}/script.rpm.sh -o $tmp_dir/script.rpm.sh
+chmod 775 $tmp_dir/script.rpm.sh
+cat $tmp_dir/script.rpm.sh
+$tmp_dir/script.rpm.sh
+
+# Install GitLab
+EXTERNAL_URL=${GITLAB_EXTERNAL_URL} dnf install -y gitlab-${GITLAB_EDITION}
+
+# Disable GitLab Yum Repositories
+yum-config-manager --disable gitlab_gitlab-${GITLAB_EDITION}
+yum-config-manager --disable gitlab_gitlab-${GITLAB_EDITION}-source
+
+# Create Self-Signed SSL Certificate
+mkdir -p /etc/gitlab/ssl/
+chmod 755 /etc/gitlab/ssl/
+
+openssl req -x509 -nodes -newkey rsa:4096 \
+    -keyout "/etc/gitlab/ssl/${GITLAB_FQDN}.key" \
+    -out "/etc/gitlab/ssl/${GITLAB_FQDN}.crt" \
+    -subj "/CN=${GITLAB_FQDN}/C=US/ST=New York/L=New York/O=engwsc" \
+    -days 365
+
+# Set gitlab.rb options (Enable and force https, disable usage ping)
+sed -i "s|external_url 'http://${GITLAB_FQDN}'|external_url 'https://${GITLAB_FQDN}'|g" /etc/gitlab/gitlab.rb
+sed -i "s/^.*gitlab_rails\['usage_ping_enabled'\].*$/gitlab_rails['usage_ping_enabled'] = false/g" /etc/gitlab/gitlab.rb
+sed -i "s/^.*nginx\['redirect_http_to_https'\].*$/nginx['redirect_http_to_https'] = true/g" /etc/gitlab/gitlab.rb
+sed -i "s/^.*letsencrypt\['enable'\].*$/letsencrypt['enable'] = false/g" /etc/gitlab/gitlab.rb
+
+# Reconfigure GitLab
+gitlab-ctl reconfigure
+
+# Show random root password (Required for initial log in)
+echo -e "\nTemporary GitLab root user password\n"
+cat /etc/gitlab/initial_root_password
+echo -e "\n"
+
+exit 0
