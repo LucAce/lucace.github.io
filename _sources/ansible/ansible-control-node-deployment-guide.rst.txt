@@ -1,0 +1,142 @@
+.. Ansible Control Node Deployment Guide
+
+.. |br| raw:: html
+
+   <br />
+
+#####################################
+Ansible Control Node Deployment Guide
+#####################################
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Contents:
+
+The following instructions are for deploying the Ansible Control Node.
+
+
+*************
+Prerequisites
+*************
+
+* :doc:`ansible-control-node-os-installation-guide`
+* :doc:`../idm/idm-client-deployment-guide`
+* :doc:`../nfs/nfs-client-deployment-guide`
+
+
+*********************
+Follow-on Deployments
+*********************
+
+The following guides can be applied after the deployment of their associated nodes.
+
+* :doc:`../influxdb/telegraf-deployment-guide`
+
+
+**********
+References
+**********
+
+..
+
+  These instructions were written for Ansible ``2.12`` with Ansible Core ``5.4``
+
+..
+
+  Instructions are based on the following documentation: |br|
+  https://docs.ansible.com/ansible/latest/installation_guide/
+
+
+***************
+Post Deployment
+***************
+
+
+******************
+Deployment Scripts
+******************
+
+.. note::
+
+  An example bash script of the instructions has been provided: |br|
+  :download:`../_static/ansible/deploy-ansible-control-node.sh`
+
+
+****************
+Deployment Steps
+****************
+
+.. important::
+
+  The Red Hat's CodeReady Linux Builder Repository or AlmaLinux PowerTools/CRB
+  Repository and the EPEL Repository are required for deploying the Ansible
+  Control Node.  These additional repositories are not needed on Ansible Managed
+  Nodes.
+
+.. note::
+
+  Instructions assume execution using the ``root`` account.
+
+1. Connect the system to the NFS Server:
+
+  See Guide: :doc:`../nfs/nfs-client-deployment-guide`
+
+2. Connect the system to the IdM Server:
+
+  See Guide: :doc:`../idm/idm-client-deployment-guide`
+
+3. Enable Red Hat's CodeReady Linux Builder/AlmaLinux PowerTools/CRB Repository:
+
+  For Red Hat Enterprise Linux 8
+
+  .. code-block:: bash
+
+    subscription-manager repos --enable codeready-builder-for-rhel-8-x86_64-rpms
+    dnf distro-sync
+
+  For AlmaLinux 8
+
+  .. code-block:: bash
+
+    dnf config-manager --set-enabled powertools
+    dnf distro-sync
+
+4. Install Extra Packages for Enterprise Linux (EPEL) Repository:
+
+  .. code-block:: bash
+
+    dnf -y install epel-release
+
+5. Install Ansible:
+
+  .. code-block:: bash
+
+    dnf -y install ansible
+
+6. Install Ansible command shell completion:
+
+  .. code-block:: bash
+
+    python3 -m pip install --user argcomplete
+    activate-global-python-argcomplete
+
+7. Create a default configuration file:
+
+  .. code-block:: bash
+
+    mv /etc/ansible/ansible.cfg /etc/ansible/ansible.cfg.old
+    ansible-config init --disabled > /etc/ansible/ansible.cfg
+
+8. Set default options:
+
+  .. code-block:: bash
+
+    sed -i "s/;nocows=.*/nocows=True/g" /etc/ansible/ansible.cfg
+
+9. Set firewalld rules:
+
+  .. code-block:: bash
+
+    systemctl enable --now firewalld
+    firewall-cmd --add-service=ssh --permanent
+    firewall-cmd --reload

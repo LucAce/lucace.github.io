@@ -1,0 +1,99 @@
+.. Cluster Topology
+
+.. |br| raw:: html
+
+   <br />
+
+================
+Cluster Topology
+================
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Contents:
+
+
+The Cluster Topology shown in Figure 1 shows the top level layout of the
+cluster.  The cluster's layout generally consists of virtualized systems
+which host web applications or infrastructure and bare-metal systems where the
+engineering workloads are performed.  It is possible that all systems are
+virtualized but for high demanding computational and IO based workloads,
+bare-metal systems are recommended.
+
+.. figure:: _static/topology/topology.png
+
+   **Figure 1: Cluster Topology**
+
+
+A properly configured DNS server which provides a Fully Qualified Domain Name
+(FQDN) for each system or the use of a hosts file which defines the FQDN is
+required.  Some services (FreeIPA/IdM) will not not function properly without
+FQDN hostnames being defined.
+
+Guides only cover a simple network and do not cover redundant network interfaces
+which is recommended.
+
+
+Operating Systems
+~~~~~~~~~~~~~~~~~
+
+These guides are written for Red Hat Enterprise Linux 8 based operating systems
+and are compatible with AlmaLinux 8 and Rocky Linux 8.  The guides identify any
+changes required for the different OS vendors.
+
+
+Hostnames
+~~~~~~~~~
+
+These guides use the following hostname and IPv4 address mappings as an example and will
+need to be modified for your production environment.
+
+.. note::
+
+  An example ``/etc/hosts`` file has been provided: :download:`_static/hosts`
+
++----------+-----------------------------+-----------------------+------------+--------------+
+| Hostname | FQDN                        | Function              | Type       | IPv4 Address |
++==========+=============================+=======================+============+==============+
+| nfs01    | nfs01.engwsc.example.com    | NFS Storage           | Bare-Metal | 192.168.1.50 |
++----------+-----------------------------+-----------------------+------------+--------------+
+| vmm01    | vmm01.engwsc.example.com    | VM Manager 1          | Bare-Metal | 192.168.1.51 |
++----------+-----------------------------+-----------------------+------------+--------------+
+| vmm02    | vmm02.engwsc.example.com    | VM Manager 2          | Bare-Metal | 192.168.1.52 |
++----------+-----------------------------+-----------------------+------------+--------------+
+| user01   | user01.engwsc.example.com   | User Node 1           | Bare-Metal | 192.168.1.60 |
++----------+-----------------------------+-----------------------+------------+--------------+
+| user02   | user02.engwsc.example.com   | User Node 2           | Bare-Metal | 192.168.1.61 |
++----------+-----------------------------+-----------------------+------------+--------------+
+| user03   | user03.engwsc.example.com   | User Node 3           | Bare-Metal | 192.168.1.62 |
++----------+-----------------------------+-----------------------+------------+--------------+
+| user04   | user04.engwsc.example.com   | User Node 4           | Bare-Metal | 192.168.1.63 |
++----------+-----------------------------+-----------------------+------------+--------------+
+| comp01   | comp01.engwsc.example.com   | Compute Node 1        | Bare-Metal | 192.168.1.64 |
++----------+-----------------------------+-----------------------+------------+--------------+
+| comp02   | comp02.engwsc.example.com   | Compute Node 2        | Bare-Metal | 192.168.1.65 |
++----------+-----------------------------+-----------------------+------------+--------------+
+| comp03   | comp03.engwsc.example.com   | Compute Node 3        | Bare-Metal | 192.168.1.66 |
++----------+-----------------------------+-----------------------+------------+--------------+
+| comp04   | comp04.engwsc.example.com   | Compute Node 4        | Bare-Metal | 192.168.1.67 |
++----------+-----------------------------+-----------------------+------------+--------------+
+| idm      | idm.engwsc.example.com      | Identity Management   | VM Guest   | 192.168.1.80 |
++----------+-----------------------------+-----------------------+------------+--------------+
+| gitlab   | gitlab.engwsc.example.com   | GitLab CE             | VM Guest   | 192.168.1.81 |
++----------+-----------------------------+-----------------------+------------+--------------+
+| slurm    | slurm.engwsc.example.com    | Slurm Controller      | VM Guest   | 192.168.1.82 |
++----------+-----------------------------+-----------------------+------------+--------------+
+| graylog  | graylog.engwsc.example.com  | Graylog Open          | VM Guest   | 192.168.1.83 |
++----------+-----------------------------+-----------------------+------------+--------------+
+| ansible  | ansible.engwsc.example.com  | Ansible Control Node  | VM Guest   | 192.168.1.84 |
++----------+-----------------------------+-----------------------+------------+--------------+
+| influxdb | influxdb.engwsc.example.com | InfluxDB              | VM Guest   | 192.168.1.85 |
++----------+-----------------------------+-----------------------+------------+--------------+
+| grafana  | grafana.engwsc.example.com  | Grafana               | VM Guest   | 192.168.1.86 |
++----------+-----------------------------+-----------------------+------------+--------------+
+| docker   | docker.engwsc.example.com   | Docker Host           | VM Guest   | 192.168.1.87 |
++----------+-----------------------------+-----------------------+------------+--------------+
+| mirror   | mirror.engwsc.example.com   | DNF Repository Mirror | VM Guest   | 192.168.1.88 |
++----------+-----------------------------+-----------------------+------------+--------------+
+| vmg01    | vmg01.engwsc.example.com    | Legacy OS (Optional)  | VM Guest   | 192.168.1.89 |
++----------+-----------------------------+-----------------------+------------+--------------+

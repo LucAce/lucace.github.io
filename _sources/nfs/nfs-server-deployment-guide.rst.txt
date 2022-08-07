@@ -1,0 +1,165 @@
+.. NFS Server Deployment Guide
+
+.. |br| raw:: html
+
+   <br />
+
+###########################
+NFS Server Deployment Guide
+###########################
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Contents:
+
+The following instructions are for deploying the NFS Server.
+
+
+*************
+Prerequisites
+*************
+
+* :doc:`nfs-server-os-installation-guide`
+
+
+*********************
+Follow-on Deployments
+*********************
+
+The following guides can be applied after the deployment of their associated nodes.
+
+* :doc:`../influxdb/telegraf-deployment-guide`
+
+
+**********
+References
+**********
+
+..
+
+  Instructions are based on the following documentation: |br|
+  https://www.server-world.info/en/note?os=Rocky_Linux_8&p=nfs&f=1
+
+
+***************
+Post Deployment
+***************
+
+..
+
+  The Cockpit Management Web Interface can be accessed at the following URLs:|br|
+  NSF Server Node: https://nfs01.engwsc.example.com:9090 |br|
+
+
+******************
+Deployment Scripts
+******************
+
+  An example bash script of the instructions has been provided: |br|
+  :download:`../_static/nfs/deploy-nfs-server.sh`
+
+
+****************
+Deployment Steps
+****************
+
+.. note::
+
+  Instructions assume execution using the ``root`` account.
+
+1. Install required NFS server packages:
+
+  .. code-block:: bash
+
+    dnf -y install nfs-utils
+
+2. Enable Cockpit:
+
+  .. code-block:: bash
+
+    dnf -y remove cockpit-podman
+    systemctl enable --now cockpit.socket
+
+3. Set the Domain Name:
+
+  .. important::
+
+    Replace ``engwsc.example.com`` with the domain name of your network.
+
+  .. code-block:: bash
+
+    sed -i 's/#Domain = local.domain.edu/Domain = engwsc.example.com/g' /etc/idmapd.conf
+
+4. Create directories that will be exported by NFS:
+
+  .. code-block:: bash
+
+    # Create Directories
+    mkdir -p /srv/nfs/app
+    mkdir -p /srv/nfs/backup
+    mkdir -p /srv/nfs/home
+    mkdir -p /srv/nfs/mirror
+    mkdir -p /srv/nfs/scratch
+
+    # Set owner to root
+    chown -R root:root /srv/nfs/app
+    chown -R root:root /srv/nfs/backup
+    chown -R root:root /srv/nfs/home
+    chown -R root:root /srv/nfs/mirror
+    chown -R root:root /srv/nfs/scratch
+
+    # Limit file and directory creation to root at this level
+    chmod 755 /srv/nfs/app
+    chmod 755 /srv/nfs/backup
+    chmod 755 /srv/nfs/home
+    chmod 755 /srv/nfs/mirror
+    chmod 755 /srv/nfs/scratch
+
+    # Set SELinux context
+    chcon -R -t user_home_dir_t /srv/nfs/home
+    semanage fcontext -a -t user_home_dir_t /srv/nfs/home
+
+5. Create exports file:
+
+  .. important::
+
+    Replace the IPv4 Address and Subnet mask with the value of your network.
+
+  .. code-block:: bash
+
+    sh -c 'cat >> /etc/exports <<EOL
+
+    # NFS Exports
+    /srv/nfs/app     192.168.1.0/24(rw,sync,secure,wdelay,subtree_check,no_root_squash)
+    /srv/nfs/backup  192.168.1.0/24(rw,sync,secure,wdelay,subtree_check,no_root_squash)
+    /srv/nfs/home    192.168.1.0/24(rw,sync,secure,wdelay,subtree_check,no_root_squash)
+    /srv/nfs/mirror  192.168.1.0/24(rw,sync,secure,wdelay,subtree_check,no_root_squash)
+    /srv/nfs/scratch 192.168.1.0/24(rw,sync,secure,wdelay,subtree_check,no_root_squash)
+
+    EOL'
+
+6. Start the NFS serices:
+
+  .. code-block:: bash
+
+    systemctl enable --now rpcbind nfs-server
+
+7. Set firewall rules:
+
+  .. important::
+
+    Replace the IPv4 Address and Subnet mask with the value of your network.
+
+  .. note::
+
+    The additional firewalld rule ``firewall-cmd --zone=nfs-server --add-service={nfs3,mountd,rpc-bind} --permanent``
+    is required if supporting NFSv3.
+
+  .. code-block:: bash
+
+    firewall-cmd --add-service=cockpit --permanent
+
+    firewall-cmd --new-zone=nfs-server --permanent
+    firewall-cmd --zone=nfs-server --add-source=192.168.1.0/24 --permanent
+    firewall-cmd --zone=nfs-server --add-service=nfs --permanent
+    firewall-cmd --reload

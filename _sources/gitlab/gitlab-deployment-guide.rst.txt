@@ -1,0 +1,282 @@
+.. GitLab Deployment Guide
+
+.. |br| raw:: html
+
+   <br />
+
+#########################
+GitLab Deployment Guide
+#########################
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Contents:
+
+The following instructions are for deploying GitLab.
+
+
+*************
+Prerequisites
+*************
+
+* :doc:`gitlab-os-installation-guide`
+* :doc:`../idm/idm-client-deployment-guide`
+* :doc:`../nfs/nfs-client-deployment-guide`
+
+
+*********************
+Follow-on Deployments
+*********************
+
+The following guides can be applied after the deployment of their associated nodes.
+
+* :doc:`../influxdb/telegraf-deployment-guide`
+
+
+**********
+References
+**********
+
+..
+
+  These instructions were written for GitLab Community Edition (CE) ``15.2.2``
+
+..
+
+  Instructions are based on the following documentation: |br|
+  https://about.gitlab.com/install/#almalinux-8
+  https://docs.gitlab.com/omnibus/settings/nginx.html#manually-configuring-https
+
+
+***************
+Post Deployment
+***************
+
+..
+
+  The GitLab can be accessed at the following URL: |br|
+  https://gitlab.engwsc.example.com
+
+
+******************
+Deployment Scripts
+******************
+
+.. note::
+
+  An example bash script of the instructions has been provided: |br|
+  :download:`../_static/gitlab/deploy-gitlab.sh`
+
+
+****************
+Deployment Notes
+****************
+
+..
+
+  GitLab can be installed using the official Omnibus RPM file or by
+  configuring the system to use the Omnibus package repository.  Either
+  way is acceptable but it is not recommended that the package repository
+  be enabled by default.  Updating GitLab every time the system is updated
+  can introduce unintended changes that can break GitLab.
+
+  When GitLab is updated, any changes to the ``/opt/gitlab/etc/gitlab.rb.template``
+  template file must be manually merged into GitLab's configuration file
+  ``/etc/gitlab/gitlab.rb``
+
+..
+
+  There are two no-cost editions of GitLab.  The ``Community Edition`` (CE) and the
+  ``Enterprise Edition`` (EE).  Both editions provide the same functionality but the
+  Enterprise Edition allows for an easier migration path to paid-for features. These
+  instructions cover the installation of the ``Community Edition`` which can be
+  migrated to the Enterprise Edition if those features are needed.
+
+  See: https://docs.gitlab.com/ee/update/upgrading_from_ce_to_ee.html
+
+..
+
+  GitLab must be run from local storage (or a VM with local storage).  GitLab does not support
+  and has known issues with executing from NFS mounts either hosted inside the VM or externally.
+
+  See: https://docs.gitlab.com/ee/administration/gitaly/
+
+..
+
+  When installing GitLab and using a HTTPS URL the following error message may be encountered::
+
+    Running handlers:
+    There was an error running gitlab-ctl reconfigure:
+
+    letsencrypt_certificate[gitlab] (letsencrypt::http_authorization line 6) had an error: Acme::Client::Error::RejectedIdentifier: acme_certificate[staging] (/opt/gitlab/embedded/cookbooks/cache/cookbooks/letsencrypt/resources/certificate.rb line 41) had an error: Acme::Client::Error::RejectedIdentifier: Error creating new order :: Cannot issue for "gitlab": Domain name needs at least one dot
+
+  The error is caused by a failure for Let's Encrypt to acquire an SSL certificate which it
+  attempts to aquire during installation.  GitLab should be deployed with a valid SSL
+  certificate that is implemented after installation and this error can be ignored for now.
+  The installation process should generate self-signed certificates when the Let's Encrypt
+  attempt fails.
+
+  These instructions install GitLab without an SSL certificate and apply one later to
+  avoid this error in the installation process.
+
+..
+
+  When changes are made to the configuration file ``/etc/gitlab/gitlab.rb`` GitLab will
+  need to be reconfigured.  The command to reconfigure GitLab is::
+
+    sudo gitlab-ctl reconfigure
+
+
+****************
+Deployment Steps
+****************
+
+.. note::
+
+  Instructions assume execution using the ``root`` account.
+
+1. Connect the system to the NFS Server:
+
+  See Guide: :doc:`../nfs/nfs-client-deployment-guide`
+
+2. Connect the system to the IdM Server:
+
+  See Guide: :doc:`../idm/idm-client-deployment-guide`
+
+3. Install GitLab dependencies:
+
+  .. code-block:: bash
+
+    dnf -y install curl policycoreutils openssh-server perl postfix yum-utils
+
+4. Enable OpenSSH server daemon if not enabled:
+
+  .. note::
+
+    Execute the following to determine if sshd is running: |br|
+    ``systemctl status sshd``
+
+  .. code-block:: bash
+
+    systemctl enable --now sshd
+
+5. Enable firewall rules:
+
+  .. important::
+
+    Replace the IPv4 Address and Subnet mask with the value of your network.
+
+  .. note::
+
+    Execute the following to determine if firewalld is running: |br|
+    ``systemctl status firewalld``
+
+  .. code-block:: bash
+
+    firewall-cmd --new-zone=gitlab --permanent
+    firewall-cmd --zone=gitlab --add-source=192.168.1.0/24 --permanent
+    firewall-cmd --zone=gitlab --add-service={http,https} --permanent
+    firewall-cmd --reload
+
+6. Enable Postfix::
+
+    systemctl enable --now postfix
+
+7. Add the GitLab package repository:
+
+  .. danger::
+
+    The official installation instructions call out piping the output of curl into bash which
+    is a security risk.  Download ``script.rpm.sh`` first and verify its contents before executing
+    the script.
+
+  .. code-block:: bash
+
+    cd ~
+    curl https://packages.gitlab.com/install/repositories/gitlab/gitlab-ce/script.rpm.sh -o script.rpm.sh
+    chmod 755 script.rpm.sh
+    ./script.rpm.sh
+
+8. Install GitLab:
+
+  .. important::
+
+    The ``EXTERNAL_URL`` attribute should be set to the URL that users will be using to access GitLab
+
+  .. note::
+
+    HTTPS will be configured following installation.
+
+  .. code-block:: bash
+
+    EXTERNAL_URL="http://gitlab.engwsc.example.com" dnf install -y gitlab-ce
+
+9. Record the initial root password
+
+  .. note::
+
+    During deployment an initial random root password is created.  That
+    initial root password is stored in a file named ``/etc/gitlab/initial_root_password``
+    but the file is automatically erased 24-hours after installation.
+
+10. Disable GitLab Yum Repositories:
+
+  .. important::
+
+    It is not recommended that GitLab be updated when ``dnf update`` is called.  The following step
+    will disable the yum/dnf repository.  When updating GitLab the dnf/yum command will need to include
+    the GitLab repository name.
+
+  .. code-block:: bash
+
+    yum-config-manager --disable gitlab_gitlab-ce
+    yum-config-manager --disable gitlab_gitlab-ce-source
+
+  .. code-block:: bash
+
+    # Command to update GitLab |br|
+    dnf -y --repo gitlab_gitlab-ce,gitlab_gitlab-ce-source update gitlab-ce
+
+11. Create Self-Signed SSL Certificate:
+
+  .. important::
+
+    Replace values with the specifics of your network.
+
+  .. code-block:: bash
+
+    mkdir -p /etc/gitlab/ssl
+    chmod 755 /etc/gitlab/ssl
+
+    # Country Name (2 letter code) [XX]:US
+    # State or Province Name (full name) []:New York
+    # Locality Name (eg, city) [Default City]:New York
+    # Organization Name (eg, company) [Default Company Ltd]:engwsc
+    # Organizational Unit Name (eg, section) []:
+    # Common Name (eg, your name or your server's hostname) []:gitlab.engwsc.example.com
+    # Email Address []:
+
+    openssl req -x509 -nodes -newkey rsa:4096 \
+        -keyout "/etc/gitlab/ssl/gitlab.engwsc.example.com.key" \
+        -out "/etc/gitlab/ssl/gitlab.engwsc.example.com.crt" \
+        -subj "/CN=gitlab.engwsc.example.com/C=US/ST=New York/L=New York/O=engwsc" \
+        -days 365
+
+12. Set ``gitlab.rb`` options:
+
+  .. code-block:: bash
+
+    sed -i "s|external_url 'http://gitlab.engwsc.example.com'|external_url 'https://gitlab.engwsc.example.com'|g" /etc/gitlab/gitlab.rb
+    sed -i "s/^.*gitlab_rails\['usage_ping_enabled'\].*$/gitlab_rails['usage_ping_enabled'] = false/g" /etc/gitlab/gitlab.rb
+    sed -i "s/^.*nginx\['redirect_http_to_https'\].*$/nginx['redirect_http_to_https'] = true/g" /etc/gitlab/gitlab.rb
+    sed -i "s/^.*letsencrypt\['enable'\].*$/letsencrypt['enable'] = false/g" /etc/gitlab/gitlab.rb
+
+13. Reconfigure GitLab
+
+  .. code-block:: bash
+
+    gitlab-ctl reconfigure
+
+14. Setup GitLab using the Web interface:
+
+  See Guide: :doc:`gitlab-configuration-guide`

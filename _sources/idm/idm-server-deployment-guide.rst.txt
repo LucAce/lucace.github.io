@@ -1,0 +1,213 @@
+.. IdM Server Deployment Guide
+
+.. |br| raw:: html
+
+   <br />
+
+###########################
+IdM Server Deployment Guide
+###########################
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Contents:
+
+The following instructions are for deploying the IdM server.
+
+
+*************
+Prerequisites
+*************
+
+* :doc:`idm-server-os-installation-guide`
+
+
+*********************
+Follow-on Deployments
+*********************
+
+The following guides can be applied after the deployment of their associated nodes.
+
+* :doc:`../influxdb/telegraf-deployment-guide`
+
+
+**********
+References
+**********
+
+..
+
+  These instructions were written for FreeIPA ``4.9.8``
+
+..
+
+  Instructions are based on the following documentation: |br|
+  https://computingforgeeks.com/install-and-configure-freeipa-server-on-rocky-linux/
+
+
+***************
+Post Deployment
+***************
+
+..
+
+  The IdM Management Dashboard can be accessed at the following URL:|br|
+  https://idm.engwsc.example.com
+
+  The default administrator user name is ``admin`` and the password is defined
+  in step 12.
+
+..
+
+  It is recommended that the default shell settings within IdM for user accounts
+  be changed to ``/bin/bash`` from ``/bin/sh``.
+
+
+******************
+Deployment Scripts
+******************
+
+  **Record the generated passwords when using the deployment script**
+
+  An example bash script of the instructions has been provided: |br|
+  :download:`../_static/idm/deploy-idm-server.sh`
+
+
+****************
+Deployment Steps
+****************
+
+The IdM Server can either be deployed as a standalone VM or on the NFS server.
+IdM and NFS are both required for users to log in and deploying both on the same
+server reduces the number of required systems to be online before users can log in.
+
+This Guide is writen for a standalone VM instance.
+
+.. note::
+
+  Instructions assume execution using the ``root`` account.
+
+1. Set the hostname to a FQDN:
+
+  .. code-block:: bash
+
+    hostnamectl set-hostname idm.engwsc.example.com
+
+2. Ensure the timezone is properly set:
+
+  .. code-block:: bash
+
+    timedatectl set-timezone America/New_York
+    timedatectl set-local-rtc 0
+
+3. ``Optional`` Add hostname to ``/etc/hosts`` if DNS does not resolve the FQDN:
+
+  .. note::
+
+    If synchronizing hosts files across systems ensure the FQDN name is before
+    any short names.
+
+    ``IP_ADDRESS`` ``HOST_FQDN`` ``HOST_SHORTNAME``
+
+  .. important::
+
+    Replace ``IP_ADDRESS`` with the real host IPv4 address (ex. 192.168.1.80) |br|
+    Replace ``HOST_FQDN`` with the real FQDN. (ex. app01.engwsc.example.com) |br|
+    Replace ``HOST_SHORTNAME`` with the host short name. (ex. app01) |br|
+
+  .. code-block:: bash
+
+    sh -c 'cat >> /etc/hosts <<EOL
+
+    IP_ADDRESS  HOST_FQDN  HOST_SHORTNAME
+
+    EOL'
+
+4. Verify hostname resolves to an IPv4 address that is not equal to the loopback address:
+
+  .. code-block:: bash
+
+    dig +short idm.engwsc.example.com A
+
+5. Verify reverse DNS configuration (PTR records):
+
+  .. important::
+
+    Replace ``192.168.1.80`` with the real host IPv4 address.
+
+  .. code-block:: bash
+
+    dig +short -x 192.168.1.80
+
+6. Install Chrony NTP server:
+
+  .. code-block:: bash
+
+    dnf -y install chrony
+
+7. Configure Chrony to allow remote clients:
+
+  .. note::
+
+    Change the IP address to your network's subnet
+
+  .. code-block:: bash
+
+    sed -i 's@#allow 192.168.0.0/16@allow 192.168.1.0/24@g' /etc/chrony.conf
+
+8. Restart chrondy service
+
+  .. code-block:: bash
+
+    systemctl restart chronyd
+
+9. Verify IdM module information:
+
+  .. code-block:: bash
+
+    dnf module info idm:DL1
+
+10. Enable the idm:DL1 stream and sync repositories:
+
+  .. code-block:: bash
+
+    dnf module -y enable idm:DL1
+    dnf distro-sync
+
+11. Install IdM Server module without an integrated DNS:
+
+  .. note::
+
+    There are other IdM Server installation types, see the IdM/FreeIPA documentation for more information.
+
+  .. code-block:: bash
+
+    dnf module -y install idm:DL1/server
+
+12. Install IdM Server:
+
+  .. note::
+
+    Remove ``--unattended`` to walk-through installation questions.
+
+  .. important::
+
+    Replace ``DM_PASSWORD`` with a confidential strong password that will be used to access the Directory Manager (DM). |br|
+    Replace ``ADMIN_PASSWORD`` with a confidential strong password that will be used for the IdM administrator's ``admin`` account.
+
+  .. code-block:: bash
+
+    ipa-server-install \
+      --domain=engwsc.example.com \
+      --realm=ENGWSC.EXAMPLE.COM \
+      --ds-password=DM_PASSWORD \
+      --admin-password=ADMIN_PASSWORD \
+      --unattended
+
+13. Configure IdM firewalld firewall rules:
+
+  .. code-block:: bash
+
+    firewall-cmd --new-zone=ipa-server --permanent
+    firewall-cmd --zone=ipa-server --add-service={ntp,freeipa-4} --permanent
+    firewall-cmd --reload

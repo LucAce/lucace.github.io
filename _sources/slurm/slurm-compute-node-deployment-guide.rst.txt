@@ -1,0 +1,185 @@
+.. Slurm Compute Node Deployment Guide
+
+.. |br| raw:: html
+
+   <br />
+
+####################################
+Slurm Compute Node Deployment Guide
+####################################
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Contents:
+
+The following instructions are for deploying the Slurm Compute/Client agents.
+
+
+*************
+Prerequisites
+*************
+
+* :doc:`../idm/idm-client-deployment-guide`
+* :doc:`../nfs/nfs-client-deployment-guide`
+* :doc:`../idm/passwordless-ssh-deployment-guide`
+* :doc:`slurm-controller-deployment-guide`
+
+
+******************
+Deployment Scripts
+******************
+
+..
+
+  It is assumed that the ``slurm-22.05.2.rpm.tar.gz`` file generated
+  by the Slurm Controller Deployment Guide has been uploaded to the
+  system they will be deployed on.
+
+..
+
+  An example bash script of the instructions has been provided: |br|
+  :download:`../_static/slurm/deploy-slurm-compute-node.sh`
+
+
+****************
+Deployment Steps
+****************
+
+.. note::
+
+  Instructions assume execution using the ``root`` account.
+
+1. Install dependencies:
+
+  .. code-block:: bash
+
+    dnf -y install munge munge-libs hwloc hwloc-libs ncurses curl rrdtool mariadb \
+        mariadb-devel ibacm infiniband-diags
+
+2. Create the deploy directory and go to it:
+
+  .. code-block:: bash
+
+    mkdir -p /root/tmp
+    cd /root/tmp
+
+3. Upload TAR file:
+
+  .. note::
+
+    Any file transfer method can be used.
+
+  .. code-block:: bash
+
+    scp slurm-22.05.2.rpm.tar.gz root@comp01.engwsc.example.com:/root/tmp
+
+4. Extract RPMs:
+
+  .. note::
+
+    It is recommended that the original installtion files be deleted at the completion of this guide.
+
+  .. code-block:: bash
+
+    tar -xvf slurm-22.05.2.rpm.tar.gz
+
+5. Copy Munge authentication key:
+
+
+  .. code-block:: bash
+
+    mkdir -p /etc/munge
+    cp -f munge.key /etc/munge/munge.key
+
+    chmod 700 /etc/munge
+    chmod 600 /etc/munge/munge.key
+    chown -R munge:munge /etc/munge
+
+6. Enable Munge service:
+
+  .. code-block:: bash
+
+    systemctl enable --now munge
+
+7. Create Slurm user account and group:
+
+  .. code-block:: bash
+
+    groupadd -g 64030 slurm
+    useradd -m -c "SLURM workload manager" -d /var/lib/slurm -u 64030 -g slurm -s /bin/bash slurm
+
+8. Install Slurm Compute/Client RPMs:
+
+  .. code-block:: bash
+
+    rpm -ivh \
+        slurm-22.05.2-1.el8.x86_64.rpm \
+        slurm-perlapi-22.05.2-1.el8.x86_64.rpm \
+        slurm-slurmd-22.05.2-1.el8.x86_64.rpm \
+        slurm-torque-22.05.2-1.el8.x86_64.rpm
+
+9. Copy configuration files:
+
+  .. code-block:: bash
+
+    mkdir -p /etc/slurm/
+
+    cp -f cgroup.conf /etc/slurm/
+    cp -f slurm.conf  /etc/slurm/
+    chmod 755 /etc/slurm/
+    chmod 600 /etc/slurm/cgroup.conf
+    chmod 600 /etc/slurm/slurm.conf
+    chown -R slurm:slurm /etc/slurm/
+
+10. Create log files:
+
+  .. code-block:: bash
+
+    mkdir -p /var/log/slurm/
+
+    touch /var/log/slurm/slurmd.log
+    chmod 755 /var/log/slurm/
+    chmod 644 /var/log/slurm/*.log
+    chown -R slurm:slurm /var/log/slurm
+
+11. Create spool files:
+
+  .. code-block:: bash
+
+    mkdir -p /var/spool/slurmd
+    chmod 700 /var/spool/slurmd
+    chown -R slurm:slurm /var/spool/slurmd
+
+12. Setup Slurm log rotation:
+
+  .. code-block:: bash
+
+    cat >> /etc/logrotate.d/slurm <<EOL
+    /var/log/slurmd.log
+    {
+        missingok
+        notifempty
+        rotate 4
+        weekly
+        create
+    }
+
+    EOL
+
+    chmod 644 /etc/logrotate.d/slurm
+
+13. Enable firewalld rules:
+
+  .. code-block:: bash
+
+    firewall-cmd --new-zone=slurm-compute --permanent
+    firewall-cmd --zone=slurm-compute --add-source=192.168.1.0/24 --permanent
+    firewall-cmd --zone=slurm-compute --add-port=6817/tcp --permanent
+    firewall-cmd --zone=slurm-compute --add-port=6818/tcp --permanent
+    firewall-cmd --reload
+
+14. Enable Slurm Compute/Client services:
+
+  .. code-block:: bash
+
+    systemctl enable --now slurmd

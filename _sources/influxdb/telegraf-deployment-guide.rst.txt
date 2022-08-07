@@ -1,0 +1,149 @@
+.. Telegraf Deployment Guide
+
+.. |br| raw:: html
+
+   <br />
+
+#########################
+Telegraf Deployment Guide
+#########################
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Contents:
+
+The following instructions are for deploying the Telegraf agent.
+
+
+*************
+Prerequisites
+*************
+
+* :doc:`InfluxDB Server Deployment Guide <influxdb-deployment-guide>`
+
+
+**********
+References
+**********
+
+..
+
+  These instructions were written for Telegraf ``v1.23.3``
+
+..
+
+  Official Telegraf installation instructions: |br|
+  https://docs.influxdata.com/telegraf/v1.23/install/
+
+
+******************
+Deployment Scripts
+******************
+
+..
+
+  An example bash script of the instructions has been provided: |br|
+  :download:`../_static/influxdb/deploy-telegraf.sh`
+
+
+****************
+Deployment Steps
+****************
+
+.. note::
+
+  Instructions assume execution using the ``root`` account.
+
+1. Add the InfluxDB Yum Repository:
+
+  .. code-block:: bash
+
+    # influxdb.key GPG Fingerprint: 05CE15085FC09D18E99EFB22684A14CF2582E0C5
+    cat <<EOF | sudo tee /etc/yum.repos.d/influxdb.repo
+    [influxdb]
+    name = InfluxDB Repository - RHEL \$releasever
+    baseurl = https://repos.influxdata.com/rhel/\$releasever/\$basearch/stable
+    enabled = 1
+    gpgcheck = 1
+    gpgkey = https://repos.influxdata.com/influxdb.key
+    EOF
+
+2. Install Telegraf:
+
+  .. code-block:: bash
+
+    dnf -y distro-sync
+    dnf -y install telegraf
+
+3. Create telegraf configuration file:
+
+  .. code-block:: bash
+
+    telegraf \
+        --input-filter cpu:disk:diskio:kernel:mem:net:netstat:nfsclient:processes:smart:swap:system \
+        --output-filter influxdb_v2 \
+        --section-filter agent:inputs:outputs \
+        config > telegraf.conf
+
+4. Add the Influx API token to the telegraf user's environment file:
+
+  .. important::
+
+    Replace ``INFLUX_API_TOKEN`` with the InfluxDB API Token
+
+  .. code-block:: bash
+
+    touch /etc/default/telegraf
+    echo INFLUX_TOKEN=INFLUX_API_TOKEN >> /etc/default/telegraf
+    chmod 600 /etc/default/telegraf
+
+5. Configure telegraf.conf file:
+
+  .. code-block:: bash
+
+    # Set InfluxDB server URL
+    sed -i "s@urls = \[\"http://127.0.0.1:8086\"\]@urls = [\"${INFLUX_URL}\"]@g" telegraf.conf
+
+    # Set InfluxDB token
+    sed -i "s@token = \"\"@token = \"\${INFLUX_TOKEN}\"@g" telegraf.conf
+
+    # Set organization
+    sed -i "s@organization = \"\"@organization = \"${INFLUX_ORGANIZATION}\"@g" telegraf.conf
+
+    # Set bucket
+    sed -i "s@bucket = \"\"@bucket = \"${INFLUX_BUCKET}\"@g" telegraf.conf
+
+    # Disable SSL cert verification
+    sed -i "s@# insecure_skip_verify = false@insecure_skip_verify = true@g" telegraf.conf
+
+    # Enable collecting of cpu_time
+    sed -i "s@collect_cpu_time = false@collect_cpu_time = true@g" telegraf.conf
+
+    # Enable nfs client full stats
+    sed -i "s@## fullstat = false@fullstat = true@g" telegraf.conf
+
+    # Setting 'use_sudo' to true will make use of sudo to run smartctl or nvme-cli.
+    sed -i "s/# use_sudo = false/use_sudo = true/g" telegraf.conf
+
+    # Setting Gather all returned S.M.A.R.T. attribute
+    sed -i "s/# attributes = false/attributes = true/g" telegraf.conf
+
+6. Copy telegraf.conf file:
+
+  .. code-block:: bash
+
+    mv -f telegraf.conf /etc/telegraf/telegraf.conf
+
+7. Enable SUDO access to smartctl for telegraf user:
+
+  .. code-block:: bash
+
+    echo "Cmnd_Alias SMARTCTL = /usr/sbin/smartctl"          >  /etc/sudoers.d/telegraf
+    echo "telegraf  ALL=(ALL) NOPASSWD: SMARTCTL"            >> /etc/sudoers.d/telegraf
+    echo "Defaults!SMARTCTL !logfile, !syslog, !pam_session" >> /etc/sudoers.d/telegraf
+
+8. Enable telegraf service:
+
+  .. code-block:: bash
+
+    systemctl enable --now telegraf

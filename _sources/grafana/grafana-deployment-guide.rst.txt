@@ -1,0 +1,180 @@
+.. Grafana Deployment Guide
+
+.. |br| raw:: html
+
+   <br />
+
+########################
+Grafana Deployment Guide
+########################
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Contents:
+
+The following instructions are for deploying Grafana.
+
+
+*************
+Prerequisites
+*************
+
+* :doc:`grafana-os-installation-guide`
+* :doc:`../idm/idm-client-deployment-guide`
+* :doc:`../nfs/nfs-client-deployment-guide`
+
+
+*********************
+Follow-on Deployments
+*********************
+
+The following guides can be applied after the deployment of their associated nodes.
+
+* :doc:`../influxdb/telegraf-deployment-guide`
+
+
+**********
+References
+**********
+
+..
+
+  These instructions were written for Grafana ``9.0.6``
+
+..
+
+  Instructions are based on the following documentation: |br|
+  https://grafana.com/grafana/download?pg=get&platform=linux&plcmt=selfmanaged-box1-cta1&edition=oss
+
+
+***************
+Post Deployment
+***************
+
+..
+
+  The Grafana can be accessed at the following URL:|br|
+  https://grafana.engwsc.example.com:3000
+
+
+******************
+Deployment Scripts
+******************
+
+.. note::
+
+  An example bash script of the instructions has been provided: |br|
+  :download:`../_static/grafana/deploy-grafana.sh`
+
+
+****************
+Deployment Steps
+****************
+
+.. note::
+
+  Instructions assume execution using the ``root`` account.
+
+1. Connect the system to the NFS Server:
+
+  See Guide: :doc:`../nfs/nfs-client-deployment-guide`
+
+2. Connect the system to the IdM Server:
+
+  See Guide: :doc:`../idm/idm-client-deployment-guide`
+
+3. Add the Grafana Yum Repository:
+
+  .. code-block:: bash
+
+    cat <<EOF | sudo tee /etc/yum.repos.d/grafana.repo
+    [grafana]
+    name=grafana
+    baseurl=https://packages.grafana.com/oss/rpm
+    repo_gpgcheck=1
+    enabled=1
+    gpgcheck=1
+    gpgkey=https://packages.grafana.com/gpg.key
+    sslverify=1
+    sslcacert=/etc/pki/tls/certs/ca-bundle.crt
+    EOF
+
+4. Install Dependencies:
+
+  .. code-block:: bash
+
+    dnf -y distro-sync
+    dnf -y install initscripts urw-fonts wget
+
+5. Install Grafana:
+
+  .. code-block:: bash
+
+    dnf -y install grafana
+
+6. Create Self-signed SSL certificate:
+
+  .. important::
+
+    Replace values with the specifics of your network.
+
+  .. code-block:: bash
+
+    # Country Name (2 letter code) [XX]:US
+    # State or Province Name (full name) []:New York
+    # Locality Name (eg, city) [Default City]:New York
+    # Organization Name (eg, company) [Default Company Ltd]:engwsc
+    # Organizational Unit Name (eg, section) []:
+    # Common Name (eg, your name or your server's hostname) []:grafana.engwsc.example.com
+    # Email Address []:
+
+    openssl req -x509 -nodes -newkey rsa:4096 \
+        -keyout "/etc/ssl/grafana-selfsigned.key" \
+        -out "/etc/ssl/grafana-selfsigned.crt" \
+        -subj "/CN=grafana.engwsc.example.com/C=US/ST=New York/L=New York/O=engwsc" \
+        -days 365
+
+    chgrp grafana /etc/ssl/grafana-selfsigned.key
+    chgrp grafana /etc/ssl/grafana-selfsigned.crt
+    chmod 440 /etc/ssl/grafana-selfsigned.key
+    chmod 440 /etc/ssl/grafana-selfsigned.key
+
+7. Set up Grafana:
+
+  .. important::
+
+    Replace ``GRAFANA_ADMIN_USERNAME`` with the user name of the administrator (ex admin) |br|
+    Replace ``GRAFANA_ADMIN_PASSWORD`` with a confidential secure password that
+    will be used for Grafana ``GRAFANA_ADMIN_USERNAME`` account.
+
+  .. code-block:: bash
+
+    sed -i 's/^;protocol =.*/protocol = https/g' /etc/grafana/grafana.ini
+    sed -i "s/^;domain =.*/domain = ${DOMAIN_NAME}/g" /etc/grafana/grafana.ini
+    sed -i 's|^;cert_file =.*|cert_file = /etc/ssl/grafana-selfsigned.crt|g' /etc/grafana/grafana.ini
+    sed -i 's|^;cert_key =.*|cert_key = /etc/ssl/grafana-selfsigned.key|g' /etc/grafana/grafana.ini
+    sed -i 's|^;reporting_enabled =.*|reporting_enabled = false|g' /etc/grafana/grafana.ini
+    sed -i 's|^;disable_gravatar =.*|disable_gravatar = true|g' /etc/grafana/grafana.ini
+
+    sed -i 's|^;admin_user =.*|admin_user = GRAFANA_ADMIN_USERNAME|g' /etc/grafana/grafana.ini
+    sed -i 's|^;admin_password =.*|admin_password = GRAFANA_ADMIN_PASSWORD|g' /etc/grafana/grafana.ini
+
+8. Start the Grafana service:
+
+  .. code-block:: bash
+
+    systemctl daemon-reload
+    systemctl enable --now grafana-server
+
+9. Set firewalld rules:
+
+  .. important::
+
+    Replace the IPv4 Address and Subnet mask with the value of your network.
+
+  .. code-block:: bash
+
+    firewall-cmd --new-zone=grafana --permanent
+    firewall-cmd --zone=grafana --add-source=192.168.1.0/24 --permanent
+    firewall-cmd --zone=grafana --add-port=3000/tcp --permanent
+    firewall-cmd --reload

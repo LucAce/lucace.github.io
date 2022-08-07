@@ -1,0 +1,116 @@
+.. User/Compute Node Deployment Guide
+
+.. |br| raw:: html
+
+   <br />
+
+##################################
+User/Compute Node Deployment Guide
+##################################
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Contents:
+
+The following instructions are for deploying the User and Compute nodes.
+
+
+*************
+Prerequisites
+*************
+
+* :doc:`../idm/idm-client-deployment-guide`
+* :doc:`../nfs/nfs-client-deployment-guide`
+
+
+*********************
+Follow-on Deployments
+*********************
+
+The following guides can be applied after the deployment of their associated nodes.
+
+* :doc:`../slurm/slurm-compute-node-deployment-guide`
+* :doc:`../influxdb/telegraf-deployment-guide`
+
+
+****************
+Deployment Steps
+****************
+
+.. note::
+
+  Instructions assume execution using the ``root`` account.
+
+1. Connect the system to the NFS Server:
+
+  See Guide: :doc:`../nfs/nfs-client-deployment-guide`
+
+2. Connect the system to the IdM Server:
+
+  See Guide: :doc:`../idm/idm-client-deployment-guide`
+
+3. Set firewalld rules:
+
+  .. code-block:: bash
+
+    systemctl enable --now firewalld
+    firewall-cmd --add-service=ssh --permanent
+
+4. Reboot
+
+.. important::
+
+  The remainder of this guide requires Direct Attached Video.
+
+5. Using Direct Attached Video, Accept the EULA:
+
+  .. note::
+
+    Do not create a user using the "User Creation" option
+
+  ::
+
+    * Click on "License Information"
+    * Check the "I accept the license agreement."
+    * Click on the "Done" button
+    * Click on the "Finish Configuration" button
+
+6. Pass the Welcome screen:
+
+  ::
+
+    * Click on the "Next" button
+
+7. Disable Location Services:
+
+  ::
+
+    * Click on the switch so that it shows "OFF"
+    * Click on the "Next" button
+
+8. Skip Connecting Online Accounts:
+
+  ::
+
+    * Click on the "Skip" button
+
+9. Login using Enterprise Login:
+
+  .. important::
+
+    Replace ``USER_ACCOUNT`` with a IdM based user account name. |br|
+    Replace ``USER_PASSWORD`` with the IdM based user's account password. |br|
+
+  ::
+
+    * Click on the "Set Up Enterprise Login" buggon
+
+  On the "About You" page
+
+  ::
+
+    * Enter "engwsc.example.com" for the domain
+    * Enter USER_ACCOUNT in the Username field
+    * Enter USER_PASSWORD in the Password field
+    * Click on the "Next" button
+    * Click on the "Start Using Red Hat Enterprise Linux" button

@@ -1,0 +1,62 @@
+.. Docker
+
+.. |br| raw:: html
+
+   <br />
+
+======
+Docker
+======
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Contents:
+
+Docker is a platform that uses OS-level virtualization to host application packaged
+in containers.
+
+https://www.docker.com/
+
+.. image:: ../_static/topology/topology.png
+
+
+Operating Systems
+~~~~~~~~~~~~~~~~~
+
+These guides are written for Red Hat Enterprise Linux 8 based operating systems
+and are compatible with AlmaLinux 8 and Rocky Linux 8.
+
+
+Accessibiliy
+~~~~~~~~~~~~
+
+The access permissions to the Docker node will dependent on use case.
+
+
+Hostnames
+~~~~~~~~~
+
+These guides use the following example Hostnames and FQDN for Docker.
+FQDNs can be provided by utilizing a DNS server or installing a hosts file
+on the system itself.
+
+.. note::
+
+  An example ``/etc/hosts`` file has been provided: :download:`../_static/hosts`
+
++----------+-----------------------------+-----------------------+------------+--------------+
+| Hostname | FQDN                        | Function              | Type       | IPv4 Address |
++==========+=============================+=======================+============+==============+
+| docker   | docker.engwsc.example.com   | Docker Host           | VM Guest   | 192.168.1.87 |
++----------+-----------------------------+-----------------------+------------+--------------+
+
+
+Guides
+~~~~~~
+
+..
+
+  The following guides are required to deploy Docker:
+
+  #. :doc:`docker-os-installation-guide`
+  #. :doc:`docker-deployment-guide`

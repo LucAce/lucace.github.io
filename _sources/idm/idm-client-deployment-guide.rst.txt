@@ -1,0 +1,157 @@
+.. IdM Client Deployment Guide
+
+.. |br| raw:: html
+
+   <br />
+
+###########################
+IdM Client Deployment Guide
+###########################
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Contents:
+
+The following instructions are for deploying the IdM client.
+
+
+*************
+Prerequisites
+*************
+
+* :doc:`IdM Server Deployment Guide <idm-server-deployment-guide>`
+
+
+**********
+References
+**********
+
+..
+
+  These instructions were written for FreeIPA ``4.9.8``
+
+..
+
+  Instructions are based on the following documentation: |br|
+  https://computingforgeeks.com/install-and-configure-freeipa-server-on-rocky-linux/
+
+
+******************
+Deployment Scripts
+******************
+
+  An example bash script of the instructions has been provided: |br|
+  :download:`../_static/idm/deploy-idm-client.sh`
+
+
+****************
+Deployment Steps
+****************
+
+.. note::
+
+  Instructions assume execution using the ``root`` account.
+
+1. Ensure the timezone is properly set:
+
+  .. important::
+
+    Replace ``TIME_ZONE`` with the real time zone. (ex. America/New_York)
+
+  .. code-block:: bash
+
+    timedatectl set-timezone TIME_ZONE
+    timedatectl set-local-rtc 0
+
+2. Verify the hostname's FQDN resolves to an IPv4 address that is not equal to the loopback (127.0.0.1) address:
+
+  .. important::
+
+    Replace ``HOST_FQDN`` with the real FQDN. (ex. user01.engwsc.example.com)
+
+  .. code-block:: bash
+
+    dig +short HOST_FQDN A
+
+3. Verify reverse DNS configuration (PTR records):
+
+  .. important::
+
+    Replace ``IP_ADDRESS`` with the real host IPv4 address (ex. 192.168.1.60) |br|
+
+  .. code-block:: bash
+
+    dig +short -x IP_ADDRESS
+
+If DNS does not resolve the FQDN:
+
+  Option #1, add hostname to ``/etc/hosts``:
+
+    .. important::
+
+        Ensure the FQDN name is before any short names.
+
+        Replace ``IP_ADDRESS`` with the real host IPv4 address (ex. 192.168.1.60) |br|
+        Replace ``HOST_FQDN`` with the real FQDN. (ex. user01.engwsc.example.com) |br|
+        Replace ``HOST_SHORTNAME`` with the host short name. (ex. user01) |br|
+
+        ``IP_ADDRESS`` ``HOST_FQDN`` ``HOST_SHORTNAME``
+
+    .. code-block:: bash
+
+        sh -c 'cat >> /etc/hosts <<EOL
+
+        IP_ADDRESS  HOST_FQDN  HOST_SHORTNAME
+
+        EOL'
+
+  Option #2, Set the hostname using hostnamectl if DNS does not resolve the FQDN:
+
+    .. important::
+
+      Replace ``HOST_FQDN`` with the real FQDN (ex. user01.engwsc.example.com)
+
+    .. code-block:: bash
+
+      hostnamectl set-hostname HOST_FQDN
+
+4. Verify IdM module information:
+
+  .. code-block:: bash
+
+    dnf module info idm:DL1
+
+5. Enable the idm:DL1 stream and sync repositories:
+
+  .. code-block:: bash
+
+    dnf module -y enable idm:DL1
+    dnf distro-sync
+
+6. Install IdM client module:
+
+  .. code-block:: bash
+
+    dnf module -y install idm:DL1/client
+
+7. Install IdM client:
+
+  .. note::
+
+    Execute ``ipa-client-install`` without switches to walk through the installation questions.
+
+  .. important::
+
+    Replace ``IDM_SERVER`` with the IdM Server Name. (ex. idm.engwsc.example.com) |br|
+    Replace ``DOMAIN_NAME`` with the IdM Domain Name. (ex. engwsc.example.comm) |br|
+    Replace ``ADMIN_PRINCIPAL`` with the IdM Administrator User Name. (ex. admin) |br|
+    Replace ``ADMIN_PASSWORD`` with the IdM Administrator Password. (Set in IdM Server Deployment Guide) |br|
+
+  .. code-block:: bash
+
+    sudo ipa-client-install \
+      --server=IDM_SERVER \
+      --domain=DOMAIN_NAME \
+      --principal=ADMIN_PRINCIPAL \
+      --password=ADMIN_PASSWORD \
+      --unattended

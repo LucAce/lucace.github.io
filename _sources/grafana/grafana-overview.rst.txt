@@ -1,0 +1,72 @@
+.. Grafana
+
+.. |br| raw:: html
+
+   <br />
+
+=======
+Grafana
+=======
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Contents:
+
+Grafana is an analytics and interactive visualization web application.  It creates
+charts and dashboards based on data captured by InfluxDB or other sources.
+
+https://grafana.com/
+
+.. image:: ../_static/topology/topology.png
+
+
+Operating Systems
+~~~~~~~~~~~~~~~~~
+
+These guides are written for Red Hat Enterprise Linux 8 based operating systems
+and are compatible with AlmaLinux 8 and Rocky Linux 8.
+
+
+Accessibiliy
+~~~~~~~~~~~~
+
+The Grafana node should only be accessed directly using SSH by system
+administrators. Standard cluster user accounts should not be able to
+SSH into the Grafana node.
+
+The Grafana application manages application level access.
+
+
+Hostnames
+~~~~~~~~~
+
+These guides use the following example Hostnames and FQDN for Grafana.
+FQDNs can be provided by utilizing a DNS server or installing a hosts file
+on the system itself.
+
+.. note::
+
+  An example ``/etc/hosts`` file has been provided: :download:`../_static/hosts`
+
++----------+-----------------------------+-----------------------+------------+--------------+
+| Hostname | FQDN                        | Function              | Type       | IPv4 Address |
++==========+=============================+=======================+============+==============+
+| grafana  | grafana.engwsc.example.com  | Grafana               | VM Guest   | 192.168.1.86 |
++----------+-----------------------------+-----------------------+------------+--------------+
+
+
+Guides
+~~~~~~
+
+..
+
+  The following guides are required to deploy Grafana:
+
+  #. :doc:`grafana-os-installation-guide`
+  #. :doc:`grafana-deployment-guide`
+
+..
+
+  The following are Grafana usage guides:
+
+  #. :doc:`grafana-usage-guide`

@@ -1,0 +1,68 @@
+.. GitLab
+
+.. |br| raw:: html
+
+   <br />
+
+======
+GitLab
+======
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Contents:
+
+GitLab is a DevOps platform that provides source control managment, Bug Tracking,
+and CI/CD flows.
+
+https://www.gitlab.com
+
+.. image:: ../_static/topology/topology.png
+
+
+Operating Systems
+~~~~~~~~~~~~~~~~~
+
+These guides are written for Red Hat Enterprise Linux 8 based operating systems
+and are compatible with AlmaLinux 8 and Rocky Linux 8.
+
+
+Accessibiliy
+~~~~~~~~~~~~
+
+The GitLab node should only be accessed directly using SSH by system administrators.
+Standard cluster user accounts should not be able to SSH into the GitLab node.
+
+The GitLab application manages application level access.
+
+
+Hostnames
+~~~~~~~~~
+
+These guides use the following example Hostnames and FQDN for GitLab.
+FQDNs can be provided by utilizing a DNS server or installing a hosts file
+on the system itself.
+
+.. note::
+
+  An example ``/etc/hosts`` file has been provided: :download:`../_static/hosts`
+
+GitLab is deployed on the following node:
+
++----------+-----------------------------+-----------------------+------------+--------------+
+| Hostname | FQDN                        | Function              | Type       | IPv4 Address |
++==========+=============================+=======================+============+==============+
+| gitlab   | gitlab.engwsc.example.com   | GitLab CE             | VM Guest   | 192.168.1.81 |
++----------+-----------------------------+-----------------------+------------+--------------+
+
+
+Guides
+~~~~~~
+
+..
+
+  The following guides are required to deploy GitLab:
+
+  #. :doc:`gitlab-os-installation-guide`
+  #. :doc:`gitlab-deployment-guide`
+  #. :doc:`gitlab-configuration-guide`

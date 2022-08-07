@@ -1,0 +1,443 @@
+.. Slurm Controller Deployment Guide
+
+.. |br| raw:: html
+
+   <br />
+
+#################################
+Slurm Controller Deployment Guide
+#################################
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Contents:
+
+The following instructions are for deploying the Slurm Controller.
+
+
+*************
+Prerequisites
+*************
+
+* :doc:`slurm-controller-os-installation-guide`
+* :doc:`../idm/idm-client-deployment-guide`
+* :doc:`../nfs/nfs-client-deployment-guide`
+
+
+*********************
+Follow-on Deployments
+*********************
+
+The following guides can be applied after the deployment of their associated nodes.
+
+* :doc:`../influxdb/telegraf-deployment-guide`
+
+
+**********
+References
+**********
+
+..
+
+  These instructions were written for Slurm ``22.05.2``. |br|
+
+..
+
+  The official Slurm source code can be downloaded from: |br|
+  https://www.schedmd.com/downloads.php
+
+..
+
+  The following instructions are based off of the official and unofficial documentation found here: |br|
+  https://github.com/dun/munge/wiki/Installation-Guide |br|
+  https://slurm.schedmd.com/quickstart_admin.html |br|
+  https://southgreenplatform.github.io/trainings/hpc/slurminstallation/
+
+..
+
+  Slurm Configuration References: |br|
+  - Slurm Configuration Tool: https://slurm.schedmd.com/configurator.html |br|
+  - cgroup.conf: https://slurm.schedmd.com/cgroup.conf.html |br|
+  - slurm.conf: https://slurm.schedmd.com/slurm.conf.html |br|
+  - slurmdbd.conf: https://slurm.schedmd.com/slurmdbd.conf.html
+
+
+******************
+Deployment Scripts
+******************
+
+..
+
+  An example bash script of the instructions has been provided: |br|
+  :download:`../_static/slurm/deploy-slurm-controller.sh`
+
+..
+
+  The required source files have been provided: |br|
+  :download:`../_static/slurm/slurm-22.05.2.tar.bz2` |br|
+  SHA1: b72e2c3b4270683cbb31b10f4bef384057376a34
+
+..
+
+  The example configuration files have been provided: |br|
+  :download:`../_static/slurm/cgroup.conf` |br|
+  :download:`../_static/slurm/slurm.conf` |br|
+  :download:`../_static/slurm/slurmdbd.conf`
+
+
+****************
+Deployment Steps
+****************
+
+.. important::
+
+  The Red Hat's CodeReady Linux Builder Repository or AlmaLinux PowerTools/CRB
+  Repository are required for building Slurm.  These additional repositories
+  are not needed on the user/compute nodes.
+
+.. note::
+
+  Instructions assume execution using the ``root`` account.
+
+1. Connect the system to the NFS Server:
+
+  See Guide: :doc:`../nfs/nfs-client-deployment-guide`
+
+2. Connect the system to the IdM Server:
+
+  See Guide: :doc:`../idm/idm-client-deployment-guide`
+
+
+Build Setup
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+3. Enable Red Hat's CodeReady Linux Builder/AlmaLinux PowerTools/CRB Repository:
+
+  For Red Hat Enterprise Linux 8
+
+  .. code-block:: bash
+
+    subscription-manager repos --enable codeready-builder-for-rhel-8-x86_64-rpms
+    dnf distro-sync
+
+  For AlmaLinux 8
+
+  .. code-block:: bash
+
+    dnf config-manager --set-enabled powertools
+    dnf distro-sync
+
+4. Install dependencies:
+
+  .. code-block:: bash
+
+    dnf -y install gcc binutils ncurses-devel automake autoconf \
+        rpm-devel rpm-build pam-devel readline-devel python3 \
+        perl-ExtUtils-MakeMaker mariadb-server mariadb-devel \
+        mariadb-connector-odbc openssl-devel pkgconf-pkg-config \
+        zlib bzip2 bzip2-devel make hwloc-devel hwloc hwloc-libs \
+        hwloc-plugins munge munge-devel munge-libs lua lua-devel \
+        lua-json lua-libs lua-posix lua-socket rrdtool-lua \
+        lua-filesystem rrdtool rrdtool-devel python3-rrdtool \
+        rrdtool-perl mailx lz4 lz4-libs lz4-devel libcurl \
+        libcurl-devel infiniband-diags-devel ibacm
+
+5. Create the build directory and go to it:
+
+  .. code-block:: bash
+
+    mkdir -p /root/tmp
+    cd /root/tmp
+
+6. Upload files:
+
+  .. note::
+
+    Any file transfer method can be used.
+
+  .. code-block:: bash
+
+    scp slurm-22.05.2.tar.bz2 root@slurm.engwsc.example.com:/root/tmp
+    scp cgroup.conf           root@slurm.engwsc.example.com:/root/tmp
+    scp slurm.conf            root@slurm.engwsc.example.com:/root/tmp
+    scp slurmdbd.conf         root@slurm.engwsc.example.com:/root/tmp
+
+7. Set a database password for Slurm Accounting:
+
+  .. important::
+
+    Replace ``MARIADB_SLURM_USER_PASSWD`` with a confidential secure password that
+    will be used for Slurm Accouting Database.
+
+  .. code-block:: bash
+
+    sed -i 's/StoragePass=.*/StoragePass=MARIADB_SLURM_USER_PASSWD/g' /root/tmp/slurmdbd.conf
+
+8. Set a ClusterName, SlurmctldHost, and AccountingStorageHost:
+
+  .. important::
+
+    Replace ``engwsc.example.com`` with the domain name of your network.
+
+  .. code-block:: bash
+
+    sed -i 's/ClusterName=.*/ClusterName=engwsc/g' /root/tmp/slurm.conf
+    sed -i 's/SlurmctldHost=.*/SlurmctldHost=slurm.engwsc.example.com/g' /root/tmp/slurm.conf
+    sed -i 's/AccountingStorageHost=.*/AccountingStorageHost=slurm.engwsc.example.com/g' /root/tmp/slurm.conf
+
+9. Modify ``/root/tmp/slurm.conf`` with the configuration of the cluster:
+
+  .. note::
+
+    The following is just an example configuration.
+
+  .. code-block:: bash
+
+    # COMPUTE NODES (Adjust to match real hardware)
+    NodeName=user01.engwsc.example.com CPUs=32 RealMemory=524288 Sockets=1 CoresPerSocket=32 ThreadsPerCore=1 State=UNKNOWN
+    NodeName=user02.engwsc.example.com CPUs=32 RealMemory=524288 Sockets=1 CoresPerSocket=32 ThreadsPerCore=1 State=UNKNOWN
+    NodeName=user03.engwsc.example.com CPUs=32 RealMemory=524288 Sockets=1 CoresPerSocket=32 ThreadsPerCore=1 State=UNKNOWN
+    NodeName=user04.engwsc.example.com CPUs=32 RealMemory=524288 Sockets=1 CoresPerSocket=32 ThreadsPerCore=1 State=UNKNOWN
+    NodeName=comp01.engwsc.example.com CPUs=32 RealMemory=524288 Sockets=1 CoresPerSocket=32 ThreadsPerCore=1 State=UNKNOWN
+    NodeName=comp02.engwsc.example.com CPUs=32 RealMemory=524288 Sockets=1 CoresPerSocket=32 ThreadsPerCore=1 State=UNKNOWN
+    NodeName=comp03.engwsc.example.com CPUs=32 RealMemory=524288 Sockets=1 CoresPerSocket=32 ThreadsPerCore=1 State=UNKNOWN
+    NodeName=comp04.engwsc.example.com CPUs=32 RealMemory=524288 Sockets=1 CoresPerSocket=32 ThreadsPerCore=1 State=UNKNOWN
+    PartitionName=default Nodes=ALL Default=YES MaxTime=1440 State=UP
+
+
+Munge
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+10. Create a Munge authentication key:
+
+  .. important::
+
+    ``/etc/munge/munge.key`` should be readable only by the ``munge`` account and remain confidential.
+
+  .. code-block:: bash
+
+    mkdir -p /etc/munge
+    chown -R munge:munge /etc/munge
+    chmod 700 /etc/munge
+    /usr/sbin/create-munge-key -f
+    chmod 600 /etc/munge/munge.key
+
+11. Enable Munge service:
+
+  .. code-block:: bash
+
+    systemctl enable --now munge
+
+
+Slurm
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+12. Create local Slurm user account and group:
+
+  .. code-block:: bash
+
+    groupadd -g 64030 slurm
+    useradd -m -c "SLURM workload manager" -d /var/lib/slurm -u 64030 -g slurm -s /bin/bash slurm
+
+13. Build Slurm RPM:
+
+  .. code-block:: bash
+
+    rpmbuild -ta slurm-22.05.2.tar.bz2
+
+14. Install Slurm Controller RPMs:
+
+  .. code-block:: bash
+
+    rpm -ivh \
+        /root/rpmbuild/RPMS/x86_64/slurm-22.05.2.el8.x86_64.rpm \
+        /root/rpmbuild/RPMS/x86_64/slurm-example-configs-22.05.2.el8.x86_64.rpm \
+        /root/rpmbuild/RPMS/x86_64/slurm-perlapi-22.05.2.el8.x86_64.rpm \
+        /root/rpmbuild/RPMS/x86_64/slurm-slurmctld-22.05.2.el8.x86_64.rpm \
+        /root/rpmbuild/RPMS/x86_64/slurm-slurmd-22.05.2.el8.x86_64.rpm \
+        /root/rpmbuild/RPMS/x86_64/slurm-slurmdbd-22.05.2.el8.x86_64.rpm \
+        /root/rpmbuild/RPMS/x86_64/slurm-torque-22.05.2.el8.x86_64.rpm
+
+15. Copy configuration files to Slurm RPMs path for inclusion in the tar file:
+
+  .. note::
+
+    Files ``munge.key``, ``slurm.conf``, and ``cgroup.conf`` are required to be installed on all nodes. |br|
+    File ``slurmdbd.conf`` is only required on the accounting/controller node.
+
+  .. code-block:: bash
+
+    cp /etc/munge/munge.key    /root/rpmbuild/RPMS/x86_64/
+    cp /root/tmp/cgroup.conf   /root/rpmbuild/RPMS/x86_64/
+    cp /root/tmp/slurm.conf    /root/rpmbuild/RPMS/x86_64/
+    cp /root/tmp/slurmdbd.conf /root/rpmbuild/RPMS/x86_64/
+
+16. TAR RPMs for use by Compute/Client systems:
+
+  .. code-block:: bash
+
+    EXEC_PWD=`pwd`
+
+    cd /root/rpmbuild/RPMS/x86_64/
+    tar -cf ${EXEC_PWD}/slurm-22.05.2.tar slurm-*.rpm cgroup.conf slurm.conf slurmdbd.conf munge.key
+
+    cd ${EXEC_PWD}
+    gzip -9 slurm-22.05.2.rpm.tar
+    sha256sum -b slurm-22.05.2.rpm.tar.gz > slurm-22.05.2.rpm.tar.gz.sha256
+
+17. Install the configuration files:
+
+  .. code-block:: bash
+
+    mkdir -p /etc/slurm/
+
+    cp cgroup.conf   /etc/slurm/
+    cp slurm.conf    /etc/slurm/
+    cp slurmdbd.conf /etc/slurm/
+
+    chmod 755 /etc/slurm/
+    chmod 600 /etc/slurm/cgroup.conf
+    chmod 600 /etc/slurm/slurm.conf
+    chmod 600 /etc/slurm/slurmdbd.conf
+
+    chown -R slurm:slurm /etc/slurm/
+
+18. Create log files:
+
+  .. code-block:: bash
+
+    mkdir -p /var/log/slurm/
+
+    touch /var/log/slurm/slurm.jobcomp.log
+    touch /var/log/slurm/slurmctld.log
+    touch /var/log/slurm/slurmdbd.log
+
+    chmod 755 /var/log/slurm/
+    chmod 644 /var/log/slurm/*.log
+
+    chown -R slurm:slurm /var/log/slurm
+
+19. Create spool files:
+
+  .. code-block:: bash
+
+    mkdir -p /var/spool/slurmctld
+    mkdir -p /var/spool/slurmdbd
+
+    chmod 700 /var/spool/slurmctld
+    chmod 700 /var/spool/slurmdbd
+
+    chown -R slurm:slurm /var/spool/slurmctld
+    chown -R slurm:slurm /var/spool/slurmdbd
+
+20. Setup log rotation:
+
+  .. code-block:: bash
+
+    cat >> /etc/logrotate.d/slurm <<EOL
+    /var/log/slurm/slurm.jobcomp.log
+    /var/log/slurm/slurmctld.log
+    /var/log/slurm/slurmdbd.log
+    {
+        missingok
+        notifempty
+        rotate 4
+        weekly
+        create
+    }
+
+    EOL
+
+    chmod 644 /etc/logrotate.d/slurm
+
+
+MariaDB
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+21.  Enable MariaDB service:
+
+  .. code-block:: bash
+
+    systemctl enable --now mariadb
+
+22. Secure databases:
+
+  .. important::
+
+    Replace ``MARIADB_ROOT_PASSWD`` with a confidential secure password that
+    will be used for MariaDB Root account.
+
+  .. code-block:: bash
+
+    # Enter current password for root (enter for none): <enter>
+    # Set root password? [Y/n] Y
+    # New password: MARIADB_ROOT_PASSWD
+    # Re-enter new password: MARIADB_ROOT_PASSWD
+    # Remove anonymous users? [Y/n] Y
+    # Disallow root login remotely? [Y/n] Y
+    # Remove test database and access to it? [Y/n] Y
+    # Reload privilege tables now? [Y/n] Y
+
+    mysql_secure_installation
+
+23. Modify the innodb configuration:
+
+  .. code-block:: bash
+
+    mkdir -p /etc/my.cnf.d
+    cat >> /etc/my.cnf.d/innodb.cnf <<EOL
+    [mysqld]
+    innodb_buffer_pool_size=1024M
+    innodb_log_file_size=64M
+    innodb_lock_wait_timeout=900
+
+    EOL
+
+24. Delete MariaDB logs and restart service:
+
+  .. code-block:: bash
+
+    systemctl stop mariadb
+    rm -f /var/lib/mysql/ib_logfile?
+    systemctl start mariadb
+
+25. Create accounting database for Slurm:
+
+  .. important::
+
+    Replace ``MARIADB_ROOT_PASSWD`` with the password provided in step 20. |br|
+    Replace ``MARIADB_SLURM_USER_PASSWD`` with the password provided in step 5. |br|
+
+  .. code-block:: bash
+
+    mysql -u root -pMARIADB_ROOT_PASSWD --execute "grant all on slurm_acct_db.* TO 'slurm'@'localhost' identified by 'MARIADB_SLURM_USER_PASSWD' with grant option;"
+    mysql -u root -pMARIADB_ROOT_PASSWD --execute "create database slurm_acct_db;"
+
+
+Firewall
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+26. Enable firewalld rules:
+
+  .. code-block:: bash
+
+    firewall-cmd --remove-port=3306/tcp --permanent
+    firewall-cmd --remove-port=3306/udp --permanent
+
+    firewall-cmd --new-zone=slurm-controller --permanent
+    firewall-cmd --zone=slurm-controller --add-source=192.168.1.0/24 --permanent
+    firewall-cmd --zone=slurm-controller --add-port=6817/tcp --permanent
+    firewall-cmd --zone=slurm-controller --add-port=6818/tcp --permanent
+    firewall-cmd --zone=slurm-controller --add-port=6819/tcp --permanent
+    firewall-cmd --reload
+
+
+Slurm Controller Services
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+27. Enable Slurm Controller services:
+
+  .. code-block:: bash
+
+    systemctl enable --now slurmdbd
+    systemctl enable --now slurmctld

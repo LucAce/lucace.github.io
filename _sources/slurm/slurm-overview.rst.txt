@@ -1,0 +1,127 @@
+.. Slurm Workload Manager
+
+.. |br| raw:: html
+
+   <br />
+
+======================
+Slurm Workload Manager
+======================
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Contents:
+
+Simple Linux Utility for Resource Management (Slurm) is a workload resource
+manager that is used to schedule job items or tasks on a cluster of systems.
+Slurm is comprised of three components a Controller, Compute Nodes and Clients.
+These guides cover setting up a virtual machine to host the Controller and
+other guides for deploying the required components on the User/Compute nodes
+where clients will submit and execute their jobs.
+
+https://slurm.schedmd.com
+
+.. image:: ../_static/topology/topology.png
+
+
+Operating Systems
+~~~~~~~~~~~~~~~~~
+
+These guides are written for Red Hat Enterprise Linux 8 based operating systems
+and are compatible with AlmaLinux 8 and Rocky Linux 8.
+
+
+Accessibiliy
+~~~~~~~~~~~~
+
+Standard cluster user accounts must be able to SSH into the Slurm Controller
+node in order for Slurm to operate correctly.
+
+
+Hostnames
+~~~~~~~~~
+
+These guides use the following example Hostnames and FQDN for Slurm Controller and
+Slurm Compute and Client nodes.  FQDNs can be provided by utilizing a DNS server
+or installing a hosts file on the system itself.
+
+.. note::
+
+  An example ``/etc/hosts`` file has been provided: :download:`../_static/hosts`
+
+
+Controller
+----------
+
+The Slurm Controller is deployed on the following node:
+
++----------+-----------------------------+-----------------------+------------+--------------+
+| Hostname | FQDN                        | Function              | Type       | IPv4 Address |
++==========+=============================+=======================+============+==============+
+| slurm    | slurm.engwsc.example.com    | Slurm Controller      | VM Guest   | 192.168.1.82 |
++----------+-----------------------------+-----------------------+------------+--------------+
+
+
+Compute/Client
+--------------
+
+The Slurm Compute and Client agents are deployed on the following nodes:
+
++----------+-----------------------------+-----------------------+------------+--------------+
+| Hostname | FQDN                        | Function              | Type       | IPv4 Address |
++==========+=============================+=======================+============+==============+
+| user01   | user01.engwsc.example.com   | User Node 1           | Bare-Metal | 192.168.1.60 |
++----------+-----------------------------+-----------------------+------------+--------------+
+| user02   | user02.engwsc.example.com   | User Node 2           | Bare-Metal | 192.168.1.61 |
++----------+-----------------------------+-----------------------+------------+--------------+
+| user03   | user03.engwsc.example.com   | User Node 3           | Bare-Metal | 192.168.1.62 |
++----------+-----------------------------+-----------------------+------------+--------------+
+| user04   | user04.engwsc.example.com   | User Node 4           | Bare-Metal | 192.168.1.63 |
++----------+-----------------------------+-----------------------+------------+--------------+
+| comp01   | comp01.engwsc.example.com   | Compute Node 1        | Bare-Metal | 192.168.1.64 |
++----------+-----------------------------+-----------------------+------------+--------------+
+| comp02   | comp02.engwsc.example.com   | Compute Node 2        | Bare-Metal | 192.168.1.65 |
++----------+-----------------------------+-----------------------+------------+--------------+
+| comp03   | comp03.engwsc.example.com   | Compute Node 3        | Bare-Metal | 192.168.1.66 |
++----------+-----------------------------+-----------------------+------------+--------------+
+| comp04   | comp04.engwsc.example.com   | Compute Node 4        | Bare-Metal | 192.168.1.67 |
++----------+-----------------------------+-----------------------+------------+--------------+
+
+
+Prerequisites
+~~~~~~~~~~~~~
+
+In order for Slurm to operate correctly, IdM and NFS must already be in place
+to handle user authentication and NFS based home directories.  Password-less
+SSH'ing is also a requirement for Slurm but is configured after the User/Compute
+nodes are deployed.
+
+..
+
+  #. :doc:`../nfs/nfs-overview`
+  #. :doc:`../idm/idm-overview`
+  #. :doc:`../idm/passwordless-ssh-deployment-guide`
+
+
+Guides
+~~~~~~
+
+..
+
+  The following guides are required to deploy the Slurm Controller:
+
+  #. :doc:`slurm-controller-os-installation-guide`
+  #. :doc:`slurm-controller-deployment-guide`
+
+..
+
+  The following guides are required for deploying the Slurm Compute and Clients:
+
+  #. :doc:`slurm-compute-node-deployment-guide`
+
+..
+
+  The following are Slurm usage guides:
+
+  #. :doc:`slurm-controller-usage-guide`
+  #. :doc:`slurm-compute-node-usage-guide`

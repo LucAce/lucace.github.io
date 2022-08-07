@@ -1,0 +1,65 @@
+.. Assumptions and Warnings
+
+========================
+Assumptions and Warnings
+========================
+
+Warnings
+~~~~~~~~
+
+The following are warnings that apply to the cluster and/or all guides.
+
+..
+
+  1. **Do Not Expose These Systems or Services To The Internet**
+
+  These guides assume that the cluster will be on an isolated subnet within a
+  larger organization and will utilize additional security monitoring tools
+  that are beyond the scope of these guides.  These guides do not provide
+  hardening techniques for exposing them to the internet.
+
+..
+
+  2. **Implement a Backup Strategy**
+
+  These guides do not cover backing up of the cluster.  Backups and restoration
+  strageties is a required element to a cluster.  RAID is not a backup.
+
+..
+
+  3. **Implement a Redundancy/Resilancy Strategy**
+
+  These guides only provide techniquies for improving fault tolernace such as
+  providing RAID on systems.  Redundancy strageties is a required element to
+  a cluster.
+
+
+Assumptions
+~~~~~~~~~~~
+
+The guides make a couple fundamental assumptions which have guided how things were
+implemented.  Anyone implementing these systems will need to evaluate their specific
+requirements and tailor them for their specific usage scenarios.
+
+..
+
+  1. The hosted applications are run on separate virtual machines and do not utilize Docker.
+  While Docker is one of the provided applications, its usage is intended for internally
+  developed and deployed images only.  This limitation is in place to eliminate the
+  need for third-party image hosting.  Source code and RPMs for applications should be
+  accessed directly from the developer.
+
+..
+
+  2. Yum/DNF repositories are utilized, if available.  To reduce friction in performing
+  updates yum repositories provided by the application authors have been utilized.
+  Only in cases where repositories are not available (for example Slurm) are then not
+  used.  While updates require coordinated with users, utilizing the vendor repositories
+  and yum/dnf commands to execute updates, reduces the amount of work required.
+
+..
+
+  3. The cluster does not require a specific Service Level Agreement (SLA) uptime.  These
+  guides are intended to be used in an environment that can tolerate modest down times and
+  system unavailability.  While down time should be cordinated with users, unexpected
+  down time should not result in downtime of other critical corporate resources.

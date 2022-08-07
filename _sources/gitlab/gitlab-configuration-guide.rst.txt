@@ -1,0 +1,248 @@
+.. GitLab Configuration Guide
+
+.. |br| raw:: html
+
+   <br />
+
+##########################
+GitLab Configuration Guide
+##########################
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Contents:
+
+
+*************
+Prerequisites
+*************
+
+* :doc:`gitlab-deployment-guide`
+
+
+*******************
+Configuration Notes
+*******************
+
+.. caution::
+
+  Dependency Confusion Attacks in Python's PyPI and Node Package Manager (NPM) are a threat to
+  system security and disabling access to them from CI/CD pipelines is recommended.  The
+  CE and EE free tier of GitLab do not allow you to disable forwarding of PyPI and NPM packages
+  requests that are not in the local GitLab Package Registry.  Firewall rules will need to be
+  used to disable access to ``pypi.python.org``, ``pypi.org``, ``pythonhosted.org``, and
+  ``registry.npmjs.org``.
+
+..
+
+  The following guide is just an example.  Restrictions and changes should be based on your
+  work flow and sensitivity of the data within GitLab.
+
+..
+
+  After installation, to log into GitLab's web interface use user name ``root`` and the
+  password located in file ``/etc/gitlab/initial_root_password``.  The initial_root_password
+  file will only remain for 24 hours after installation.
+
+  The ``root`` GitLab account creating during installation should be deleted in favor of
+  named administrator account.
+
+..
+
+  GitLab accounts can be managed through IdM instead of using GitLab's native account
+  management.  More information can be found here: |br|
+  https://dev.to/kenmoini/ldap-on-gitlab-with-red-hat-identity-management-freeipa-3f5l
+
+  This guide assumes GitLab managed accounts.
+
+
+*******************
+Configuration Steps
+*******************
+
+1. Log into GitLab using the ``root`` account and password generated during deployment:
+
+  https://gitlab.engwsc.example.com
+
+2. Create Administrator User:
+
+  Go to: https://gitlab.engwsc.example.com/admin/users/new
+
+  ::
+
+    * Create administrator New User"
+    * Use a "username" that is used for administrative purposes only
+      - For example, "a123456"
+    * Change "Access level" to "Administrator"
+    * Select "User is validated and can use free CI minutes on shared runners."
+    * Click "Create user"
+    * Go to: https://gitlab.engwsc.example.com/admin/users/
+    * Click on Edit to the right of the new user
+    * Assign user a password
+    * Confirm user password
+    * Click "Save Changes"
+    * Log-out of GitLab
+    * Sign in as new user
+
+3. Remove "root" User:
+
+  Go to: https://gitlab.engwsc.example.com/admin/users
+
+  ::
+
+    * Click on "..." drop-down associated with user "Administrator"
+    * Click "Delete user and contributions"
+    * Type in "Administrator"
+    * Click "Delete user and contributions"
+
+4. Disable User Sign Up:
+
+  Go to: https://gitlab.engwsc.example.com/admin/application_settings/general#js-signup-settings
+
+  ::
+
+    * Expand "Sign-up restrictions" section
+    * Deselect "Sign-up enabled"
+    * Select "Require admin approval for new sign-ups"
+    * Click "Save changes"
+
+5. ``Optional`` Set Default Restricted visibility levels:
+
+  .. note::
+
+    See official documentation for more information: |br|
+    https://docs.gitlab.com/ee/user/admin_area/settings/visibility_and_access_controls.html
+
+  Go to: https://gitlab.engwsc.example.com/admin/application_settings/general#js-visibility-settings
+
+  ::
+
+    * Expand "Visibility and access controls" section
+    * Under "Default branch protection"
+    * Select "Partially protected"
+    * Under "Default project creation protection"
+    * Select "Maintainers"
+    * Under "Default project visibility"
+    * Select "Private"
+    * Under "Default snippet visibility"
+    * Select "Private"
+    * Under "Default group visibility
+    * Select Private
+    * Under "Restricted visibility levels"
+    * Select "Internal, Public" (Private is unselected)
+    * Under "Import sources"
+    * Deselect all import sources (GitHub, Bitbucket Cloud, ...)
+    * Deselect "Allow group owners to manage LDAP-related settings"
+    * Deselect "Project export enabled"
+    * Select "Disable feed token"
+    * Click "Save changes"
+
+6. Enable Admin Mode, Disable "sign-in location is not recognized" emails:
+
+  .. note::
+
+    After this step it is recommended that you refresh the page.  GitLab will then ask
+    you to confirm your password before continuing.
+
+  Go to: https://gitlab.engwsc.example.com/admin/application_settings/general#js-signin-settings
+
+  ::
+
+    * Expand "Sign-in restrictions" section
+    * Under "Admin Mode"
+    * Select "Enable admin mode"
+    * Under "Email notification for unknown sign-ins"
+    * Deselect "Enable email notification"
+    * Click "Save changes"
+
+7. Disable Gravatar, Disable User OAuth applications:
+
+  Go to: https://gitlab.engwsc.example.com/admin/application_settings/general#js-account-settings
+
+  ::
+
+    * Expand "Account and limit" section
+    * Deselect "Gravatar enabled"
+    * Deselect "Allow users to register any application to use GitLab as an OAuth provider"
+    * Under "Dormant users"
+    * Select "Deactivate dormant users after 90 days of inactivity"
+    * Click "Save changes"
+
+8. Ensure all third-party integrations are disabled (They are disabled by default):
+
+  Go to: https://gitlab.engwsc.example.com/admin/application_settings/general
+
+  Ensure the following are disabled in each sub-section:
+
+  ::
+
+    * Gitpod                          (https://gitlab.engwsc.example.com/admin/application_settings/general#js-gitpod-settings)
+    * Kroki                           (https://gitlab.engwsc.example.com/admin/application_settings/general#js-kroki-settings)
+    * Mailgun                         (https://gitlab.engwsc.example.com/admin/application_settings/general#js-mailgun-settings)
+    * PlantUML                        (https://gitlab.engwsc.example.com/admin/application_settings/general#js-plantuml-settings)
+    * Snowplow                        (https://gitlab.engwsc.example.com/admin/application_settings/general#js-snowplow-settings)
+    * Amazon EKS                      (https://gitlab.engwsc.example.com/admin/application_settings/general#js-eks-settings)
+    * Federated Learning of Cohorts   (https://gitlab.engwsc.example.com/admin/application_settings/general#js-floc-settings)
+
+9. Ensure Third-party offers are disabled:
+
+  Go to: https://gitlab.engwsc.example.com/admin/application_settings/general#js-third-party-offers-settings
+
+  ::
+
+    * Expand "Customer experience improvement and third-party offers" section
+    * Select "Do not display content for customer experience improvement and offers from third parties"
+    * Click "Save changes"
+
+10. Disable non-administrator mirroring:
+
+  Go to: https://gitlab.engwsc.example.com/admin/application_settings/repository#js-mirror-settings
+
+  ::
+
+    * Expand "Repository mirroring" section
+    * Deselect "Allow project maintainers to configure repository mirroring"
+    * Click "Save changes"
+
+11. Disable Service Ping:
+
+  Go to: https://gitlab.engwsc.example.com/admin/application_settings/metrics_and_profiling#js-usage-settings
+
+  ::
+
+    * Expand "Usage statistics" section
+    * Select "Enable version check"
+    * Deselect "Enable Service Ping"
+    * Deselect "Enable Registration Features"
+    * Click "Save changes"
+
+12. Disable Email Marketing:
+
+  Go to: https://gitlab.engwsc.example.com/admin/application_settings/preferences#js-email-settings
+
+  ::
+
+    * Expand "Email" section
+    * Deselect "Enable in-product marketing emails"
+    * Deselect "Enable user deactivation emails"
+    * Click "Save changes"
+
+13. Enable Grafana Link:
+
+  Go to: https://gitlab.engwsc.example.com/admin/application_settings/metrics_and_profiling#js-grafana-settings
+
+  ::
+
+    * Expand "Metrics - Grafana" section
+    * Select "Add a link to Grafana"
+    * Click "Save changes"
+
+14. Disable What's new:
+
+  Go to: https://gitlab.engwsc.example.com/admin/application_settings/preferences#js-whats-new-settings
+
+  ::
+
+    * Expand "What's new" section
+    * Select "Disable What's new"
+    * Click "Save changes"

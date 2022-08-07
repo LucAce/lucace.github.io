@@ -1,0 +1,200 @@
+.. InfluxDB Deployment Guide
+
+.. |br| raw:: html
+
+   <br />
+
+#########################
+InfluxDB Deployment Guide
+#########################
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Contents:
+
+The following instructions are for deploying the InfluxDB server.
+
+
+*************
+Prerequisites
+*************
+
+* :doc:`influxdb-os-installation-guide`
+* :doc:`../idm/idm-client-deployment-guide`
+* :doc:`../nfs/nfs-client-deployment-guide`
+
+
+*********************
+Follow-on Deployments
+*********************
+
+The following guides can be applied after the deployment of their associated nodes.
+
+* :doc:`../influxdb/telegraf-deployment-guide`
+
+
+**********
+References
+**********
+
+..
+
+  These instructions were written for InfluxDB ``v2.3.0``
+
+..
+
+  Official InfluxDB installation instructions: |br|
+  https://docs.influxdata.com/influxdb/v2.3/install/?t=Linux
+
+
+***************
+Post Deployment
+***************
+
+..
+
+  The InfluxDB Dashboard can be accessed at the following URL:|br|
+  https://influxdb.engwsc.example.com:8086
+
+  The adminstrator account information is defined in step 7.
+
+
+******************
+Deployment Scripts
+******************
+
+..
+
+  An example bash script of the instructions has been provided: |br|
+  :download:`../_static/influxdb/deploy-influxdb.sh`
+
+
+****************
+Deployment Steps
+****************
+
+.. note::
+
+  Instructions assume execution using the ``root`` account.
+
+1. Connect the system to the NFS Server:
+
+  See Guide: :doc:`../nfs/nfs-client-deployment-guide`
+
+2. Connect the system to the IdM Server:
+
+  See Guide: :doc:`../idm/idm-client-deployment-guide`
+
+3. Add the InfluxDB Yum Repository:
+
+  .. code-block:: bash
+
+    # influxdb.key GPG Fingerprint: 05CE15085FC09D18E99EFB22684A14CF2582E0C5
+    cat <<EOF | sudo tee /etc/yum.repos.d/influxdb.repo
+    [influxdb]
+    name = InfluxDB Repository - RHEL \$releasever
+    baseurl = https://repos.influxdata.com/rhel/\$releasever/\$basearch/stable
+    enabled = 1
+    gpgcheck = 1
+    gpgkey = https://repos.influxdata.com/influxdb.key
+    EOF
+
+4. Install InfluxDB:
+
+  .. code-block:: bash
+
+    dnf -y distro-sync
+    dnf -y install influxdb2 influxdb2-cli telegraf
+
+5. Disable InfluxData Telemetry:
+
+  .. code-block:: bash
+
+    sed -i 's@/usr/bin/influxd@/usr/bin/influxd --reporting-disabled@g' /usr/lib/influxdb/scripts/influxd-systemd-start.sh
+
+6. Create Self-signed SSL certificate:
+
+  .. important::
+
+    Replace values with the specifics of your network.
+
+  .. code-block:: bash
+
+    # Country Name (2 letter code) [XX]:US
+    # State or Province Name (full name) []:New York
+    # Locality Name (eg, city) [Default City]:New York
+    # Organization Name (eg, company) [Default Company Ltd]:engwsc
+    # Organizational Unit Name (eg, section) []:
+    # Common Name (eg, your name or your server's hostname) []:influxdb.engwsc.example.com
+    # Email Address []:
+
+    openssl req -x509 -nodes -newkey rsa:4096 \
+        -keyout "/etc/ssl/influxdb-selfsigned.key" \
+        -out "/etc/ssl/influxdb-selfsigned.crt" \
+        -subj "/CN=influxdb.engwsc.example.com/C=US/ST=New York/L=New York/O=engwsc" \
+        -days 365
+
+7. Set permissions and ownership on the Self-signed certificates:
+
+  .. code-block:: bash
+
+    chmod 644 /etc/ssl/influxdb-selfsigned.crt
+    chmod 600 /etc/ssl/influxdb-selfsigned.key
+    chown influxdb:influxdb /etc/ssl/influxdb-selfsigned.crt
+    chown influxdb:influxdb /etc/ssl/influxdb-selfsigned.key
+
+8. Add certificates to InfluxDB configuration file:
+
+  .. code-block:: bash
+
+    echo 'tls-cert = "/etc/ssl/influxdb-selfsigned.crt"' >> /etc/influxdb/config.toml
+    echo 'tls-key = "/etc/ssl/influxdb-selfsigned.key"'  >> /etc/influxdb/config.toml
+
+9. Start the InfluxDB service:
+
+  .. code-block:: bash
+
+    systemctl enable --now influxdb
+
+10. Verify TLS connection:
+
+  .. note::
+
+    If using a self-signed certificate, use the -k flag to skip certificate verification
+
+  .. code-block:: bash
+
+    curl -vk https://localhost:8086/api/v2/ping
+
+11. Set up InfluxDB:
+
+  .. important::
+
+    Replace ``ORGANIZATION`` with the name of the organization (ex engwsc) |br|
+    Replace ``INFLUXDB_DEFAULT_BUCKET`` with the name of the default bucket (ex engwsc-cluster) |br|
+    Replace ``INFLUXDB_ADMIN_USERNAME`` with the user name of the administrator (ex admin) |br|
+    Replace ``INFLUXDB_ADMIN_PASSWORD`` with a confidential secure password that
+    will be used for InfluxDB ``INFLUXDB_ADMIN_USERNAME`` account.
+
+  .. code-block:: bash
+
+    influx setup --force --skip-verify \
+        --host "https://localhost:8086" \
+        --org "ORGANIZATION" \
+        --bucket "INFLUXDB_DEFAULT_BUCKET" \
+        --username "INFLUXDB_ADMIN_USERNAME" \
+        --password "INFLUXDB_ADMIN_PASSWORD" \
+        --retention "0"
+
+12. Set firewalld rules:
+
+  .. important::
+
+    Replace the IPv4 Address and Subnet mask with the value of your network.
+
+  .. code-block:: bash
+
+    firewall-cmd --new-zone=influxdb --permanent
+    firewall-cmd --zone=influxdb --add-source=192.168.1.0/24 --permanent
+    firewall-cmd --zone=influxdb --add-port=8086/tcp --permanent
+    firewall-cmd --reload

@@ -1,0 +1,125 @@
+.. Docker Deployment Guide
+
+.. |br| raw:: html
+
+   <br />
+
+########################
+Docker Deployment Guide
+########################
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Contents:
+
+The following instructions are for deploying Docker.
+
+
+*************
+Prerequisites
+*************
+
+* :doc:`docker-os-installation-guide`
+* :doc:`../idm/idm-client-deployment-guide`
+* :doc:`../nfs/nfs-client-deployment-guide`
+
+
+*********************
+Follow-on Deployments
+*********************
+
+The following guides can be applied after the deployment of their associated nodes.
+
+* :doc:`../influxdb/telegraf-deployment-guide`
+
+
+**********
+References
+**********
+
+..
+
+  These instructions were written for Docker CE ``20.10.17``
+
+..
+
+  Instructions are based on the following documentation: |br|
+  https://docs.docker.com/engine/install/centos/
+
+
+******************
+Deployment Scripts
+******************
+
+.. note::
+
+  An example bash script of the instructions has been provided: |br|
+  :download:`../_static/docker/deploy-docker.sh`
+
+
+****************
+Deployment Steps
+****************
+
+.. note::
+
+  Instructions assume execution using the ``root`` account.
+
+1. Connect the system to the NFS Server:
+
+  See Guide: :doc:`../nfs/nfs-client-deployment-guide`
+
+2. Connect the system to the IdM Server:
+
+  See Guide: :doc:`../idm/idm-client-deployment-guide`
+
+3. Install Dependencies:
+
+  .. code-block:: bash
+
+    dnf -y install yum-utils
+
+4. Remove conflicting packages:
+
+  .. code-block:: bash
+
+    dnf -y remove docker \
+        docker-client \
+        docker-client-latest \
+        docker-common \
+        docker-latest \
+        docker-latest-logrotate \
+        docker-logrotate \
+        docker-engine \
+        podman \
+        cockpit-podman \
+        runc
+
+5. Add the Docker Yum Repository:
+
+  .. code-block:: bash
+
+    # Docker GPG key fingerprint: 060A 61C5 1B55 8A7F 742B 77AA C52F EB6B 621E 9F35
+    yum-config-manager \
+        --add-repo \
+        https://download.docker.com/linux/centos/docker-ce.repo
+
+6. Install Docker CE:
+
+  .. code-block:: bash
+
+    dnf -y distro-sync
+    dnf -y install docker-ce docker-ce-cli containerd.io docker-compose-plugin
+
+7. Start the Docker service:
+
+  .. code-block:: bash
+
+    systemctl daemon-reload
+    systemctl enable --now docker
+
+8. Verify Docker is Operating:
+
+  .. code-block:: bash
+
+    docker run hello-world

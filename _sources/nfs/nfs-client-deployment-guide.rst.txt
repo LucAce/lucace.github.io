@@ -1,0 +1,102 @@
+.. NFS Client Deployment Guide
+
+.. |br| raw:: html
+
+   <br />
+
+###########################
+NFS Client Deployment Guide
+###########################
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Contents:
+
+The following instructions are for deploying the NFS Client.
+
+
+*************
+Prerequisites
+*************
+
+* :doc:`nfs-server-deployment-guide`
+
+
+**********
+References
+**********
+
+..
+
+  Instructions are based on the following documentation: |br|
+  https://www.server-world.info/en/note?os=Rocky_Linux_8&p=nfs&f=2
+
+
+******************
+Deployment Scripts
+******************
+
+  An example bash script of the instructions has been provided: |br|
+  :download:`../_static/nfs/deploy-nfs-client.sh`
+
+
+****************
+Deployment Steps
+****************
+
+.. note::
+
+  Instructions assume execution using the ``root`` account.
+
+.. warning::
+
+  When NFS mounting the ``/home`` directory ensure that only one mount for ``/home`` is defined in ``/etc/fstab``.
+
+1. Install required NFS client packages:
+
+  .. code-block:: bash
+
+    dnf -y install nfs-utils
+
+2. Set the Domain Name:
+
+  .. important::
+
+    Replace ``engwsc.example.com`` with the domain name of your network.
+
+  .. code-block:: bash
+
+    sed -i 's/#Domain = local.domain.edu/Domain = engwsc.example.com/g' /etc/idmapd.conf
+
+3. Create local directories:
+
+  .. code-block:: bash
+
+    mkdir -p /app
+    mkdir -p /home
+    mkdir -p /scratch
+
+4. Add the NFS mounts to ``/etc/fstab`` to enable them at boot:
+
+  .. important::
+
+    Replace ``engwsc.example.com`` with the domain name of your network.
+
+  .. code-block:: bash
+
+    sh -c 'cat >> /etc/fstab <<EOL
+
+    # NFS Mounts
+    nfs01.engwsc.example.com:/srv/nfs/app     /app     nfs4 defaults,tcp,soft,nfsvers=4 0 0
+    nfs01.engwsc.example.com:/srv/nfs/home    /home    nfs4 defaults,tcp,soft,nfsvers=4 0 0
+    nfs01.engwsc.example.com:/srv/nfs/scratch /scratch nfs4 defaults,tcp,soft,nfsvers=4 0 0
+
+    EOL'
+
+5. Mount the NFS paths:
+
+  .. code-block:: bash
+
+    mount /app
+    mount /home
+    mount /scratch

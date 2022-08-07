@@ -1,0 +1,19 @@
+.. License.
+
+.. |br| raw:: html
+
+   <br />
+
+=======
+License
+=======
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Contents:
+
+..
+
+  These guides are licensed under CC BY 4.0
+
+  See https://creativecommons.org/licenses/by/4.0/ for more details.

@@ -1,0 +1,80 @@
+.. User/Compute Nodes
+
+.. |br| raw:: html
+
+   <br />
+
+==================
+User/Compute Nodes
+==================
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Contents:
+
+The User nodes are bare-metal systems that host remote desktop or console sessions.
+The user nodes are the systems that the cluster users will log into and perform their
+work.
+
+The Compute nodes are the same as user nodes but dedicated to the execution of
+schedule jobs items using Slurm.  Users are not prevented from logging into the
+compute nodes directly but it is discouraged as any introduced load on the compute
+nodes may result in slurm job scheduling being impacted.
+
+.. image:: ../_static/topology/topology.png
+
+
+Operating Systems
+~~~~~~~~~~~~~~~~~
+
+These guides are written for Red Hat Enterprise Linux 8 based operating systems
+and are compatible with AlmaLinux 8 and Rocky Linux 8.
+
+
+Accessibiliy
+~~~~~~~~~~~~
+
+Standard cluster user accounts must be able to SSH into the User/Compute Nodes.
+
+
+Hostnames
+~~~~~~~~~
+
+These guides use the following example Hostname and IP Address for User and
+Compute nodes.  FQDNs can be provided by utilizing a DNS server or installing
+a hosts file on the system itself.
+
+.. note::
+
+  An example ``/etc/hosts`` file has been provided: :download:`../_static/hosts`
+
++----------+-----------------------------+-----------------------+------------+--------------+
+| Hostname | FQDN                        | Function              | Type       | IPv4 Address |
++==========+=============================+=======================+============+==============+
+| user01   | user01.engwsc.example.com   | User Node 1           | Bare-Metal | 192.168.1.60 |
++----------+-----------------------------+-----------------------+------------+--------------+
+| user02   | user02.engwsc.example.com   | User Node 2           | Bare-Metal | 192.168.1.61 |
++----------+-----------------------------+-----------------------+------------+--------------+
+| user03   | user03.engwsc.example.com   | User Node 3           | Bare-Metal | 192.168.1.62 |
++----------+-----------------------------+-----------------------+------------+--------------+
+| user04   | user04.engwsc.example.com   | User Node 4           | Bare-Metal | 192.168.1.63 |
++----------+-----------------------------+-----------------------+------------+--------------+
+| comp01   | comp01.engwsc.example.com   | Compute Node 1        | Bare-Metal | 192.168.1.64 |
++----------+-----------------------------+-----------------------+------------+--------------+
+| comp02   | comp02.engwsc.example.com   | Compute Node 2        | Bare-Metal | 192.168.1.65 |
++----------+-----------------------------+-----------------------+------------+--------------+
+| comp03   | comp03.engwsc.example.com   | Compute Node 3        | Bare-Metal | 192.168.1.66 |
++----------+-----------------------------+-----------------------+------------+--------------+
+| comp04   | comp04.engwsc.example.com   | Compute Node 4        | Bare-Metal | 192.168.1.67 |
++----------+-----------------------------+-----------------------+------------+--------------+
+
+
+Guides
+~~~~~~
+
+..
+
+  The following guides are required to deploy User and Compute nodes:
+
+  #. :doc:`user-os-installation-guide`
+  #. :doc:`user-deployment-guide`

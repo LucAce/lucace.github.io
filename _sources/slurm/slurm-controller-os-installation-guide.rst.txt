@@ -1,0 +1,165 @@
+.. Slurm Controller OS Installation Guide
+
+######################################
+Slurm Controller OS Installation Guide
+######################################
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Contents:
+
+The following instructions are for installing the operating system
+on the virtual machine Slurm Controller.
+
+
+*************
+Prerequisites
+*************
+
+* :doc:`../vmm/vmm-deployment-guide`
+
+
+*************
+Configuration
+*************
+
++-------------------------------------------------+
+| **Slurm Controller**                            |
++===================+=============================+
+| OS                | Red Hat Enterprise Linux 8  |
++-------------------+-----------------------------+
+| Installation Type | Virtual Machine Guest       |
++-------------------+-----------------------------+
+| vCPU              | 4                           |
++-------------------+-----------------------------+
+| Memory            | 16 GB                       |
++-------------------+-----------------------------+
+| Storage           | 96 GiB (qcow2)              |
++-------------------+-----------------------------+
+| Network Interface | Unique/Bridged IPv4         |
++-------------------+-----------------------------+
+| Hostname          | slurm                       |
++-------------------+-----------------------------+
+| FQDN              | slurm.engwsc.example.com    |
++-------------------+-----------------------------+
+
+
+*********************
+OS Installation Steps
+*********************
+
+1. Boot VM using Red Hat Enterprise Linux (RHEL) 8.6 ISO
+
+2. Select ``Install Red Hat Enterprise Linux 8.6`` and press ``ENTER``
+
+3. Select your language to use during the installation process and press ``Continue``
+
+.. note::
+
+  You should now see the ``Installation Summary`` GUI.
+
+4. Click on ``Language Support``, set the following::
+
+    * Select your language to be used following installation
+    * Click on the "Done" button to return
+
+5. Click on ``Network & Host Name``, set the following::
+
+    * Host Name to: slurm
+    * Click on the "Configure..." button
+
+        1. Under the General tab, Check "Connect automatically with priority"
+        2. Under the Ethernet tab, Set Link negotiation to "Automatic"
+        3. Under the IPv4 Settings tab,
+
+            * Select Method: "Manual"
+            * Set IP Address and DNS Servers
+
+        4. Under IPv6 Settings tab,
+
+            * Select Method "Link-Local Only"
+
+        5. Click on the "Save" button
+
+    * Turn Ethernet (ens18) "On"
+    * Hit the "Apply" button to set the host name
+    * Click on the "Done" button to return
+
+6. Click on ``Time & Date``, set the following::
+
+    * Select your timezone
+    * Enable "Network Time"
+    * Configure NTP servers as needed
+    * Click on the "Done" button to return
+
+7. Click on ``Installation Source``, set the following::
+
+    * Click on "Auto-detected installation media"
+    * Click on the "Done" button to return
+
+8. Click on ``Software Selection``, set the following::
+
+    * Select Base Environment: "Server"
+
+        1. Check: "Guest Agents"
+        2. Check: "Network File System Client"
+        3. Check: "Security Tools"
+        4. Check: "System Tools"
+
+    * Click on the "Done" button to return
+
+9. Click on ``Installation Destination``, set the following::
+
+    * Use "Custom" Storage Configuration
+    * Click on the "Done" button to continue
+    * Configure using below Partition Table
+    * Click on the "Done" button to continue
+    * Click on the "Accept Changes" button to continue
+
+  **Partition Table**
+
+  .. note::
+
+    This partition table is based on the requirements of the NIST security profile.
+    It is the recommended layout even if the profile is not enabled to ensure future
+    compatibility with the security profiles.
+
+  +---------------------+---------+--------------------+----------------------+
+  | Partition Name      | Size    | Device Type        | File System          |
+  +=====================+=========+====================+======================+
+  | /boot               | 2 GiB   | Standard Partition | xfs                  |
+  +---------------------+---------+--------------------+----------------------+
+  | /                   | 32 GiB  | LVM                | xfs                  |
+  +---------------------+---------+--------------------+----------------------+
+  | /tmp                | 8 GiB   | LVM                | xfs                  |
+  +---------------------+---------+--------------------+----------------------+
+  | /var                | 32 GiB  | LVM                | xfs                  |
+  +---------------------+---------+--------------------+----------------------+
+  | /var/log            | 5 GiB   | LVM                | xfs                  |
+  +---------------------+---------+--------------------+----------------------+
+  | /var/log/audit      | 5 GiB   | LVM                | xfs                  |
+  +---------------------+---------+--------------------+----------------------+
+  | /var/tmp            | 8 GiB   | LVM                | xfs                  |
+  +---------------------+---------+--------------------+----------------------+
+  | swap                | 2 GiB   | LVM                | swap                 |
+  +---------------------+---------+--------------------+----------------------+
+
+10. Click on ``KDUMP``, set the following::
+
+    * Uncheck "Enable kdump"
+    * Click on the "Done" button to return
+
+11. Click on ``Root Password``, set the following:
+
+  .. note::
+
+    Only a root account will be created.
+
+  ::
+
+    * Set a strong Root password
+    * Click on the "Done" button to return
+
+12. Click on the ``Begin Installation`` button to begin
+
+13. Click on the ``Reboot System`` button when installation has completed

@@ -1,0 +1,170 @@
+.. Engineering Workstation Cluster Deployment Guide
+
+.. |br| raw:: html
+
+   <br />
+
+================================================
+Engineering Workstation Cluster Deployment Guide
+================================================
+
+This site is a collection of guides on how to deploy a small cluster of Red Hat
+Enterprise Linux based systems.  The cluster's design is intended to meet the
+needs of a wide group of use cases but generally tailored towards engineering
+workloads.  These guides started out as just a means to document how a cluster
+was created but have been published so that others can benefit.
+
+The guides cover an example hardware layout, how to install the operating systems,
+and how to deploy an application on that system.  It is impossible to anticipate
+every use and deployment scenario but the guides do provide a viable solution.
+Guiding assumptions and overall warnings are listed in the assumptions section.
+
+.. figure:: _static/topology/topology.png
+
+   **Cluster Topology**
+
+
+********
+Feedback
+********
+
+These guides are very much a work in progress.  Report bugs and provide
+feedback on my GitHub repository: |br|
+https://github.com/LucAce/lucace.github.io
+
+
+****************
+Work In Progress
+****************
+
+Some of the guides still need to be written:
+
+- Graylog
+- Repository Mirror
+- (All) Usage Guides
+
+
+********
+Sections
+********
+
+The following sections should typically be executed starting at the top and
+working down the list.  However, some clients of applications may not be
+available until a later point in time.
+
+.. toctree::
+   :maxdepth: 1
+   :caption: Overview:
+
+   topology
+   acryonms
+   assumptions
+   license
+
+.. toctree::
+   :maxdepth: 1
+   :caption: VMM
+
+   vmm/vmm-overview
+   vmm/vmm-os-installation-guide
+   vmm/vmm-deployment-guide
+
+.. toctree::
+   :maxdepth: 1
+   :caption: NFS
+
+   nfs/nfs-overview
+   nfs/nfs-server-os-installation-guide
+   nfs/nfs-server-deployment-guide
+   nfs/nfs-client-deployment-guide
+
+.. toctree::
+   :maxdepth: 1
+   :caption: IdM
+
+   idm/idm-overview
+   idm/idm-server-os-installation-guide
+   idm/idm-server-deployment-guide
+   idm/idm-client-deployment-guide
+   idm/passwordless-ssh-deployment-guide
+   idm/idm-server-usage-guide
+
+.. toctree::
+   :maxdepth: 1
+   :caption: GitLab
+
+   gitlab/gitlab-overview
+   gitlab/gitlab-os-installation-guide
+   gitlab/gitlab-deployment-guide
+   gitlab/gitlab-configuration-guide
+
+.. toctree::
+   :maxdepth: 1
+   :caption: Slurm
+
+   slurm/slurm-overview
+   slurm/slurm-controller-os-installation-guide
+   slurm/slurm-controller-deployment-guide
+   slurm/slurm-compute-node-deployment-guide
+   slurm/slurm-controller-usage-guide
+   slurm/slurm-compute-node-usage-guide
+
+.. .. toctree::
+..    :maxdepth: 1
+..    :caption: Greylog
+..
+..    greylog/greylog-overview
+..    greylog/greylog-os-installation-guide.rst
+..    greylog/greylog-deployment-guide.rst
+
+.. toctree::
+   :maxdepth: 1
+   :caption: Ansible
+
+   ansible/ansible-overview
+   ansible/ansible-control-node-os-installation-guide
+   ansible/ansible-control-node-deployment-guide
+   ansible/ansible-control-node-usage-guide
+
+.. toctree::
+   :maxdepth: 1
+   :caption: InfluxDB
+
+   influxdb/influxdb-overview
+   influxdb/influxdb-os-installation-guide.rst
+   influxdb/influxdb-deployment-guide.rst
+   influxdb/telegraf-deployment-guide.rst
+   influxdb/influxdb-usage-guide.rst
+
+.. toctree::
+   :maxdepth: 1
+   :caption: Grafana
+
+   grafana/grafana-overview
+   grafana/grafana-os-installation-guide
+   grafana/grafana-deployment-guide
+   grafana/grafana-usage-guide
+
+.. toctree::
+   :maxdepth: 1
+   :caption: Docker
+
+   docker/docker-overview
+   docker/docker-os-installation-guide
+   docker/docker-deployment-guide
+
+.. .. toctree::
+..    :maxdepth: 1
+..    :caption: Mirror
+..
+..    mirror/mirror-overview
+..    mirror/mirror-os-installation-guide
+..    mirror/mirror-deployment-guide
+
+.. toctree::
+   :maxdepth: 1
+   :caption: User/Compute Nodes
+
+   user/user-overview
+   user/user-os-installation-guide
+   user/user-deployment-guide
