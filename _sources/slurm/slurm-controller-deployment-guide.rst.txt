@@ -405,8 +405,8 @@ MariaDB
 
   .. important::
 
-    Replace ``MARIADB_ROOT_PASSWD`` with the password provided in step 20. |br|
-    Replace ``MARIADB_SLURM_USER_PASSWD`` with the password provided in step 5. |br|
+    Replace ``MARIADB_ROOT_PASSWD`` with the password provided in step 22. |br|
+    Replace ``MARIADB_SLURM_USER_PASSWD`` with the password provided in step 7. |br|
 
   .. code-block:: bash
 

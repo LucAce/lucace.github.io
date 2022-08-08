@@ -1,0 +1,128 @@
+.. Graylog
+
+.. |br| raw:: html
+
+   <br />
+
+=======
+Graylog
+=======
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Contents:
+
+Graylog is a log management application that centrally captures, stores, and provides
+log analysis from IT resources.
+
+https://www.graylog.org/
+
+.. image:: ../_static/topology/topology.png
+
+
+Operating Systems
+~~~~~~~~~~~~~~~~~
+
+These guides are written for Red Hat Enterprise Linux 8 based operating systems
+and are compatible with AlmaLinux 8 and Rocky Linux 8.
+
+
+Accessibiliy
+~~~~~~~~~~~~
+
+The Graylog node should only be accessed directly using SSH by system administrators.
+Standard cluster user accounts should not be able to SSH into the Graylog node.
+
+The Graylog application manages application level access.
+
+
+Hostnames
+~~~~~~~~~
+
+These guides use the following example Hostnames and FQDN for Graylog.
+FQDNs can be provided by utilizing a DNS server or installing a hosts file
+on the system itself.
+
+.. note::
+
+  An example ``/etc/hosts`` file has been provided: :download:`../_static/hosts`
+
+
+Graylog
+-------
+
+Graylog is deployed on the following node:
+
++----------+-----------------------------+-----------------------+------------+--------------+
+| Hostname | FQDN                        | Function              | Type       | IPv4 Address |
++==========+=============================+=======================+============+==============+
+| graylog  | graylog.engwsc.example.com  | Graylog Open          | VM Guest   | 192.168.1.83 |
++----------+-----------------------------+-----------------------+------------+--------------+
+
+
+Journalbeat
+-----------
+
+The Journalbeat agent is deployed on the following nodes:
+
++----------+-----------------------------+-----------------------+------------+--------------+
+| Hostname | FQDN                        | Function              | Type       | IPv4 Address |
++==========+=============================+=======================+============+==============+
+| nfs01    | nfs01.engwsc.example.com    | NFS Storage           | Bare-Metal | 192.168.1.50 |
++----------+-----------------------------+-----------------------+------------+--------------+
+| vmm01    | vmm01.engwsc.example.com    | VM Manager 1          | Bare-Metal | 192.168.1.51 |
++----------+-----------------------------+-----------------------+------------+--------------+
+| vmm02    | vmm02.engwsc.example.com    | VM Manager 2          | Bare-Metal | 192.168.1.52 |
++----------+-----------------------------+-----------------------+------------+--------------+
+| user01   | user01.engwsc.example.com   | User Node 1           | Bare-Metal | 192.168.1.60 |
++----------+-----------------------------+-----------------------+------------+--------------+
+| user02   | user02.engwsc.example.com   | User Node 2           | Bare-Metal | 192.168.1.61 |
++----------+-----------------------------+-----------------------+------------+--------------+
+| user03   | user03.engwsc.example.com   | User Node 3           | Bare-Metal | 192.168.1.62 |
++----------+-----------------------------+-----------------------+------------+--------------+
+| user04   | user04.engwsc.example.com   | User Node 4           | Bare-Metal | 192.168.1.63 |
++----------+-----------------------------+-----------------------+------------+--------------+
+| comp01   | comp01.engwsc.example.com   | Compute Node 1        | Bare-Metal | 192.168.1.64 |
++----------+-----------------------------+-----------------------+------------+--------------+
+| comp02   | comp02.engwsc.example.com   | Compute Node 2        | Bare-Metal | 192.168.1.65 |
++----------+-----------------------------+-----------------------+------------+--------------+
+| comp03   | comp03.engwsc.example.com   | Compute Node 3        | Bare-Metal | 192.168.1.66 |
++----------+-----------------------------+-----------------------+------------+--------------+
+| comp04   | comp04.engwsc.example.com   | Compute Node 4        | Bare-Metal | 192.168.1.67 |
++----------+-----------------------------+-----------------------+------------+--------------+
+| idm      | idm.engwsc.example.com      | Identity Management   | VM Guest   | 192.168.1.80 |
++----------+-----------------------------+-----------------------+------------+--------------+
+| gitlab   | gitlab.engwsc.example.com   | GitLab CE             | VM Guest   | 192.168.1.81 |
++----------+-----------------------------+-----------------------+------------+--------------+
+| slurm    | slurm.engwsc.example.com    | Slurm Controller      | VM Guest   | 192.168.1.82 |
++----------+-----------------------------+-----------------------+------------+--------------+
+| graylog  | graylog.engwsc.example.com  | Graylog Open          | VM Guest   | 192.168.1.83 |
++----------+-----------------------------+-----------------------+------------+--------------+
+| ansible  | ansible.engwsc.example.com  | Ansible Control Node  | VM Guest   | 192.168.1.84 |
++----------+-----------------------------+-----------------------+------------+--------------+
+| influxdb | influxdb.engwsc.example.com | InfluxDB              | VM Guest   | 192.168.1.85 |
++----------+-----------------------------+-----------------------+------------+--------------+
+| grafana  | grafana.engwsc.example.com  | Grafana               | VM Guest   | 192.168.1.86 |
++----------+-----------------------------+-----------------------+------------+--------------+
+| docker   | docker.engwsc.example.com   | Docker Host           | VM Guest   | 192.168.1.87 |
++----------+-----------------------------+-----------------------+------------+--------------+
+| mirror   | mirror.engwsc.example.com   | DNF Repository Mirror | VM Guest   | 192.168.1.88 |
++----------+-----------------------------+-----------------------+------------+--------------+
+| vmg01    | vmg01.engwsc.example.com    | Legacy OS (Optional)  | VM Guest   | 192.168.1.89 |
++----------+-----------------------------+-----------------------+------------+--------------+
+
+Guides
+~~~~~~
+
+..
+
+  The following guides are required to deploy Graylog server:
+
+  #. :doc:`graylog-os-installation-guide`
+  #. :doc:`graylog-deployment-guide`
+
+..
+
+  The following guides are required to deploy Graylog inject agents:
+
+  #. :doc:`journalbeat-deployment-guide`

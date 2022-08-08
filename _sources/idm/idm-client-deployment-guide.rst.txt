@@ -19,7 +19,7 @@ The following instructions are for deploying the IdM client.
 Prerequisites
 *************
 
-* :doc:`IdM Server Deployment Guide <idm-server-deployment-guide>`
+* :doc:`idm-server-deployment-guide`
 
 
 **********

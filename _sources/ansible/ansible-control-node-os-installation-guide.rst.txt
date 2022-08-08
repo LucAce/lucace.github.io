@@ -65,7 +65,7 @@ OS Installation Steps
 
 5. Click on ``Network & Host Name``, set the following::
 
-    * Host Name to: Ansible
+    * Host Name to: ansible
     * Click on the "Configure..." button
 
         1. Under the General tab, Check "Connect automatically with priority"

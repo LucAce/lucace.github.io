@@ -19,7 +19,7 @@ The following instructions are for deploying the Telegraf agent.
 Prerequisites
 *************
 
-* :doc:`InfluxDB Server Deployment Guide <influxdb-deployment-guide>`
+* :doc:`influxdb-deployment-guide`
 
 
 **********

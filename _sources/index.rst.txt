@@ -109,13 +109,14 @@ available until a later point in time.
    slurm/slurm-controller-usage-guide
    slurm/slurm-compute-node-usage-guide
 
-.. .. toctree::
-..    :maxdepth: 1
-..    :caption: Greylog
-..
-..    greylog/greylog-overview
-..    greylog/greylog-os-installation-guide.rst
-..    greylog/greylog-deployment-guide.rst
+.. toctree::
+   :maxdepth: 1
+   :caption: Graylog
+
+   graylog/graylog-overview
+   graylog/graylog-os-installation-guide.rst
+   graylog/graylog-deployment-guide.rst
+   graylog/journalbeat-deployment-guide.rst
 
 .. toctree::
    :maxdepth: 1
