@@ -305,19 +305,17 @@ mysql -u root -p${MARIADB_ROOT_PASSWD} --execute "create database ${MARIADB_SLUR
 
 
 ###############################################################################
-# Firewall
+# Configure Firewalld Rules
 ###############################################################################
 
 echo -e "\nEnabling firewalld rules..."
 
+systemctl enable --now firewalld
 firewall-cmd --remove-port=3306/tcp --permanent
 firewall-cmd --remove-port=3306/udp --permanent
 
-firewall-cmd --new-zone=slurm-controller --permanent
-firewall-cmd --zone=slurm-controller --add-source=${CLUSTER_SUBNET_MASK} --permanent
-firewall-cmd --zone=slurm-controller --add-port=6817/tcp --permanent
-firewall-cmd --zone=slurm-controller --add-port=6818/tcp --permanent
-firewall-cmd --zone=slurm-controller --add-port=6819/tcp --permanent
+firewall-cmd --zone=public --add-source=${CLUSTER_SUBNET_MASK} --permanent
+firewall-cmd --zone=public --add-port={6817/tcp, 6818/tcp, 6819/tcp} --permanent
 firewall-cmd --reload
 
 

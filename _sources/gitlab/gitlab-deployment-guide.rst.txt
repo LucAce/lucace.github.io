@@ -160,11 +160,7 @@ Deployment Steps
 
     systemctl enable --now sshd
 
-5. Enable firewall rules:
-
-  .. important::
-
-    Replace the IPv4 Address and Subnet mask with the value of your network.
+5. Configure firewalld rules:
 
   .. note::
 
@@ -173,9 +169,8 @@ Deployment Steps
 
   .. code-block:: bash
 
-    firewall-cmd --new-zone=gitlab --permanent
-    firewall-cmd --zone=gitlab --add-source=192.168.1.0/24 --permanent
-    firewall-cmd --zone=gitlab --add-service={http,https} --permanent
+    systemctl enable --now firewalld
+    firewall-cmd --zone=public --add-service={http,https} --permanent
     firewall-cmd --reload
 
 6. Enable Postfix::

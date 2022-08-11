@@ -101,10 +101,9 @@ sed -i "s|^;admin_password =.*|admin_password = ${GRAFANA_ADMIN_PASSWORD}|g" /et
 systemctl daemon-reload
 systemctl enable --now grafana-server
 
-# Configure firewalld
-firewall-cmd --new-zone=grafana --permanent
-firewall-cmd --zone=grafana --add-source=${ALLOWED_IPV4} --permanent
-firewall-cmd --zone=grafana --add-port=3000/tcp --permanent
+# Configure firewalld rules
+systemctl enable --now firewalld
+firewall-cmd --zone=public --add-port=3000/tcp --permanent
 firewall-cmd --reload
 
 echo
@@ -121,4 +120,3 @@ echo   "************************************************************************
 echo
 
 exit 0
-

@@ -72,12 +72,11 @@ EOL
 # Start nfs server daemon
 systemctl enable --now rpcbind nfs-server
 
-# Set firewall rules
-firewall-cmd --add-service=cockpit --permanent
-
-firewall-cmd --new-zone=nfs-server --permanent
-firewall-cmd --zone=nfs-server --add-source=${ALLOWED_IPV4} --permanent
-firewall-cmd --zone=nfs-server --add-service=nfs --permanent
+# Configure firewall rules
+systemctl enable --now firewalld
+firewall-cmd --zone=public --add-source=${ALLOWED_IPV4} --permanent
+firewall-cmd --zone=public --add-service=cockpit --permanent
+firewall-cmd --zone=public --add-service=nfs --permanent
 firewall-cmd --reload
 
 exit 0

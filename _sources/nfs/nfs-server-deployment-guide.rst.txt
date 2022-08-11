@@ -144,7 +144,7 @@ Deployment Steps
 
     systemctl enable --now rpcbind nfs-server
 
-7. Set firewall rules:
+7. Configure firewall rules:
 
   .. important::
 
@@ -157,9 +157,8 @@ Deployment Steps
 
   .. code-block:: bash
 
-    firewall-cmd --add-service=cockpit --permanent
-
-    firewall-cmd --new-zone=nfs-server --permanent
-    firewall-cmd --zone=nfs-server --add-source=192.168.1.0/24 --permanent
-    firewall-cmd --zone=nfs-server --add-service=nfs --permanent
+    systemctl enable --now firewalld
+    firewall-cmd --zone=public --add-source=192.168.1.0/24 --permanent
+    firewall-cmd --zone=public --add-service=cockpit --permanent
+    firewall-cmd --zone=public --add-service=nfs --permanent
     firewall-cmd --reload

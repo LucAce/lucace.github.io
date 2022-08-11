@@ -505,21 +505,16 @@ need to be reconfigured.  The command to reconfigure GitLab is:</p>
 </div>
 </div></blockquote>
 <ol class="arabic simple" start="5">
-<li><p>Enable firewall rules:</p></li>
+<li><p>Configure firewalld rules:</p></li>
 </ol>
 <blockquote>
-<div><div class="admonition important">
-<p class="admonition-title">Important</p>
-<p>Replace the IPv4 Address and Subnet mask with the value of your network.</p>
-</div>
-<div class="admonition note">
+<div><div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>Execute the following to determine if firewalld is running: <br />
 <code class="docutils literal notranslate"><span class="pre">systemctl</span> <span class="pre">status</span> <span class="pre">firewalld</span></code></p>
 </div>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>firewall-cmd --new-zone<span class="o">=</span>gitlab --permanent
-firewall-cmd --zone<span class="o">=</span>gitlab --add-source<span class="o">=</span><span class="m">192</span>.168.1.0/24 --permanent
-firewall-cmd --zone<span class="o">=</span>gitlab --add-service<span class="o">={</span>http,https<span class="o">}</span> --permanent
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>systemctl <span class="nb">enable</span> --now firewalld
+firewall-cmd --zone<span class="o">=</span>public --add-service<span class="o">={</span>http,https<span class="o">}</span> --permanent
 firewall-cmd --reload
 </pre></div>
 </div>

@@ -42,10 +42,9 @@ dnf -y install curl policycoreutils openssh-server perl postfix yum-utils
 # Enable OpenSSH server daemon
 systemctl enable --now sshd
 
-# Configure firewalld
-firewall-cmd --new-zone=gitlab --permanent
-firewall-cmd --zone=gitlab --add-source=${ALLOWED_IPV4} --permanent
-firewall-cmd --zone=gitlab --add-service={http,https} --permanent
+# Configure firewalld rules
+systemctl enable --now firewalld
+firewall-cmd --zone=public --add-service={http,https} --permanent
 firewall-cmd --reload
 
 # Enable postfix

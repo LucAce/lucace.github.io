@@ -803,17 +803,19 @@ mysql -u root -pMARIADB_ROOT_PASSWD --execute <span class="s2">&quot;create data
 <section id="firewall">
 <h3>Firewall<a class="headerlink" href="#firewall" title="Permalink to this heading">#</a></h3>
 <ol class="arabic simple" start="26">
-<li><p>Enable firewalld rules:</p></li>
+<li><p>Configure firewalld rules:</p></li>
 </ol>
 <blockquote>
-<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>firewall-cmd --remove-port<span class="o">=</span><span class="m">3306</span>/tcp --permanent
+<div><div class="admonition important">
+<p class="admonition-title">Important</p>
+<p>Replace the IPv4 Address and Subnet mask with the value of your network.</p>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>systemctl <span class="nb">enable</span> --now firewalld
+firewall-cmd --remove-port<span class="o">=</span><span class="m">3306</span>/tcp --permanent
 firewall-cmd --remove-port<span class="o">=</span><span class="m">3306</span>/udp --permanent
 
-firewall-cmd --new-zone<span class="o">=</span>slurm-controller --permanent
-firewall-cmd --zone<span class="o">=</span>slurm-controller --add-source<span class="o">=</span><span class="m">192</span>.168.1.0/24 --permanent
-firewall-cmd --zone<span class="o">=</span>slurm-controller --add-port<span class="o">=</span><span class="m">6817</span>/tcp --permanent
-firewall-cmd --zone<span class="o">=</span>slurm-controller --add-port<span class="o">=</span><span class="m">6818</span>/tcp --permanent
-firewall-cmd --zone<span class="o">=</span>slurm-controller --add-port<span class="o">=</span><span class="m">6819</span>/tcp --permanent
+firewall-cmd --zone<span class="o">=</span>public --add-source<span class="o">=</span><span class="m">192</span>.168.1.0/24 --permanent
+firewall-cmd --zone<span class="o">=</span>public --add-port<span class="o">={</span><span class="m">6817</span>/tcp, <span class="m">6818</span>/tcp, <span class="m">6819</span>/tcp<span class="o">}</span> --permanent
 firewall-cmd --reload
 </pre></div>
 </div>

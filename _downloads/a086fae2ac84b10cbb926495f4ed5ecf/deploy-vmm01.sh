@@ -42,7 +42,7 @@ dnf -y install tar openssl-devel cockpit cockpit-packagekit \
 
 # Enable Cockpit
 systemctl enable --now cockpit.socket
-firewall-cmd --add-service=cockpit --permanent
+firewall-cmd --zone=public --add-service=cockpit --permanent
 systemctl reload firewalld
 
 
@@ -119,3 +119,5 @@ EOL
 virsh net-define /tmp/bridge.xml
 virsh net-start ${BRIDGE_NAME}
 virsh net-autostart ${BRIDGE_NAME}
+
+exit 0

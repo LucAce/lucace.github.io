@@ -417,18 +417,20 @@ MariaDB
 Firewall
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-26. Enable firewalld rules:
+26. Configure firewalld rules:
+
+  .. important::
+
+    Replace the IPv4 Address and Subnet mask with the value of your network.
 
   .. code-block:: bash
 
+    systemctl enable --now firewalld
     firewall-cmd --remove-port=3306/tcp --permanent
     firewall-cmd --remove-port=3306/udp --permanent
 
-    firewall-cmd --new-zone=slurm-controller --permanent
-    firewall-cmd --zone=slurm-controller --add-source=192.168.1.0/24 --permanent
-    firewall-cmd --zone=slurm-controller --add-port=6817/tcp --permanent
-    firewall-cmd --zone=slurm-controller --add-port=6818/tcp --permanent
-    firewall-cmd --zone=slurm-controller --add-port=6819/tcp --permanent
+    firewall-cmd --zone=public --add-source=192.168.1.0/24 --permanent
+    firewall-cmd --zone=public --add-port={6817/tcp, 6818/tcp, 6819/tcp} --permanent
     firewall-cmd --reload
 
 

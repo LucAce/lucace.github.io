@@ -186,7 +186,7 @@ Deployment Steps
         --password "INFLUXDB_ADMIN_PASSWORD" \
         --retention "0"
 
-12. Set firewalld rules:
+12. Configure firewalld rules:
 
   .. important::
 
@@ -194,7 +194,7 @@ Deployment Steps
 
   .. code-block:: bash
 
-    firewall-cmd --new-zone=influxdb --permanent
-    firewall-cmd --zone=influxdb --add-source=192.168.1.0/24 --permanent
-    firewall-cmd --zone=influxdb --add-port=8086/tcp --permanent
+    systemctl enable --now firewalld
+    firewall-cmd --zone=public --add-source=192.168.1.0/24 --permanent
+    firewall-cmd --zone=public --add-port=8086/tcp --permanent
     firewall-cmd --reload

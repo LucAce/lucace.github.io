@@ -505,7 +505,7 @@ semanage fcontext -a -t user_home_dir_t /srv/nfs/home
 </div>
 </div></blockquote>
 <ol class="arabic simple" start="7">
-<li><p>Set firewall rules:</p></li>
+<li><p>Configure firewall rules:</p></li>
 </ol>
 <blockquote>
 <div><div class="admonition important">
@@ -517,11 +517,10 @@ semanage fcontext -a -t user_home_dir_t /srv/nfs/home
 <p>The additional firewalld rule <code class="docutils literal notranslate"><span class="pre">firewall-cmd</span> <span class="pre">--zone=nfs-server</span> <span class="pre">--add-service={nfs3,mountd,rpc-bind}</span> <span class="pre">--permanent</span></code>
 is required if supporting NFSv3.</p>
 </div>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>firewall-cmd --add-service<span class="o">=</span>cockpit --permanent
-
-firewall-cmd --new-zone<span class="o">=</span>nfs-server --permanent
-firewall-cmd --zone<span class="o">=</span>nfs-server --add-source<span class="o">=</span><span class="m">192</span>.168.1.0/24 --permanent
-firewall-cmd --zone<span class="o">=</span>nfs-server --add-service<span class="o">=</span>nfs --permanent
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>systemctl <span class="nb">enable</span> --now firewalld
+firewall-cmd --zone<span class="o">=</span>public --add-source<span class="o">=</span><span class="m">192</span>.168.1.0/24 --permanent
+firewall-cmd --zone<span class="o">=</span>public --add-service<span class="o">=</span>cockpit --permanent
+firewall-cmd --zone<span class="o">=</span>public --add-service<span class="o">=</span>nfs --permanent
 firewall-cmd --reload
 </pre></div>
 </div>

@@ -493,16 +493,6 @@ ansible-config init --disabled &gt; /etc/ansible/ansible.cfg
 </pre></div>
 </div>
 </div></blockquote>
-<ol class="arabic simple" start="9">
-<li><p>Set firewalld rules:</p></li>
-</ol>
-<blockquote>
-<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>systemctl <span class="nb">enable</span> --now firewalld
-firewall-cmd --add-service<span class="o">=</span>ssh --permanent
-firewall-cmd --reload
-</pre></div>
-</div>
-</div></blockquote>
 </section>
 </section>
 

@@ -434,7 +434,7 @@ console or direct server connection.</p>
 </ol>
 <blockquote>
 <div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>systemctl <span class="nb">enable</span> --now cockpit.socket
-firewall-cmd --add-service<span class="o">=</span>cockpit --permanent
+firewall-cmd --zone<span class="o">=</span>public --add-service<span class="o">=</span>cockpit --permanent
 systemctl reload firewalld
 </pre></div>
 </div>

@@ -43,7 +43,4 @@ ansible-config init --disabled > /etc/ansible/ansible.cfg
 # Set default options
 sed -i "s/;nocows=.*/nocows=True/g" /etc/ansible/ansible.cfg
 
-# Set firewalld rules
-systemctl enable --now firewalld
-firewall-cmd --add-service=ssh --permanent
-firewall-cmd --reload
+exit 0

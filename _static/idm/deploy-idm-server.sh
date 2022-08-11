@@ -96,11 +96,11 @@ ipa-server-install \
   --admin-password=${ADMIN_PASSWORD} \
   --unattended
 
-# Update firewall rules
-firewall-cmd --new-zone=ipa-server --permanent
-firewall-cmd --zone=ipa-server --add-service={ntp,freeipa-4} --permanent
+# Configure firewalld rules
+systemctl enable --now firewalld
+firewall-cmd --zone=public --add-source=${IDM_SUBNET} --permanent
+firewall-cmd --zone=public --add-service={http,https,ntp,freeipa-4} --permanent
 firewall-cmd --reload
-
 
 echo
 echo   "*************************************************************************"

@@ -126,15 +126,14 @@ chmod 644 /etc/logrotate.d/slurm
 
 
 ###############################################################################
-# Firewall
+# Configure firewalld Rules
 ###############################################################################
 
 echo -e "\nEnabling firewalld rules..."
 
-firewall-cmd --new-zone=slurm-compute --permanent
-firewall-cmd --zone=slurm-compute --add-source=${CLUSTER_SUBNET_MASK} --permanent
-firewall-cmd --zone=slurm-compute --add-port=6817/tcp --permanent
-firewall-cmd --zone=slurm-compute --add-port=6818/tcp --permanent
+systemctl enable --now firewalld
+firewall-cmd --zone=public --add-source=${CLUSTER_SUBNET_MASK} --permanent
+firewall-cmd --zone=public --add-port={6817/tcp, 6818/tcp} --permanent
 firewall-cmd --reload
 
 

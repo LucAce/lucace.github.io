@@ -121,12 +121,11 @@ influx setup --force --skip-verify \
     --password "${INFLUXDB_ADMIN_PASSWORD}" \
     --retention "0"
 
-# Set firewalld rules
-firewall-cmd --new-zone=influxdb --permanent
-firewall-cmd --zone=influxdb --add-source=${ALLOWED_IPV4} --permanent
-firewall-cmd --zone=influxdb --add-port=8086/tcp --permanent
+# Configure firewalld rules:
+systemctl enable --now firewalld
+firewall-cmd --zone=public --add-source=${ALLOWED_IPV4} --permanent
+firewall-cmd --zone=public --add-port=8086/tcp --permanent
 firewall-cmd --reload
-
 
 echo
 echo   "****************************************************************************"

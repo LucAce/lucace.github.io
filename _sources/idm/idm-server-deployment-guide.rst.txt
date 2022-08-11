@@ -204,10 +204,15 @@ This Guide is writen for a standalone VM instance.
       --admin-password=ADMIN_PASSWORD \
       --unattended
 
-13. Configure IdM firewalld firewall rules:
+13. Configure firewalld rules:
+
+  .. important::
+
+    Replace the IPv4 Address and Subnet mask with the value of your network.
 
   .. code-block:: bash
 
-    firewall-cmd --new-zone=ipa-server --permanent
-    firewall-cmd --zone=ipa-server --add-service={ntp,freeipa-4} --permanent
+    systemctl enable --now firewalld
+    firewall-cmd --zone=public --add-source=192.168.1.0/24 --permanent
+    firewall-cmd --zone=public --add-service={http,https,ntp,freeipa-4} --permanent
     firewall-cmd --reload

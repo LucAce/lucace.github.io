@@ -132,11 +132,3 @@ Deployment Steps
   .. code-block:: bash
 
     sed -i "s/;nocows=.*/nocows=True/g" /etc/ansible/ansible.cfg
-
-9. Set firewalld rules:
-
-  .. code-block:: bash
-
-    systemctl enable --now firewalld
-    firewall-cmd --add-service=ssh --permanent
-    firewall-cmd --reload
