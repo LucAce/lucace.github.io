@@ -42,7 +42,9 @@ References
 ..
 
   Instructions are based on the following documentation: |br|
-  https://computingforgeeks.com/install-and-configure-freeipa-server-on-rocky-linux/
+  1. https://computingforgeeks.com/install-and-configure-freeipa-server-on-rocky-linux/ |br|
+  2. https://www.digitalocean.com/community/tutorials/how-to-set-up-centralized-linux-authentication-with-freeipa-on-centos-7 |br|
+  3. https://www.digitalocean.com/community/tutorials/how-to-configure-a-freeipa-client-on-centos-7
 
 
 ***************
@@ -55,7 +57,7 @@ Post Deployment
   https://idm.engwsc.example.com
 
   The default administrator user name is ``admin`` and the password is defined
-  in step 12.
+  in step 13.
 
 ..
 
@@ -87,20 +89,27 @@ This Guide is writen for a standalone VM instance.
 
   Instructions assume execution using the ``root`` account.
 
-1. Set the hostname to a FQDN:
+1. Install the Random Number Generator Service
+
+  .. code-block:: bash
+
+    dnf -y install rng-tools
+    systemctl enable --now rngd
+
+2. Set the hostname to a FQDN:
 
   .. code-block:: bash
 
     hostnamectl set-hostname idm.engwsc.example.com
 
-2. Ensure the timezone is properly set:
+3. Ensure the timezone is properly set:
 
   .. code-block:: bash
 
     timedatectl set-timezone America/New_York
     timedatectl set-local-rtc 0
 
-3. ``Optional`` Add hostname to ``/etc/hosts`` if DNS does not resolve the FQDN:
+4. ``Optional`` Add hostname to ``/etc/hosts`` if DNS does not resolve the FQDN:
 
   .. note::
 
@@ -123,13 +132,13 @@ This Guide is writen for a standalone VM instance.
 
     EOL'
 
-4. Verify hostname resolves to an IPv4 address that is not equal to the loopback address:
+5. Verify hostname resolves to an IPv4 address that is not equal to the loopback address:
 
   .. code-block:: bash
 
     dig +short idm.engwsc.example.com A
 
-5. Verify reverse DNS configuration (PTR records):
+6. Verify reverse DNS configuration (PTR records):
 
   .. important::
 
@@ -139,13 +148,13 @@ This Guide is writen for a standalone VM instance.
 
     dig +short -x 192.168.1.80
 
-6. Install Chrony NTP server:
+7. Install Chrony NTP server:
 
   .. code-block:: bash
 
     dnf -y install chrony
 
-7. Configure Chrony to allow remote clients:
+8. Configure Chrony to allow remote clients:
 
   .. note::
 
@@ -155,26 +164,26 @@ This Guide is writen for a standalone VM instance.
 
     sed -i 's@#allow 192.168.0.0/16@allow 192.168.1.0/24@g' /etc/chrony.conf
 
-8. Restart chrondy service
+9. Restart chrondy service
 
   .. code-block:: bash
 
     systemctl restart chronyd
 
-9. Verify IdM module information:
+10. Verify IdM module information:
 
   .. code-block:: bash
 
     dnf module info idm:DL1
 
-10. Enable the idm:DL1 stream and sync repositories:
+11. Enable the idm:DL1 stream and sync repositories:
 
   .. code-block:: bash
 
     dnf module -y enable idm:DL1
     dnf distro-sync
 
-11. Install IdM Server module without an integrated DNS:
+12. Install IdM Server module without an integrated DNS:
 
   .. note::
 
@@ -184,7 +193,7 @@ This Guide is writen for a standalone VM instance.
 
     dnf module -y install idm:DL1/server
 
-12. Install IdM Server:
+13. Install IdM Server:
 
   .. note::
 
@@ -204,7 +213,7 @@ This Guide is writen for a standalone VM instance.
       --admin-password=ADMIN_PASSWORD \
       --unattended
 
-13. Configure firewalld rules:
+14. Configure firewalld rules:
 
   .. important::
 

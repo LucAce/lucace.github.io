@@ -49,6 +49,12 @@ echo -e "\nDeploying IdM Server...\n"
 # Update System:
 dnf -y update
 
+# Install the Random Number Generator
+dnf -y install rng-tools
+
+# Start rng service
+systemctl enable --now rngd
+
 # Set the hostname to a FQDN:
 hostnamectl set-hostname ${IDM_HOST_NAME_FQDN}
 
@@ -65,10 +71,10 @@ timedatectl set-local-rtc 0
 # Verify host name resolves to an IPv4 address that is not loopback:
 dig +short ${IDM_HOST_NAME_FQDN} A
 
-# Verify reverse DNS configuration (PTR records):
+# Verify reverse DNS configuration (PTR records)
 dig +short -x ${IDM_HOST_IP}
 
-# Install Chrony NTP server:
+# Install Chrony NTP server
 dnf -y install chrony
 
 # Configure Chrony to allow remote clients

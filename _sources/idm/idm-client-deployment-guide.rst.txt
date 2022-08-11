@@ -150,6 +150,7 @@ If DNS does not resolve the FQDN:
   .. code-block:: bash
 
     sudo ipa-client-install \
+      --mkhomedir \
       --server=IDM_SERVER \
       --domain=DOMAIN_NAME \
       --principal=ADMIN_PRINCIPAL \

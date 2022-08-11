@@ -395,7 +395,9 @@
 </div></blockquote>
 <blockquote>
 <div><p>Instructions are based on the following documentation: <br />
-<a class="reference external" href="https://computingforgeeks.com/install-and-configure-freeipa-server-on-rocky-linux/">https://computingforgeeks.com/install-and-configure-freeipa-server-on-rocky-linux/</a></p>
+1. <a class="reference external" href="https://computingforgeeks.com/install-and-configure-freeipa-server-on-rocky-linux/">https://computingforgeeks.com/install-and-configure-freeipa-server-on-rocky-linux/</a> <br />
+2. <a class="reference external" href="https://www.digitalocean.com/community/tutorials/how-to-set-up-centralized-linux-authentication-with-freeipa-on-centos-7">https://www.digitalocean.com/community/tutorials/how-to-set-up-centralized-linux-authentication-with-freeipa-on-centos-7</a> <br />
+3. <a class="reference external" href="https://www.digitalocean.com/community/tutorials/how-to-configure-a-freeipa-client-on-centos-7">https://www.digitalocean.com/community/tutorials/how-to-configure-a-freeipa-client-on-centos-7</a></p>
 </div></blockquote>
 </section>
 <section id="post-deployment">
@@ -404,7 +406,7 @@
 <div><p>The IdM Management Dashboard can be accessed at the following URL:<br />
 <a class="reference external" href="https://idm.engwsc.example.com">https://idm.engwsc.example.com</a></p>
 <p>The default administrator user name is <code class="docutils literal notranslate"><span class="pre">admin</span></code> and the password is defined
-in step 12.</p>
+in step 13.</p>
 </div></blockquote>
 <blockquote>
 <div><p>It is recommended that the default shell settings within IdM for user accounts
@@ -430,6 +432,15 @@ server reduces the number of required systems to be online before users can log 
 <p>Instructions assume execution using the <code class="docutils literal notranslate"><span class="pre">root</span></code> account.</p>
 </div>
 <ol class="arabic simple">
+<li><p>Install the Random Number Generator Service</p></li>
+</ol>
+<blockquote>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>dnf -y install rng-tools
+systemctl <span class="nb">enable</span> --now rngd
+</pre></div>
+</div>
+</div></blockquote>
+<ol class="arabic simple" start="2">
 <li><p>Set the hostname to a FQDN:</p></li>
 </ol>
 <blockquote>
@@ -437,7 +448,7 @@ server reduces the number of required systems to be online before users can log 
 </pre></div>
 </div>
 </div></blockquote>
-<ol class="arabic simple" start="2">
+<ol class="arabic simple" start="3">
 <li><p>Ensure the timezone is properly set:</p></li>
 </ol>
 <blockquote>
@@ -446,7 +457,7 @@ timedatectl set-local-rtc <span class="m">0</span>
 </pre></div>
 </div>
 </div></blockquote>
-<ol class="arabic simple" start="3">
+<ol class="arabic simple" start="4">
 <li><p><code class="docutils literal notranslate"><span class="pre">Optional</span></code> Add hostname to <code class="docutils literal notranslate"><span class="pre">/etc/hosts</span></code> if DNS does not resolve the FQDN:</p></li>
 </ol>
 <blockquote>
@@ -470,7 +481,7 @@ Replace <code class="docutils literal notranslate"><span class="pre">HOST_SHORTN
 </pre></div>
 </div>
 </div></blockquote>
-<ol class="arabic simple" start="4">
+<ol class="arabic simple" start="5">
 <li><p>Verify hostname resolves to an IPv4 address that is not equal to the loopback address:</p></li>
 </ol>
 <blockquote>
@@ -478,7 +489,7 @@ Replace <code class="docutils literal notranslate"><span class="pre">HOST_SHORTN
 </pre></div>
 </div>
 </div></blockquote>
-<ol class="arabic simple" start="5">
+<ol class="arabic simple" start="6">
 <li><p>Verify reverse DNS configuration (PTR records):</p></li>
 </ol>
 <blockquote>
@@ -490,7 +501,7 @@ Replace <code class="docutils literal notranslate"><span class="pre">HOST_SHORTN
 </pre></div>
 </div>
 </div></blockquote>
-<ol class="arabic simple" start="6">
+<ol class="arabic simple" start="7">
 <li><p>Install Chrony NTP server:</p></li>
 </ol>
 <blockquote>
@@ -498,7 +509,7 @@ Replace <code class="docutils literal notranslate"><span class="pre">HOST_SHORTN
 </pre></div>
 </div>
 </div></blockquote>
-<ol class="arabic simple" start="7">
+<ol class="arabic simple" start="8">
 <li><p>Configure Chrony to allow remote clients:</p></li>
 </ol>
 <blockquote>
@@ -510,7 +521,7 @@ Replace <code class="docutils literal notranslate"><span class="pre">HOST_SHORTN
 </pre></div>
 </div>
 </div></blockquote>
-<ol class="arabic simple" start="8">
+<ol class="arabic simple" start="9">
 <li><p>Restart chrondy service</p></li>
 </ol>
 <blockquote>
@@ -518,7 +529,7 @@ Replace <code class="docutils literal notranslate"><span class="pre">HOST_SHORTN
 </pre></div>
 </div>
 </div></blockquote>
-<ol class="arabic simple" start="9">
+<ol class="arabic simple" start="10">
 <li><p>Verify IdM module information:</p></li>
 </ol>
 <blockquote>
@@ -526,7 +537,7 @@ Replace <code class="docutils literal notranslate"><span class="pre">HOST_SHORTN
 </pre></div>
 </div>
 </div></blockquote>
-<ol class="arabic simple" start="10">
+<ol class="arabic simple" start="11">
 <li><p>Enable the idm:DL1 stream and sync repositories:</p></li>
 </ol>
 <blockquote>
@@ -535,7 +546,7 @@ dnf distro-sync
 </pre></div>
 </div>
 </div></blockquote>
-<ol class="arabic simple" start="11">
+<ol class="arabic simple" start="12">
 <li><p>Install IdM Server module without an integrated DNS:</p></li>
 </ol>
 <blockquote>
@@ -547,7 +558,7 @@ dnf distro-sync
 </pre></div>
 </div>
 </div></blockquote>
-<ol class="arabic simple" start="12">
+<ol class="arabic simple" start="13">
 <li><p>Install IdM Server:</p></li>
 </ol>
 <blockquote>
@@ -569,7 +580,7 @@ Replace <code class="docutils literal notranslate"><span class="pre">ADMIN_PASSW
 </pre></div>
 </div>
 </div></blockquote>
-<ol class="arabic simple" start="13">
+<ol class="arabic simple" start="14">
 <li><p>Configure firewalld rules:</p></li>
 </ol>
 <blockquote>

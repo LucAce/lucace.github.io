@@ -1,7 +1,7 @@
 127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4
 ::1         localhost localhost.localdomain localhost6 localhost6.localdomain6
 
-192.168.1.50    nfs01.engwsc.example.com        nsf01
+192.168.1.50    nfs01.engwsc.example.com        nfs01
 192.168.1.51    vmm01.engwsc.example.com        vmm01
 192.168.1.52    vmm02.engwsc.example.com        vmm02
 

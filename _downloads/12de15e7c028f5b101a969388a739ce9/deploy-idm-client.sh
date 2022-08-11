@@ -73,6 +73,7 @@ dnf module -y install idm:DL1/client
 
 # Install IdM Client:
 ipa-client-install \
+  --mkhomedir \
   --server=${IDM_SERVER_FQDN} \
   --domain=${DOMAIN_NAME} \
   --principal=${ADMIN_PRINCIPAL} \
