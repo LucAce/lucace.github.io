@@ -4,6 +4,7 @@
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 <link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="Journalbeat Deployment Guide" href="journalbeat-deployment-guide.html" /><link rel="prev" title="Graylog OS Installation Guide" href="graylog-os-installation-guide.html" />
+        <link rel="canonical" href="https://engwsc.com/graylog/graylog-deployment-guide.html" />
 
     <meta name="generator" content="sphinx-5.0.2, furo 2022.06.21"/>
         <title>Graylog Deployment Guide - Engineering Workstation Cluster Deployment Guide documentation</title>
@@ -134,7 +135,7 @@
           <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
         </button>
       </div>
-      <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
         <div class="visually-hidden">Toggle table of contents sidebar</div>
         <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
       </label>
@@ -364,7 +365,7 @@
               <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
             </button>
           </div>
-          <label class="toc-overlay-icon toc-content-icon no-toc" for="__toc">
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
             <div class="visually-hidden">Toggle table of contents sidebar</div>
             <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
           </label>
@@ -375,7 +376,267 @@
 <div class="toctree-wrapper compound">
 </div>
 <p>The following instructions are for deploying Graylog.</p>
-<p>TODO</p>
+<section id="prerequisites">
+<h2>Prerequisites<a class="headerlink" href="#prerequisites" title="Permalink to this heading">#</a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="graylog-os-installation-guide.html"><span class="doc">Graylog OS Installation Guide</span></a></p></li>
+<li><p><a class="reference internal" href="../idm/idm-client-deployment-guide.html"><span class="doc">IdM Client Deployment Guide</span></a></p></li>
+<li><p><a class="reference internal" href="../nfs/nfs-client-deployment-guide.html"><span class="doc">NFS Client Deployment Guide</span></a></p></li>
+</ul>
+</section>
+<section id="follow-on-deployments">
+<h2>Follow-on Deployments<a class="headerlink" href="#follow-on-deployments" title="Permalink to this heading">#</a></h2>
+<p>The following guides can be applied after the deployment of their associated nodes.</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="../influxdb/telegraf-deployment-guide.html"><span class="doc">Telegraf Deployment Guide</span></a></p></li>
+</ul>
+</section>
+<section id="references">
+<h2>References<a class="headerlink" href="#references" title="Permalink to this heading">#</a></h2>
+<blockquote>
+<div><p>These instructions were written for Graylog <code class="docutils literal notranslate"><span class="pre">4.3.x</span></code></p>
+</div></blockquote>
+<blockquote>
+<div><p>Instructions are based on the following documentation: <br />
+<a class="reference external" href="https://docs.graylog.org/docs/operating-system-packages">https://docs.graylog.org/docs/operating-system-packages</a></p>
+</div></blockquote>
+</section>
+<section id="post-deployment">
+<h2>Post Deployment<a class="headerlink" href="#post-deployment" title="Permalink to this heading">#</a></h2>
+<blockquote>
+<div><p>The Graylog can be accessed at the following URL:<br />
+<a class="reference external" href="https://graylog.engwsc.example.com:9000">https://graylog.engwsc.example.com:9000</a></p>
+<p>User name: <code class="docutils literal notranslate"><span class="pre">admin</span></code> <br />
+Password: <code class="docutils literal notranslate"><span class="pre">password_secret</span></code> (from Step 13)</p>
+</div></blockquote>
+</section>
+<section id="deployment-scripts">
+<h2>Deployment Scripts<a class="headerlink" href="#deployment-scripts" title="Permalink to this heading">#</a></h2>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>An example bash script of the instructions has been provided: <br />
+<a class="reference download internal" download="" href="../_downloads/5e64ee7314173f6b0d7139c9d380597d/deploy-graylog.sh"><code class="xref download docutils literal notranslate"><span class="pre">../_static/graylog/deploy-graylog.sh</span></code></a></p>
+</div>
+</section>
+<section id="deployment-steps">
+<h2>Deployment Steps<a class="headerlink" href="#deployment-steps" title="Permalink to this heading">#</a></h2>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Instructions assume execution using the <code class="docutils literal notranslate"><span class="pre">root</span></code> account.</p>
+</div>
+<ol class="arabic simple">
+<li><p>Connect the system to the NFS Server:</p></li>
+</ol>
+<blockquote>
+<div><p>See Guide: <a class="reference internal" href="../nfs/nfs-client-deployment-guide.html"><span class="doc">NFS Client Deployment Guide</span></a></p>
+</div></blockquote>
+<ol class="arabic simple" start="2">
+<li><p>Connect the system to the IdM Server:</p></li>
+</ol>
+<blockquote>
+<div><p>See Guide: <a class="reference internal" href="../idm/idm-client-deployment-guide.html"><span class="doc">IdM Client Deployment Guide</span></a></p>
+</div></blockquote>
+<ol class="arabic simple" start="3">
+<li><p>Install Dependencies:</p></li>
+</ol>
+<blockquote>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>dnf -y install epel-release
+
+dnf -y distro-sync
+dnf -y install pwgen java-1.8.0-openjdk-headless
+</pre></div>
+</div>
+</div></blockquote>
+<section id="mongodb">
+<h3>MongoDB<a class="headerlink" href="#mongodb" title="Permalink to this heading">#</a></h3>
+<ol class="arabic simple" start="4">
+<li><p>Add the MongoDB Yum Repository:</p></li>
+</ol>
+<blockquote>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cat <span class="s">&lt;&lt;EOF | sudo tee /etc/yum.repos.d/mongodb-org-6.0.repo</span>
+<span class="s">[mongodb-org-6.0]</span>
+<span class="s">name=MongoDB Repository</span>
+<span class="s">baseurl=https://repo.mongodb.org/yum/redhat/\$releasever/mongodb-org/6.0/x86_64/</span>
+<span class="s">gpgcheck=1</span>
+<span class="s">enabled=1</span>
+<span class="s">gpgkey=https://www.mongodb.org/static/pgp/server-6.0.asc</span>
+<span class="s">EOF</span>
+</pre></div>
+</div>
+</div></blockquote>
+<ol class="arabic simple" start="5">
+<li><p>Install MongoDB:</p></li>
+</ol>
+<blockquote>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>dnf -y distro-sync
+dnf -y install mongodb-org
+</pre></div>
+</div>
+</div></blockquote>
+<ol class="arabic simple" start="6">
+<li><p>Start MongoDB:</p></li>
+</ol>
+<blockquote>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>systemctl daemon-reload
+systemctl <span class="nb">enable</span> --now mongod
+</pre></div>
+</div>
+</div></blockquote>
+</section>
+<section id="elasticsearch">
+<h3>ElasticSearch<a class="headerlink" href="#elasticsearch" title="Permalink to this heading">#</a></h3>
+<ol class="arabic simple" start="7">
+<li><p>Add the ElasticSearch Yum Repository:</p></li>
+</ol>
+<blockquote>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>rpm --import https://artifacts.elastic.co/GPG-KEY-elasticsearch
+
+cat <span class="s">&lt;&lt;EOF | sudo tee /etc/yum.repos.d/elasticsearch.repo</span>
+<span class="s">[elasticsearch-7.x]</span>
+<span class="s">name=Elasticsearch repository for 7.x packages</span>
+<span class="s">baseurl=https://artifacts.elastic.co/packages/oss-7.x/yum</span>
+<span class="s">gpgcheck=1</span>
+<span class="s">gpgkey=https://artifacts.elastic.co/GPG-KEY-elasticsearch</span>
+<span class="s">enabled=1</span>
+<span class="s">autorefresh=1</span>
+<span class="s">type=rpm-md</span>
+<span class="s">EOF</span>
+</pre></div>
+</div>
+</div></blockquote>
+<ol class="arabic simple" start="8">
+<li><p>Install ElasticSearch:</p></li>
+</ol>
+<blockquote>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>dnf -y distro-sync
+dnf -y install elasticsearch-oss
+</pre></div>
+</div>
+</div></blockquote>
+<ol class="arabic simple" start="9">
+<li><p>Configure ElasticSearch for Graylog:</p></li>
+</ol>
+<blockquote>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>tee -a /etc/elasticsearch/elasticsearch.yml &gt; /dev/null <span class="s">&lt;&lt;EOT</span>
+<span class="s">cluster.name: graylog</span>
+<span class="s">action.auto_create_index: false</span>
+<span class="s">EOT</span>
+</pre></div>
+</div>
+</div></blockquote>
+<ol class="arabic simple" start="10">
+<li><p>Start ElasticSearch:</p></li>
+</ol>
+<blockquote>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>systemctl daemon-reload
+systemctl <span class="nb">enable</span> --now elasticsearch
+</pre></div>
+</div>
+</div></blockquote>
+</section>
+<section id="graylog">
+<h3>Graylog<a class="headerlink" href="#graylog" title="Permalink to this heading">#</a></h3>
+<ol class="arabic simple" start="11">
+<li><p>Install Graylog:</p></li>
+</ol>
+<blockquote>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>rpm -Uvh https://packages.graylog2.org/repo/packages/graylog-4.3-repository_latest.rpm
+
+dnf -y distro-sync
+dnf -y install graylog-server
+</pre></div>
+</div>
+</div></blockquote>
+<ol class="arabic simple" start="12">
+<li><p>Create Self-Signed SSL Certificate:</p></li>
+</ol>
+<blockquote>
+<div><div class="admonition important">
+<p class="admonition-title">Important</p>
+<p>Replace values with the specifics of your network.</p>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mkdir -p /etc/graylog/ssl
+chmod <span class="m">755</span> /etc/graylog/ssl
+
+<span class="c1"># Country Name (2 letter code) [XX]:US</span>
+<span class="c1"># State or Province Name (full name) []:New York</span>
+<span class="c1"># Locality Name (eg, city) [Default City]:New York</span>
+<span class="c1"># Organization Name (eg, company) [Default Company Ltd]:engwsc</span>
+<span class="c1"># Organizational Unit Name (eg, section) []:</span>
+<span class="c1"># Common Name (eg, your name or your server&#39;s hostname) []:graylog.engwsc.example.com</span>
+<span class="c1"># Email Address []:</span>
+
+openssl req -x509 -nodes -newkey rsa:4096 <span class="se">\</span>
+    -keyout <span class="s2">&quot;/etc/graylog/ssl/graylog.engwsc.example.com.key&quot;</span> <span class="se">\</span>
+    -out <span class="s2">&quot;/etc/graylog/ssl/graylog.engwsc.example.com.crt&quot;</span> <span class="se">\</span>
+    -subj <span class="s2">&quot;/CN=graylog.engwsc.example.com/C=US/ST=New York/L=New York/O=engwsc&quot;</span> <span class="se">\</span>
+    -days <span class="m">365</span>
+
+chown graylog:graylog /etc/graylog/ssl/graylog.engwsc.example.com.key
+chown graylog:graylog /etc/graylog/ssl/graylog.engwsc.example.com.crt
+chmod <span class="m">600</span> /etc/graylog/ssl/graylog.engwsc.example.com.key
+</pre></div>
+</div>
+</div></blockquote>
+<ol class="arabic simple" start="13">
+<li><p>Set required <code class="docutils literal notranslate"><span class="pre">password_secret</span></code> and <code class="docutils literal notranslate"><span class="pre">root_password_sha2</span></code>:</p></li>
+</ol>
+<blockquote>
+<div><div class="admonition important">
+<p class="admonition-title">Important</p>
+<p>Replace <code class="docutils literal notranslate"><span class="pre">GRAYLOG_SECRET</span></code> with a confidential strong password that will be used to access Graylog.</p>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># You MUST set a secret to secure/pepper the stored</span>
+<span class="c1"># user passwords here. Use at least 64 characters.</span>
+<span class="c1"># Use: SECRET=`pwgen -N 1 -s 96`</span>
+<span class="c1"># to generate a random secret</span>
+<span class="nv">SECRET</span><span class="o">=</span><span class="s1">&#39;GRAYLOG_SECRET&#39;</span>
+<span class="nv">SECRET_SHA256</span><span class="o">=</span><span class="sb">`</span><span class="nb">echo</span> -n <span class="s2">&quot;</span><span class="si">${</span><span class="nv">SECRET</span><span class="si">}</span><span class="s2">&quot;</span> <span class="p">|</span> tr -d <span class="s1">&#39;\n&#39;</span> <span class="p">|</span> sha256sum <span class="p">|</span> cut -d<span class="s2">&quot; &quot;</span> -f1<span class="sb">`</span>
+
+sed -i <span class="s2">&quot;s|password_secret =.*|password_secret = </span><span class="si">${</span><span class="nv">SECRET</span><span class="si">}</span><span class="s2">|g&quot;</span> /etc/graylog/server/server.conf
+sed -i <span class="s2">&quot;s|root_password_sha2 =.*|root_password_sha2 = </span><span class="si">${</span><span class="nv">SECRET_SHA256</span><span class="si">}</span><span class="s2">|g&quot;</span> /etc/graylog/server/server.conf
+sed -i <span class="s2">&quot;s|#http_bind_address =.*|http_bind_address = graylog.engwsc.example.com:9000|g&quot;</span> /etc/graylog/server/server.conf
+
+sed -i <span class="s2">&quot;s|#http_enable_tls =.*|http_enable_tls = true|g&quot;</span> /etc/graylog/server/server.conf
+sed -i <span class="s2">&quot;s|#http_tls_cert_file =.*|http_tls_cert_file = /etc/graylog/ssl/graylog.engwsc.example.com.crt|g&quot;</span> /etc/graylog/server/server.conf
+sed -i <span class="s2">&quot;s|#http_tls_key_file =.*|http_tls_key_file = /etc/graylog/ssl/graylog.engwsc.example.com.key|g&quot;</span> /etc/graylog/server/server.conf
+</pre></div>
+</div>
+</div></blockquote>
+<ol class="arabic simple" start="14">
+<li><p>Configure SELinux:</p></li>
+</ol>
+<blockquote>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>setsebool -P httpd_can_network_connect <span class="m">1</span>
+semanage port -a -t http_port_t -p tcp <span class="m">9000</span>
+</pre></div>
+</div>
+</div></blockquote>
+<ol class="arabic simple" start="15">
+<li><p>Start Graylog:</p></li>
+</ol>
+<blockquote>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>systemctl daemon-reload
+systemctl <span class="nb">enable</span> --now graylog-server
+</pre></div>
+</div>
+</div></blockquote>
+<ol class="arabic simple" start="16">
+<li><p>Set firewalld rules:</p></li>
+</ol>
+<blockquote>
+<div><div class="admonition important">
+<p class="admonition-title">Important</p>
+<p>Replace the IPv4 Address and Subnet mask with the value of your network.</p>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>firewall-cmd --zone<span class="o">=</span>public --add-source<span class="o">=</span><span class="m">192</span>.168.1.0/24 --permanent
+firewall-cmd --zone<span class="o">=</span>public --add-port<span class="o">=</span><span class="m">9000</span>/tcp --permanent
+firewall-cmd --reload
+</pre></div>
+</div>
+</div></blockquote>
+</section>
+</section>
 </section>
 
         </article>
@@ -423,8 +684,37 @@
         
       </footer>
     </div>
-    <aside class="toc-drawer no-toc">
+    <aside class="toc-drawer">
       
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            Contents
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">Graylog Deployment Guide</a><ul>
+<li><a class="reference internal" href="#prerequisites">Prerequisites</a></li>
+<li><a class="reference internal" href="#follow-on-deployments">Follow-on Deployments</a></li>
+<li><a class="reference internal" href="#references">References</a></li>
+<li><a class="reference internal" href="#post-deployment">Post Deployment</a></li>
+<li><a class="reference internal" href="#deployment-scripts">Deployment Scripts</a></li>
+<li><a class="reference internal" href="#deployment-steps">Deployment Steps</a><ul>
+<li><a class="reference internal" href="#mongodb">MongoDB</a></li>
+<li><a class="reference internal" href="#elasticsearch">ElasticSearch</a></li>
+<li><a class="reference internal" href="#graylog">Graylog</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
       
       
     </aside>

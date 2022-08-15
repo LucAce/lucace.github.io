@@ -4,6 +4,7 @@
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 <link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="Slurm Controller Usage Guide" href="slurm-controller-usage-guide.html" /><link rel="prev" title="Slurm Controller Deployment Guide" href="slurm-controller-deployment-guide.html" />
+        <link rel="canonical" href="https://engwsc.com/slurm/slurm-compute-node-deployment-guide.html" />
 
     <meta name="generator" content="sphinx-5.0.2, furo 2022.06.21"/>
         <title>Slurm Compute Node Deployment Guide - Engineering Workstation Cluster Deployment Guide documentation</title>
@@ -387,7 +388,7 @@
 <section id="deployment-scripts">
 <h2>Deployment Scripts<a class="headerlink" href="#deployment-scripts" title="Permalink to this heading">#</a></h2>
 <blockquote>
-<div><p>It is assumed that the <code class="docutils literal notranslate"><span class="pre">slurm-22.05.2.rpm.tar.gz</span></code> file generated
+<div><p>It is assumed that the <code class="docutils literal notranslate"><span class="pre">slurm-22.05.3.rpm.tar.gz</span></code> file generated
 by the Slurm Controller Deployment Guide has been uploaded to the
 system they will be deployed on.</p>
 </div></blockquote>
@@ -428,7 +429,7 @@ system they will be deployed on.</p>
 <p class="admonition-title">Note</p>
 <p>Any file transfer method can be used.</p>
 </div>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>scp slurm-22.05.2.rpm.tar.gz root@comp01.engwsc.example.com:/root/tmp
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>scp slurm-22.05.3.rpm.tar.gz root@comp01.engwsc.example.com:/root/tmp
 </pre></div>
 </div>
 </div></blockquote>
@@ -440,7 +441,7 @@ system they will be deployed on.</p>
 <p class="admonition-title">Note</p>
 <p>It is recommended that the original installtion files be deleted at the completion of this guide.</p>
 </div>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>tar -xvf slurm-22.05.2.rpm.tar.gz
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>tar -xvf slurm-22.05.3.rpm.tar.gz
 </pre></div>
 </div>
 </div></blockquote>
@@ -479,10 +480,10 @@ useradd -m -c <span class="s2">&quot;SLURM workload manager&quot;</span> -d /var
 </ol>
 <blockquote>
 <div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>rpm -ivh <span class="se">\</span>
-    slurm-22.05.2-1.el8.x86_64.rpm <span class="se">\</span>
-    slurm-perlapi-22.05.2-1.el8.x86_64.rpm <span class="se">\</span>
-    slurm-slurmd-22.05.2-1.el8.x86_64.rpm <span class="se">\</span>
-    slurm-torque-22.05.2-1.el8.x86_64.rpm
+    slurm-22.05.3-1.el8.x86_64.rpm <span class="se">\</span>
+    slurm-perlapi-22.05.3-1.el8.x86_64.rpm <span class="se">\</span>
+    slurm-slurmd-22.05.3-1.el8.x86_64.rpm <span class="se">\</span>
+    slurm-torque-22.05.3-1.el8.x86_64.rpm
 </pre></div>
 </div>
 </div></blockquote>

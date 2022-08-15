@@ -39,7 +39,7 @@ References
 
 ..
 
-  These instructions were written for Slurm ``22.05.2``. |br|
+  These instructions were written for Slurm ``22.05.3``. |br|
 
 ..
 
@@ -74,8 +74,8 @@ Deployment Scripts
 ..
 
   The required source files have been provided: |br|
-  :download:`../_static/slurm/slurm-22.05.2.tar.bz2` |br|
-  SHA1: b72e2c3b4270683cbb31b10f4bef384057376a34
+  :download:`../_static/slurm/slurm-22.05.3.tar.bz2` |br|
+  SHA1: 55e9a1a1d2ddb67b119c2900982c908ba2846c1e
 
 ..
 
@@ -146,8 +146,8 @@ Build Setup
 
   .. code-block:: bash
 
-    mkdir -p /root/tmp
-    cd /root/tmp
+    mkdir -p /root/tmp/
+    cd /root/tmp/
 
 6. Upload files:
 
@@ -157,17 +157,17 @@ Build Setup
 
   .. code-block:: bash
 
-    scp slurm-22.05.2.tar.bz2 root@slurm.engwsc.example.com:/root/tmp
-    scp cgroup.conf           root@slurm.engwsc.example.com:/root/tmp
-    scp slurm.conf            root@slurm.engwsc.example.com:/root/tmp
-    scp slurmdbd.conf         root@slurm.engwsc.example.com:/root/tmp
+    scp slurm-22.05.3.tar.bz2 root@slurm.engwsc.example.com:/root/tmp/
+    scp cgroup.conf           root@slurm.engwsc.example.com:/root/tmp/
+    scp slurm.conf            root@slurm.engwsc.example.com:/root/tmp/
+    scp slurmdbd.conf         root@slurm.engwsc.example.com:/root/tmp/
 
 7. Set a database password for Slurm Accounting:
 
   .. important::
 
     Replace ``MARIADB_SLURM_USER_PASSWD`` with a confidential secure password that
-    will be used for Slurm Accouting Database.
+    will be used for the Slurm Accouting Database.
 
   .. code-block:: bash
 
@@ -187,9 +187,10 @@ Build Setup
 
 9. Modify ``/root/tmp/slurm.conf`` with the configuration of the cluster:
 
-  .. note::
+  .. important::
 
-    The following is just an example configuration.
+    The following is just an example configuration.  Replace with the
+    configuration of your cluster.
 
   .. code-block:: bash
 
@@ -212,11 +213,12 @@ Munge
 
   .. important::
 
-    ``/etc/munge/munge.key`` should be readable only by the ``munge`` account and remain confidential.
+    ``/etc/munge/munge.key`` should be readable only by the ``munge`` account
+    and remain confidential.
 
   .. code-block:: bash
 
-    mkdir -p /etc/munge
+    mkdir -p /etc/munge/
     chown -R munge:munge /etc/munge
     chmod 700 /etc/munge
     /usr/sbin/create-munge-key -f
@@ -243,20 +245,20 @@ Slurm
 
   .. code-block:: bash
 
-    rpmbuild -ta slurm-22.05.2.tar.bz2
+    rpmbuild -ta slurm-22.05.3.tar.bz2
 
 14. Install Slurm Controller RPMs:
 
   .. code-block:: bash
 
     rpm -ivh \
-        /root/rpmbuild/RPMS/x86_64/slurm-22.05.2.el8.x86_64.rpm \
-        /root/rpmbuild/RPMS/x86_64/slurm-example-configs-22.05.2.el8.x86_64.rpm \
-        /root/rpmbuild/RPMS/x86_64/slurm-perlapi-22.05.2.el8.x86_64.rpm \
-        /root/rpmbuild/RPMS/x86_64/slurm-slurmctld-22.05.2.el8.x86_64.rpm \
-        /root/rpmbuild/RPMS/x86_64/slurm-slurmd-22.05.2.el8.x86_64.rpm \
-        /root/rpmbuild/RPMS/x86_64/slurm-slurmdbd-22.05.2.el8.x86_64.rpm \
-        /root/rpmbuild/RPMS/x86_64/slurm-torque-22.05.2.el8.x86_64.rpm
+        /root/rpmbuild/RPMS/x86_64/slurm-22.05.3.el8.x86_64.rpm \
+        /root/rpmbuild/RPMS/x86_64/slurm-example-configs-22.05.3.el8.x86_64.rpm \
+        /root/rpmbuild/RPMS/x86_64/slurm-perlapi-22.05.3.el8.x86_64.rpm \
+        /root/rpmbuild/RPMS/x86_64/slurm-slurmctld-22.05.3.el8.x86_64.rpm \
+        /root/rpmbuild/RPMS/x86_64/slurm-slurmd-22.05.3.el8.x86_64.rpm \
+        /root/rpmbuild/RPMS/x86_64/slurm-slurmdbd-22.05.3.el8.x86_64.rpm \
+        /root/rpmbuild/RPMS/x86_64/slurm-torque-22.05.3.el8.x86_64.rpm
 
 15. Copy configuration files to Slurm RPMs path for inclusion in the tar file:
 
@@ -279,11 +281,11 @@ Slurm
     EXEC_PWD=`pwd`
 
     cd /root/rpmbuild/RPMS/x86_64/
-    tar -cf ${EXEC_PWD}/slurm-22.05.2.tar slurm-*.rpm cgroup.conf slurm.conf slurmdbd.conf munge.key
+    tar -cf ${EXEC_PWD}/slurm-22.05.3.tar slurm-*.rpm cgroup.conf slurm.conf slurmdbd.conf munge.key
 
     cd ${EXEC_PWD}
-    gzip -9 slurm-22.05.2.rpm.tar
-    sha256sum -b slurm-22.05.2.rpm.tar.gz > slurm-22.05.2.rpm.tar.gz.sha256
+    gzip -9 slurm-22.05.3.rpm.tar
+    sha256sum -b slurm-22.05.3.rpm.tar.gz > slurm-22.05.3.rpm.tar.gz.sha256
 
 17. Install the configuration files:
 
@@ -321,8 +323,8 @@ Slurm
 
   .. code-block:: bash
 
-    mkdir -p /var/spool/slurmctld
-    mkdir -p /var/spool/slurmdbd
+    mkdir -p /var/spool/slurmctld/
+    mkdir -p /var/spool/slurmdbd/
 
     chmod 700 /var/spool/slurmctld
     chmod 700 /var/spool/slurmdbd
@@ -365,7 +367,7 @@ MariaDB
   .. important::
 
     Replace ``MARIADB_ROOT_PASSWD`` with a confidential secure password that
-    will be used for MariaDB Root account.
+    will be used for the MariaDB ``root`` account.
 
   .. code-block:: bash
 
@@ -384,7 +386,7 @@ MariaDB
 
   .. code-block:: bash
 
-    mkdir -p /etc/my.cnf.d
+    mkdir -p /etc/my.cnf.d/
     cat >> /etc/my.cnf.d/innodb.cnf <<EOL
     [mysqld]
     innodb_buffer_pool_size=1024M

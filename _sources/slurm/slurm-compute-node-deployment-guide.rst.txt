@@ -31,7 +31,7 @@ Deployment Scripts
 
 ..
 
-  It is assumed that the ``slurm-22.05.2.rpm.tar.gz`` file generated
+  It is assumed that the ``slurm-22.05.3.rpm.tar.gz`` file generated
   by the Slurm Controller Deployment Guide has been uploaded to the
   system they will be deployed on.
 
@@ -71,7 +71,7 @@ Deployment Steps
 
   .. code-block:: bash
 
-    scp slurm-22.05.2.rpm.tar.gz root@comp01.engwsc.example.com:/root/tmp
+    scp slurm-22.05.3.rpm.tar.gz root@comp01.engwsc.example.com:/root/tmp
 
 4. Extract RPMs:
 
@@ -81,7 +81,7 @@ Deployment Steps
 
   .. code-block:: bash
 
-    tar -xvf slurm-22.05.2.rpm.tar.gz
+    tar -xvf slurm-22.05.3.rpm.tar.gz
 
 5. Copy Munge authentication key:
 
@@ -113,10 +113,10 @@ Deployment Steps
   .. code-block:: bash
 
     rpm -ivh \
-        slurm-22.05.2-1.el8.x86_64.rpm \
-        slurm-perlapi-22.05.2-1.el8.x86_64.rpm \
-        slurm-slurmd-22.05.2-1.el8.x86_64.rpm \
-        slurm-torque-22.05.2-1.el8.x86_64.rpm
+        slurm-22.05.3-1.el8.x86_64.rpm \
+        slurm-perlapi-22.05.3-1.el8.x86_64.rpm \
+        slurm-slurmd-22.05.3-1.el8.x86_64.rpm \
+        slurm-torque-22.05.3-1.el8.x86_64.rpm
 
 9. Copy configuration files:
 

@@ -4,6 +4,7 @@
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 <link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="Slurm Compute Node Deployment Guide" href="slurm-compute-node-deployment-guide.html" /><link rel="prev" title="Slurm Controller OS Installation Guide" href="slurm-controller-os-installation-guide.html" />
+        <link rel="canonical" href="https://engwsc.com/slurm/slurm-controller-deployment-guide.html" />
 
     <meta name="generator" content="sphinx-5.0.2, furo 2022.06.21"/>
         <title>Slurm Controller Deployment Guide - Engineering Workstation Cluster Deployment Guide documentation</title>
@@ -393,7 +394,7 @@
 <section id="references">
 <h2>References<a class="headerlink" href="#references" title="Permalink to this heading">#</a></h2>
 <blockquote>
-<div><p>These instructions were written for Slurm <code class="docutils literal notranslate"><span class="pre">22.05.2</span></code>. <br /></p>
+<div><p>These instructions were written for Slurm <code class="docutils literal notranslate"><span class="pre">22.05.3</span></code>. <br /></p>
 </div></blockquote>
 <blockquote>
 <div><p>The official Slurm source code can be downloaded from: <br />
@@ -421,8 +422,8 @@
 </div></blockquote>
 <blockquote>
 <div><p>The required source files have been provided: <br />
-<a class="reference download internal" download="" href="../_downloads/44a95a509c4e4b9a2f515f83af071b09/slurm-22.05.2.tar.bz2"><code class="xref download docutils literal notranslate"><span class="pre">../_static/slurm/slurm-22.05.2.tar.bz2</span></code></a> <br />
-SHA1: b72e2c3b4270683cbb31b10f4bef384057376a34</p>
+<a class="reference download internal" download="" href="../_downloads/1ae2e8671356f4dfce2109ed604aa4b8/slurm-22.05.3.tar.bz2"><code class="xref download docutils literal notranslate"><span class="pre">../_static/slurm/slurm-22.05.3.tar.bz2</span></code></a> <br />
+SHA1: 55e9a1a1d2ddb67b119c2900982c908ba2846c1e</p>
 </div></blockquote>
 <blockquote>
 <div><p>The example configuration files have been provided: <br />
@@ -493,8 +494,8 @@ dnf distro-sync
 <li><p>Create the build directory and go to it:</p></li>
 </ol>
 <blockquote>
-<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mkdir -p /root/tmp
-<span class="nb">cd</span> /root/tmp
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mkdir -p /root/tmp/
+<span class="nb">cd</span> /root/tmp/
 </pre></div>
 </div>
 </div></blockquote>
@@ -506,10 +507,10 @@ dnf distro-sync
 <p class="admonition-title">Note</p>
 <p>Any file transfer method can be used.</p>
 </div>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>scp slurm-22.05.2.tar.bz2 root@slurm.engwsc.example.com:/root/tmp
-scp cgroup.conf           root@slurm.engwsc.example.com:/root/tmp
-scp slurm.conf            root@slurm.engwsc.example.com:/root/tmp
-scp slurmdbd.conf         root@slurm.engwsc.example.com:/root/tmp
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>scp slurm-22.05.3.tar.bz2 root@slurm.engwsc.example.com:/root/tmp/
+scp cgroup.conf           root@slurm.engwsc.example.com:/root/tmp/
+scp slurm.conf            root@slurm.engwsc.example.com:/root/tmp/
+scp slurmdbd.conf         root@slurm.engwsc.example.com:/root/tmp/
 </pre></div>
 </div>
 </div></blockquote>
@@ -520,7 +521,7 @@ scp slurmdbd.conf         root@slurm.engwsc.example.com:/root/tmp
 <div><div class="admonition important">
 <p class="admonition-title">Important</p>
 <p>Replace <code class="docutils literal notranslate"><span class="pre">MARIADB_SLURM_USER_PASSWD</span></code> with a confidential secure password that
-will be used for Slurm Accouting Database.</p>
+will be used for the Slurm Accouting Database.</p>
 </div>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sed -i <span class="s1">&#39;s/StoragePass=.*/StoragePass=MARIADB_SLURM_USER_PASSWD/g&#39;</span> /root/tmp/slurmdbd.conf
 </pre></div>
@@ -544,9 +545,10 @@ sed -i <span class="s1">&#39;s/AccountingStorageHost=.*/AccountingStorageHost=sl
 <li><p>Modify <code class="docutils literal notranslate"><span class="pre">/root/tmp/slurm.conf</span></code> with the configuration of the cluster:</p></li>
 </ol>
 <blockquote>
-<div><div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>The following is just an example configuration.</p>
+<div><div class="admonition important">
+<p class="admonition-title">Important</p>
+<p>The following is just an example configuration.  Replace with the
+configuration of your cluster.</p>
 </div>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># COMPUTE NODES (Adjust to match real hardware)</span>
 <span class="nv">NodeName</span><span class="o">=</span>user01.engwsc.example.com <span class="nv">CPUs</span><span class="o">=</span><span class="m">32</span> <span class="nv">RealMemory</span><span class="o">=</span><span class="m">524288</span> <span class="nv">Sockets</span><span class="o">=</span><span class="m">1</span> <span class="nv">CoresPerSocket</span><span class="o">=</span><span class="m">32</span> <span class="nv">ThreadsPerCore</span><span class="o">=</span><span class="m">1</span> <span class="nv">State</span><span class="o">=</span>UNKNOWN
@@ -570,9 +572,10 @@ sed -i <span class="s1">&#39;s/AccountingStorageHost=.*/AccountingStorageHost=sl
 <blockquote>
 <div><div class="admonition important">
 <p class="admonition-title">Important</p>
-<p><code class="docutils literal notranslate"><span class="pre">/etc/munge/munge.key</span></code> should be readable only by the <code class="docutils literal notranslate"><span class="pre">munge</span></code> account and remain confidential.</p>
+<p><code class="docutils literal notranslate"><span class="pre">/etc/munge/munge.key</span></code> should be readable only by the <code class="docutils literal notranslate"><span class="pre">munge</span></code> account
+and remain confidential.</p>
 </div>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mkdir -p /etc/munge
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mkdir -p /etc/munge/
 chown -R munge:munge /etc/munge
 chmod <span class="m">700</span> /etc/munge
 /usr/sbin/create-munge-key -f
@@ -604,7 +607,7 @@ useradd -m -c <span class="s2">&quot;SLURM workload manager&quot;</span> -d /var
 <li><p>Build Slurm RPM:</p></li>
 </ol>
 <blockquote>
-<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>rpmbuild -ta slurm-22.05.2.tar.bz2
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>rpmbuild -ta slurm-22.05.3.tar.bz2
 </pre></div>
 </div>
 </div></blockquote>
@@ -613,13 +616,13 @@ useradd -m -c <span class="s2">&quot;SLURM workload manager&quot;</span> -d /var
 </ol>
 <blockquote>
 <div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>rpm -ivh <span class="se">\</span>
-    /root/rpmbuild/RPMS/x86_64/slurm-22.05.2.el8.x86_64.rpm <span class="se">\</span>
-    /root/rpmbuild/RPMS/x86_64/slurm-example-configs-22.05.2.el8.x86_64.rpm <span class="se">\</span>
-    /root/rpmbuild/RPMS/x86_64/slurm-perlapi-22.05.2.el8.x86_64.rpm <span class="se">\</span>
-    /root/rpmbuild/RPMS/x86_64/slurm-slurmctld-22.05.2.el8.x86_64.rpm <span class="se">\</span>
-    /root/rpmbuild/RPMS/x86_64/slurm-slurmd-22.05.2.el8.x86_64.rpm <span class="se">\</span>
-    /root/rpmbuild/RPMS/x86_64/slurm-slurmdbd-22.05.2.el8.x86_64.rpm <span class="se">\</span>
-    /root/rpmbuild/RPMS/x86_64/slurm-torque-22.05.2.el8.x86_64.rpm
+    /root/rpmbuild/RPMS/x86_64/slurm-22.05.3.el8.x86_64.rpm <span class="se">\</span>
+    /root/rpmbuild/RPMS/x86_64/slurm-example-configs-22.05.3.el8.x86_64.rpm <span class="se">\</span>
+    /root/rpmbuild/RPMS/x86_64/slurm-perlapi-22.05.3.el8.x86_64.rpm <span class="se">\</span>
+    /root/rpmbuild/RPMS/x86_64/slurm-slurmctld-22.05.3.el8.x86_64.rpm <span class="se">\</span>
+    /root/rpmbuild/RPMS/x86_64/slurm-slurmd-22.05.3.el8.x86_64.rpm <span class="se">\</span>
+    /root/rpmbuild/RPMS/x86_64/slurm-slurmdbd-22.05.3.el8.x86_64.rpm <span class="se">\</span>
+    /root/rpmbuild/RPMS/x86_64/slurm-torque-22.05.3.el8.x86_64.rpm
 </pre></div>
 </div>
 </div></blockquote>
@@ -646,11 +649,11 @@ cp /root/tmp/slurmdbd.conf /root/rpmbuild/RPMS/x86_64/
 <div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">EXEC_PWD</span><span class="o">=</span><span class="sb">`</span><span class="nb">pwd</span><span class="sb">`</span>
 
 <span class="nb">cd</span> /root/rpmbuild/RPMS/x86_64/
-tar -cf <span class="si">${</span><span class="nv">EXEC_PWD</span><span class="si">}</span>/slurm-22.05.2.tar slurm-*.rpm cgroup.conf slurm.conf slurmdbd.conf munge.key
+tar -cf <span class="si">${</span><span class="nv">EXEC_PWD</span><span class="si">}</span>/slurm-22.05.3.tar slurm-*.rpm cgroup.conf slurm.conf slurmdbd.conf munge.key
 
 <span class="nb">cd</span> <span class="si">${</span><span class="nv">EXEC_PWD</span><span class="si">}</span>
-gzip -9 slurm-22.05.2.rpm.tar
-sha256sum -b slurm-22.05.2.rpm.tar.gz &gt; slurm-22.05.2.rpm.tar.gz.sha256
+gzip -9 slurm-22.05.3.rpm.tar
+sha256sum -b slurm-22.05.3.rpm.tar.gz &gt; slurm-22.05.3.rpm.tar.gz.sha256
 </pre></div>
 </div>
 </div></blockquote>
@@ -694,8 +697,8 @@ chown -R slurm:slurm /var/log/slurm
 <li><p>Create spool files:</p></li>
 </ol>
 <blockquote>
-<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mkdir -p /var/spool/slurmctld
-mkdir -p /var/spool/slurmdbd
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mkdir -p /var/spool/slurmctld/
+mkdir -p /var/spool/slurmdbd/
 
 chmod <span class="m">700</span> /var/spool/slurmctld
 chmod <span class="m">700</span> /var/spool/slurmdbd
@@ -745,7 +748,7 @@ chmod <span class="m">644</span> /etc/logrotate.d/slurm
 <div><div class="admonition important">
 <p class="admonition-title">Important</p>
 <p>Replace <code class="docutils literal notranslate"><span class="pre">MARIADB_ROOT_PASSWD</span></code> with a confidential secure password that
-will be used for MariaDB Root account.</p>
+will be used for the MariaDB <code class="docutils literal notranslate"><span class="pre">root</span></code> account.</p>
 </div>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Enter current password for root (enter for none): &lt;enter&gt;</span>
 <span class="c1"># Set root password? [Y/n] Y</span>
@@ -764,7 +767,7 @@ mysql_secure_installation
 <li><p>Modify the innodb configuration:</p></li>
 </ol>
 <blockquote>
-<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mkdir -p /etc/my.cnf.d
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mkdir -p /etc/my.cnf.d/
 cat &gt;&gt; /etc/my.cnf.d/innodb.cnf <span class="s">&lt;&lt;EOL</span>
 <span class="s">[mysqld]</span>
 <span class="s">innodb_buffer_pool_size=1024M</span>

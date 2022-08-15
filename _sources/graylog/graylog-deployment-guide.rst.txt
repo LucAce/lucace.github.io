@@ -14,4 +14,248 @@ Graylog Deployment Guide
 
 The following instructions are for deploying Graylog.
 
-TODO
+
+*************
+Prerequisites
+*************
+
+* :doc:`graylog-os-installation-guide`
+* :doc:`../idm/idm-client-deployment-guide`
+* :doc:`../nfs/nfs-client-deployment-guide`
+
+
+*********************
+Follow-on Deployments
+*********************
+
+The following guides can be applied after the deployment of their associated nodes.
+
+* :doc:`../influxdb/telegraf-deployment-guide`
+
+
+**********
+References
+**********
+
+..
+
+  These instructions were written for Graylog ``4.3.x``
+
+..
+
+  Instructions are based on the following documentation: |br|
+  https://docs.graylog.org/docs/operating-system-packages
+
+
+***************
+Post Deployment
+***************
+
+..
+
+  The Graylog can be accessed at the following URL:|br|
+  https://graylog.engwsc.example.com:9000
+
+  User name: ``admin`` |br|
+  Password: ``password_secret`` (from Step 13)
+
+******************
+Deployment Scripts
+******************
+
+.. note::
+
+  An example bash script of the instructions has been provided: |br|
+  :download:`../_static/graylog/deploy-graylog.sh`
+
+
+****************
+Deployment Steps
+****************
+
+.. note::
+
+  Instructions assume execution using the ``root`` account.
+
+1. Connect the system to the NFS Server:
+
+  See Guide: :doc:`../nfs/nfs-client-deployment-guide`
+
+2. Connect the system to the IdM Server:
+
+  See Guide: :doc:`../idm/idm-client-deployment-guide`
+
+3. Install Dependencies:
+
+  .. code-block:: bash
+
+    dnf -y install epel-release
+
+    dnf -y distro-sync
+    dnf -y install pwgen java-1.8.0-openjdk-headless
+
+
+MongoDB
+~~~~~~~
+
+4. Add the MongoDB Yum Repository:
+
+  .. code-block:: bash
+
+    cat <<EOF | sudo tee /etc/yum.repos.d/mongodb-org-6.0.repo
+    [mongodb-org-6.0]
+    name=MongoDB Repository
+    baseurl=https://repo.mongodb.org/yum/redhat/\$releasever/mongodb-org/6.0/x86_64/
+    gpgcheck=1
+    enabled=1
+    gpgkey=https://www.mongodb.org/static/pgp/server-6.0.asc
+    EOF
+
+5. Install MongoDB:
+
+  .. code-block:: bash
+
+    dnf -y distro-sync
+    dnf -y install mongodb-org
+
+6. Start MongoDB:
+
+  .. code-block:: bash
+
+    systemctl daemon-reload
+    systemctl enable --now mongod
+
+
+ElasticSearch
+~~~~~~~~~~~~~
+
+7. Add the ElasticSearch Yum Repository:
+
+  .. code-block:: bash
+
+    rpm --import https://artifacts.elastic.co/GPG-KEY-elasticsearch
+
+    cat <<EOF | sudo tee /etc/yum.repos.d/elasticsearch.repo
+    [elasticsearch-7.x]
+    name=Elasticsearch repository for 7.x packages
+    baseurl=https://artifacts.elastic.co/packages/oss-7.x/yum
+    gpgcheck=1
+    gpgkey=https://artifacts.elastic.co/GPG-KEY-elasticsearch
+    enabled=1
+    autorefresh=1
+    type=rpm-md
+    EOF
+
+8. Install ElasticSearch:
+
+  .. code-block:: bash
+
+    dnf -y distro-sync
+    dnf -y install elasticsearch-oss
+
+9. Configure ElasticSearch for Graylog:
+
+  .. code-block:: bash
+
+    tee -a /etc/elasticsearch/elasticsearch.yml > /dev/null <<EOT
+    cluster.name: graylog
+    action.auto_create_index: false
+    EOT
+
+10. Start ElasticSearch:
+
+  .. code-block:: bash
+
+    systemctl daemon-reload
+    systemctl enable --now elasticsearch
+
+
+Graylog
+~~~~~~~
+
+11. Install Graylog:
+
+  .. code-block:: bash
+
+    rpm -Uvh https://packages.graylog2.org/repo/packages/graylog-4.3-repository_latest.rpm
+
+    dnf -y distro-sync
+    dnf -y install graylog-server
+
+12. Create Self-Signed SSL Certificate:
+
+  .. important::
+
+    Replace values with the specifics of your network.
+
+  .. code-block:: bash
+
+    mkdir -p /etc/graylog/ssl
+    chmod 755 /etc/graylog/ssl
+
+    # Country Name (2 letter code) [XX]:US
+    # State or Province Name (full name) []:New York
+    # Locality Name (eg, city) [Default City]:New York
+    # Organization Name (eg, company) [Default Company Ltd]:engwsc
+    # Organizational Unit Name (eg, section) []:
+    # Common Name (eg, your name or your server's hostname) []:graylog.engwsc.example.com
+    # Email Address []:
+
+    openssl req -x509 -nodes -newkey rsa:4096 \
+        -keyout "/etc/graylog/ssl/graylog.engwsc.example.com.key" \
+        -out "/etc/graylog/ssl/graylog.engwsc.example.com.crt" \
+        -subj "/CN=graylog.engwsc.example.com/C=US/ST=New York/L=New York/O=engwsc" \
+        -days 365
+
+    chown graylog:graylog /etc/graylog/ssl/graylog.engwsc.example.com.key
+    chown graylog:graylog /etc/graylog/ssl/graylog.engwsc.example.com.crt
+    chmod 600 /etc/graylog/ssl/graylog.engwsc.example.com.key
+
+13. Set required ``password_secret`` and ``root_password_sha2``:
+
+  .. important::
+
+    Replace ``GRAYLOG_SECRET`` with a confidential strong password that will be used to access Graylog.
+
+  .. code-block:: bash
+
+    # You MUST set a secret to secure/pepper the stored
+    # user passwords here. Use at least 64 characters.
+    # Use: SECRET=`pwgen -N 1 -s 96`
+    # to generate a random secret
+    SECRET='GRAYLOG_SECRET'
+    SECRET_SHA256=`echo -n "${SECRET}" | tr -d '\n' | sha256sum | cut -d" " -f1`
+
+    sed -i "s|password_secret =.*|password_secret = ${SECRET}|g" /etc/graylog/server/server.conf
+    sed -i "s|root_password_sha2 =.*|root_password_sha2 = ${SECRET_SHA256}|g" /etc/graylog/server/server.conf
+    sed -i "s|#http_bind_address =.*|http_bind_address = graylog.engwsc.example.com:9000|g" /etc/graylog/server/server.conf
+
+    sed -i "s|#http_enable_tls =.*|http_enable_tls = true|g" /etc/graylog/server/server.conf
+    sed -i "s|#http_tls_cert_file =.*|http_tls_cert_file = /etc/graylog/ssl/graylog.engwsc.example.com.crt|g" /etc/graylog/server/server.conf
+    sed -i "s|#http_tls_key_file =.*|http_tls_key_file = /etc/graylog/ssl/graylog.engwsc.example.com.key|g" /etc/graylog/server/server.conf
+
+14. Configure SELinux:
+
+  .. code-block:: bash
+
+    setsebool -P httpd_can_network_connect 1
+    semanage port -a -t http_port_t -p tcp 9000
+
+15. Start Graylog:
+
+  .. code-block:: bash
+
+    systemctl daemon-reload
+    systemctl enable --now graylog-server
+
+16. Set firewalld rules:
+
+  .. important::
+
+    Replace the IPv4 Address and Subnet mask with the value of your network.
+
+  .. code-block:: bash
+
+    firewall-cmd --zone=public --add-source=192.168.1.0/24 --permanent
+    firewall-cmd --zone=public --add-port=9000/tcp --permanent
+    firewall-cmd --reload

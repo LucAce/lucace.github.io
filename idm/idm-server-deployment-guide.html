@@ -4,6 +4,7 @@
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 <link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="IdM Client Deployment Guide" href="idm-client-deployment-guide.html" /><link rel="prev" title="IdM Server OS Installation Guide" href="idm-server-os-installation-guide.html" />
+        <link rel="canonical" href="https://engwsc.com/idm/idm-server-deployment-guide.html" />
 
     <meta name="generator" content="sphinx-5.0.2, furo 2022.06.21"/>
         <title>IdM Server Deployment Guide - Engineering Workstation Cluster Deployment Guide documentation</title>
@@ -433,6 +434,12 @@ server reduces the number of required systems to be online before users can log 
 <p>Instructions assume execution using the <code class="docutils literal notranslate"><span class="pre">root</span></code> account.</p>
 </div>
 <ol class="arabic simple">
+<li><p>Connect the system to the NFS Server:</p></li>
+</ol>
+<blockquote>
+<div><p>See Guide: <a class="reference internal" href="../nfs/nfs-client-deployment-guide.html"><span class="doc">NFS Client Deployment Guide</span></a></p>
+</div></blockquote>
+<ol class="arabic simple" start="2">
 <li><p>Install the Random Number Generator Service</p></li>
 </ol>
 <blockquote>
@@ -441,7 +448,7 @@ systemctl <span class="nb">enable</span> --now rngd
 </pre></div>
 </div>
 </div></blockquote>
-<ol class="arabic simple" start="2">
+<ol class="arabic simple" start="3">
 <li><p>Set the hostname to a FQDN:</p></li>
 </ol>
 <blockquote>
@@ -449,7 +456,7 @@ systemctl <span class="nb">enable</span> --now rngd
 </pre></div>
 </div>
 </div></blockquote>
-<ol class="arabic simple" start="3">
+<ol class="arabic simple" start="4">
 <li><p>Ensure the timezone is properly set:</p></li>
 </ol>
 <blockquote>
@@ -458,7 +465,7 @@ timedatectl set-local-rtc <span class="m">0</span>
 </pre></div>
 </div>
 </div></blockquote>
-<ol class="arabic simple" start="4">
+<ol class="arabic simple" start="5">
 <li><p><code class="docutils literal notranslate"><span class="pre">Optional</span></code> Add hostname to <code class="docutils literal notranslate"><span class="pre">/etc/hosts</span></code> if DNS does not resolve the FQDN:</p></li>
 </ol>
 <blockquote>
@@ -482,27 +489,31 @@ Replace <code class="docutils literal notranslate"><span class="pre">HOST_SHORTN
 </pre></div>
 </div>
 </div></blockquote>
-<ol class="arabic simple" start="5">
+<ol class="arabic simple" start="6">
 <li><p>Verify hostname resolves to an IPv4 address that is not equal to the loopback address:</p></li>
 </ol>
 <blockquote>
-<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>dig +short idm.engwsc.example.com A
+<div><div class="admonition important">
+<p class="admonition-title">Important</p>
+<p>Replace <code class="docutils literal notranslate"><span class="pre">idm.engwsc.example.com</span></code> with your hostname.</p>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>dig +short idm.engwsc.example.com A
 </pre></div>
 </div>
 </div></blockquote>
-<ol class="arabic simple" start="6">
+<ol class="arabic simple" start="7">
 <li><p>Verify reverse DNS configuration (PTR records):</p></li>
 </ol>
 <blockquote>
 <div><div class="admonition important">
 <p class="admonition-title">Important</p>
-<p>Replace <code class="docutils literal notranslate"><span class="pre">192.168.1.80</span></code> with the real host IPv4 address.</p>
+<p>Replace <code class="docutils literal notranslate"><span class="pre">192.168.1.80</span></code> with your IPv4 address.</p>
 </div>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>dig +short -x <span class="m">192</span>.168.1.80
 </pre></div>
 </div>
 </div></blockquote>
-<ol class="arabic simple" start="7">
+<ol class="arabic simple" start="8">
 <li><p>Install Chrony NTP server:</p></li>
 </ol>
 <blockquote>
@@ -510,19 +521,19 @@ Replace <code class="docutils literal notranslate"><span class="pre">HOST_SHORTN
 </pre></div>
 </div>
 </div></blockquote>
-<ol class="arabic simple" start="8">
+<ol class="arabic simple" start="9">
 <li><p>Configure Chrony to allow remote clients:</p></li>
 </ol>
 <blockquote>
 <div><div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>Change the IP address to your network’s subnet</p>
+<p>Change the IP address to your network’s subnet.</p>
 </div>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sed -i <span class="s1">&#39;s@#allow 192.168.0.0/16@allow 192.168.1.0/24@g&#39;</span> /etc/chrony.conf
 </pre></div>
 </div>
 </div></blockquote>
-<ol class="arabic simple" start="9">
+<ol class="arabic simple" start="10">
 <li><p>Restart chrondy service</p></li>
 </ol>
 <blockquote>
@@ -530,7 +541,7 @@ Replace <code class="docutils literal notranslate"><span class="pre">HOST_SHORTN
 </pre></div>
 </div>
 </div></blockquote>
-<ol class="arabic simple" start="10">
+<ol class="arabic simple" start="11">
 <li><p>Verify IdM module information:</p></li>
 </ol>
 <blockquote>
@@ -538,7 +549,7 @@ Replace <code class="docutils literal notranslate"><span class="pre">HOST_SHORTN
 </pre></div>
 </div>
 </div></blockquote>
-<ol class="arabic simple" start="11">
+<ol class="arabic simple" start="12">
 <li><p>Enable the idm:DL1 stream and sync repositories:</p></li>
 </ol>
 <blockquote>
@@ -547,7 +558,7 @@ dnf distro-sync
 </pre></div>
 </div>
 </div></blockquote>
-<ol class="arabic simple" start="12">
+<ol class="arabic simple" start="13">
 <li><p>Install IdM Server module without an integrated DNS:</p></li>
 </ol>
 <blockquote>
@@ -559,7 +570,7 @@ dnf distro-sync
 </pre></div>
 </div>
 </div></blockquote>
-<ol class="arabic simple" start="13">
+<ol class="arabic simple" start="14">
 <li><p>Install IdM Server:</p></li>
 </ol>
 <blockquote>
@@ -581,13 +592,13 @@ Replace <code class="docutils literal notranslate"><span class="pre">ADMIN_PASSW
 </pre></div>
 </div>
 </div></blockquote>
-<ol class="arabic simple" start="14">
+<ol class="arabic simple" start="15">
 <li><p>Configure firewalld rules:</p></li>
 </ol>
 <blockquote>
 <div><div class="admonition important">
 <p class="admonition-title">Important</p>
-<p>Replace the IPv4 Address and Subnet mask with the value of your network.</p>
+<p>Replace the IPv4 address and subnet mask with the values within your network.</p>
 </div>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>systemctl <span class="nb">enable</span> --now firewalld
 firewall-cmd --zone<span class="o">=</span>public --add-source<span class="o">=</span><span class="m">192</span>.168.1.0/24 --permanent

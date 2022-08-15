@@ -67,7 +67,7 @@ Deployment Steps
 
   .. important::
 
-    Replace ``HOST_FQDN`` with the real FQDN. (ex. user01.engwsc.example.com)
+    Replace ``HOST_FQDN`` with the system FQDN. (ex. user01.engwsc.example.com)
 
   .. code-block:: bash
 
@@ -77,7 +77,7 @@ Deployment Steps
 
   .. important::
 
-    Replace ``IP_ADDRESS`` with the real host IPv4 address (ex. 192.168.1.60) |br|
+    Replace ``IP_ADDRESS`` with the system IPv4 address (ex. 192.168.1.60) |br|
 
   .. code-block:: bash
 

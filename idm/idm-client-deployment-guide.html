@@ -4,6 +4,7 @@
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 <link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="Passwordless SSH Deployment Guide" href="passwordless-ssh-deployment-guide.html" /><link rel="prev" title="IdM Server Deployment Guide" href="idm-server-deployment-guide.html" />
+        <link rel="canonical" href="https://engwsc.com/idm/idm-client-deployment-guide.html" />
 
     <meta name="generator" content="sphinx-5.0.2, furo 2022.06.21"/>
         <title>IdM Client Deployment Guide - Engineering Workstation Cluster Deployment Guide documentation</title>
@@ -423,7 +424,7 @@ timedatectl set-local-rtc <span class="m">0</span>
 <blockquote>
 <div><div class="admonition important">
 <p class="admonition-title">Important</p>
-<p>Replace <code class="docutils literal notranslate"><span class="pre">HOST_FQDN</span></code> with the real FQDN. (ex. user01.engwsc.example.com)</p>
+<p>Replace <code class="docutils literal notranslate"><span class="pre">HOST_FQDN</span></code> with the system FQDN. (ex. user01.engwsc.example.com)</p>
 </div>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>dig +short HOST_FQDN A
 </pre></div>
@@ -435,7 +436,7 @@ timedatectl set-local-rtc <span class="m">0</span>
 <blockquote>
 <div><div class="admonition important">
 <p class="admonition-title">Important</p>
-<p>Replace <code class="docutils literal notranslate"><span class="pre">IP_ADDRESS</span></code> with the real host IPv4 address (ex. 192.168.1.60) <br /></p>
+<p>Replace <code class="docutils literal notranslate"><span class="pre">IP_ADDRESS</span></code> with the system IPv4 address (ex. 192.168.1.60) <br /></p>
 </div>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>dig +short -x IP_ADDRESS
 </pre></div>
