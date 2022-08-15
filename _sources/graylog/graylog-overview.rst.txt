@@ -60,10 +60,10 @@ Graylog is deployed on the following node:
 +----------+-----------------------------+-----------------------+------------+--------------+
 
 
-Journalbeat
------------
+rsyslog
+-------
 
-The Journalbeat agent is deployed on the following nodes:
+The rsyslog agent is deployed on the following nodes:
 
 +----------+-----------------------------+-----------------------+------------+--------------+
 | Hostname | FQDN                        | Function              | Type       | IPv4 Address |
@@ -125,4 +125,4 @@ Guides
 
   The following guides are required to deploy Graylog inject agents:
 
-  #. :doc:`journalbeat-deployment-guide`
+  #. :doc:`rsyslog-deployment-guide`

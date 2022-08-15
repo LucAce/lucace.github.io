@@ -116,7 +116,7 @@ available until a later point in time.
    graylog/graylog-overview
    graylog/graylog-os-installation-guide.rst
    graylog/graylog-deployment-guide.rst
-   graylog/journalbeat-deployment-guide.rst
+   graylog/rsyslog-deployment-guide.rst
 
 .. toctree::
    :maxdepth: 1

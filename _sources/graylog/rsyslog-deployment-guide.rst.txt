@@ -1,0 +1,17 @@
+.. rsyslog Deployment Guide
+
+.. |br| raw:: html
+
+   <br />
+
+########################
+rsyslog Deployment Guide
+########################
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Contents:
+
+The following instructions are for deploying rsyslog.
+
+TODO
