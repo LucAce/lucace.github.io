@@ -12,6 +12,6 @@ rsyslog Deployment Guide
    :maxdepth: 2
    :caption: Contents:
 
-The following instructions are for deploying rsyslog.
+The following instructions are for deploying rsyslog using TLS.
 
 TODO

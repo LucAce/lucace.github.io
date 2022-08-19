@@ -53,13 +53,13 @@ requirements and tailor them for their specific usage scenarios.
 
   2. Yum/DNF repositories are utilized, if available.  To reduce friction in performing
   updates yum repositories provided by the application authors have been utilized.
-  Only in cases where repositories are not available (for example Slurm) are then not
-  used.  While updates require coordinated with users, utilizing the vendor repositories
-  and yum/dnf commands to execute updates, reduces the amount of work required.
+  Only in cases where repositories are not available (e.g. Slurm) are they not
+  used.  While updates require coordination with users, utilizing the vendor repositories
+  and yum/dnf commands to execute updates reduces the amount of work required.
 
 ..
 
-  3. The cluster does not require a specific Service Level Agreement (SLA) uptime.  These
+  3. The cluster does not require a specific uptime Service Level Agreement (SLA).  These
   guides are intended to be used in an environment that can tolerate modest down times and
   system unavailability.  While down time should be cordinated with users, unexpected
-  down time should not result in downtime of other critical corporate resources.
+  down time should not result in downtime of critical corporate resources.
