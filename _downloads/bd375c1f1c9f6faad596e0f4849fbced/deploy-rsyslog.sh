@@ -25,7 +25,7 @@ echo
 GRAYLOG_SERVER="graylog.engwsc.example.com"
 
 # Rsyslog Port
-RSYSLOG_PORT="6514";
+RSYSLOG_PORT="6514"
 
 
 ###############################################################################

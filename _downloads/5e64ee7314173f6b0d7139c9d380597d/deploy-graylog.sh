@@ -25,10 +25,10 @@ echo
 HOST_NAME="graylog.engwsc.example.com"
 
 # Graylog Bind Port
-GRAYLOG_PORT="9000";
+GRAYLOG_PORT="9000"
 
 # Rsyslog Port
-RSYSLOG_PORT="6514";
+RSYSLOG_PORT="6514"
 
 # Graylog Secret
 GRAYLOG_SECRET=`cat /dev/urandom | tr -dc A-Za-z0-9 | head -c 64 ;`
@@ -53,7 +53,6 @@ OPENSSL_CN="graylog.engwsc.example.com"
 
 # OpenSSL IP Address
 OPENSSL_IP="192.168.1.83"
-
 
 # Set Allowed IPv4 Addresses (Include subnet mask)
 ALLOWED_IPV4="192.168.1.0/24"
