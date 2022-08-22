@@ -33,8 +33,8 @@ These guides are written for Red Hat Enterprise Linux 8 based operating systems
 and are compatible with AlmaLinux 8 and Rocky Linux 8.
 
 
-Accessibility
-~~~~~~~~~~~~~
+Access Controls
+~~~~~~~~~~~~~~~
 
 The VMM nodes should only be accessed directly using SSH by system administrators.
 Standard cluster user accounts should not be able to SSH into the VMM nodes.

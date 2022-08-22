@@ -31,8 +31,8 @@ These guides are written for Red Hat Enterprise Linux 8 based operating systems
 and are compatible with AlmaLinux 8 and Rocky Linux 8.
 
 
-Accessibility
-~~~~~~~~~~~~~
+Access Controls
+~~~~~~~~~~~~~~~
 
 Standard cluster user accounts must be able to SSH into the User/Compute Nodes.
 

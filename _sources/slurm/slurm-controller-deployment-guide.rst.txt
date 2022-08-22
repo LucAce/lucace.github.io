@@ -30,6 +30,7 @@ Follow-on Deployments
 
 The following guides can be applied after the deployment of their associated nodes.
 
+* :doc:`../graylog/rsyslog-deployment-guide`
 * :doc:`../influxdb/telegraf-deployment-guide`
 
 
