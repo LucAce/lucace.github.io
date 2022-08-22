@@ -40,7 +40,7 @@ GRAYLOG_SECRET_SHA256=`echo -n "${GRAYLOG_SECRET}" | tr -d '\n' | sha256sum | cu
 OPENSSL_C="US"
 
 # OpenSSL State
-OPENSSL_ST="NY"
+OPENSSL_ST="New York"
 
 # OpenSSL Locality
 OPENSSL_L="New York"
