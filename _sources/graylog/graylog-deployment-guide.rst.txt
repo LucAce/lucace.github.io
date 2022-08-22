@@ -263,8 +263,8 @@ Graylog
     # Details about the issuer of the certificate
     [req_distinguished_name]
     C = US
-    ST = NY
-    L = New York City
+    ST = New York
+    L = New York
     O = engwsc
     CN = graylog.engwsc.example.com
 
