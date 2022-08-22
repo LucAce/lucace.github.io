@@ -27,6 +27,9 @@ HOST_NAME="graylog.engwsc.example.com"
 # Graylog Bind Port
 GRAYLOG_PORT="9000";
 
+# Rsyslog Port
+RSYSLOG_PORT="6514";
+
 # Graylog Secret
 GRAYLOG_SECRET=`cat /dev/urandom | tr -dc A-Za-z0-9 | head -c 64 ;`
 
@@ -37,7 +40,7 @@ GRAYLOG_SECRET_SHA256=`echo -n "${GRAYLOG_SECRET}" | tr -d '\n' | sha256sum | cu
 OPENSSL_C="US"
 
 # OpenSSL State
-OPENSSL_ST="New York"
+OPENSSL_ST="NY"
 
 # OpenSSL Locality
 OPENSSL_L="New York"
@@ -47,6 +50,10 @@ OPENSSL_O="engwsc"
 
 # OpenSSL Common Name
 OPENSSL_CN="graylog.engwsc.example.com"
+
+# OpenSSL IP Address
+OPENSSL_IP="192.168.1.83"
+
 
 # Set Allowed IPv4 Addresses (Include subnet mask)
 ALLOWED_IPV4="192.168.1.0/24"
@@ -62,7 +69,8 @@ dnf -y update
 # Install Dependencies
 dnf -y install epel-release
 dnf -y distro-sync
-dnf -y install pwgen java-1.8.0-openjdk-headless
+dnf -y install pwgen java-1.8.0-openjdk-headless \
+    checkpolicy policycoreutils selinux-policy-devel
 
 
 #
@@ -70,7 +78,7 @@ dnf -y install pwgen java-1.8.0-openjdk-headless
 #
 
 # Add the MongoDB Yum Repository
-cat <<EOF | sudo tee /etc/yum.repos.d/mongodb-org-6.0.repo
+cat > /etc/yum.repos.d/mongodb-org-6.0.repo <<EOF
 [mongodb-org-6.0]
 name=MongoDB Repository
 baseurl=https://repo.mongodb.org/yum/redhat/\$releasever/mongodb-org/6.0/x86_64/
@@ -82,6 +90,54 @@ EOF
 # Install MongoDB
 dnf -y distro-sync
 dnf -y install mongodb-org
+
+# Add SELinux policy to permit access to cgroup
+mkdir -p /etc/mongod/selinux/
+
+cat > /etc/mongod/selinux/mongodb_cgroup_memory.te <<EOF
+module mongodb_cgroup_memory 1.0;
+require {
+      type cgroup_t;
+      type mongod_t;
+      class dir search;
+      class file { getattr open read };
+}
+#============= mongod_t ==============
+allow mongod_t cgroup_t:dir search;
+allow mongod_t cgroup_t:file { getattr open read };
+EOF
+
+checkmodule -M -m \
+    -o /etc/mongod/selinux/mongodb_cgroup_memory.mod \
+    /etc/mongod/selinux/mongodb_cgroup_memory.te
+
+semodule_package \
+    -o /etc/mongod/selinux/mongodb_cgroup_memory.pp \
+    -m /etc/mongod/selinux/mongodb_cgroup_memory.mod
+
+semodule -i /etc/mongod/selinux/mongodb_cgroup_memory.pp
+
+# Add SELinux policy to permit access to netstat
+cat > /etc/mongod/selinux/mongodb_proc_net.te <<EOF
+module mongodb_proc_net 1.0;
+require {
+    type proc_net_t;
+    type mongod_t;
+    class file { open read };
+}
+#============= mongod_t ==============
+allow mongod_t proc_net_t:file { open read };
+EOF
+
+checkmodule -M -m \
+    -o /etc/mongod/selinux/mongodb_proc_net.mod \
+    /etc/mongod/selinux/mongodb_proc_net.te
+
+semodule_package \
+    -o /etc/mongod/selinux/mongodb_proc_net.pp \
+    -m /etc/mongod/selinux/mongodb_proc_net.mod
+
+semodule -i /etc/mongod/selinux/mongodb_proc_net.pp
 
 # Start MongoDB
 systemctl daemon-reload
@@ -95,7 +151,7 @@ systemctl enable --now mongod
 # Add the ElasticSearch Yum Repository
 rpm --import https://artifacts.elastic.co/GPG-KEY-elasticsearch
 
-cat <<EOF | sudo tee /etc/yum.repos.d/elasticsearch.repo
+cat > /etc/yum.repos.d/elasticsearch.repo <<EOF
 [elasticsearch-7.x]
 name=Elasticsearch repository for 7.x packages
 baseurl=https://artifacts.elastic.co/packages/oss-7.x/yum
@@ -129,23 +185,45 @@ rpm -Uvh https://packages.graylog2.org/repo/packages/graylog-4.3-repository_late
 dnf -y distro-sync
 dnf -y install graylog-server
 
-# Create Self-Signed SSL Certificate
-mkdir -p /etc/graylog/ssl/
+# Create directory structure
+mkdir -p  /etc/graylog/ssl/
 chmod 755 /etc/graylog/ssl
 
-# Country Name (2 letter code) [XX]:US
-# State or Province Name (full name) []:New York
-# Locality Name (eg, city) [Default City]:New York
-# Organization Name (eg, company) [Default Company Ltd]:engwsc
-# Organizational Unit Name (eg, section) []:
-# Common Name (eg, your name or your server's hostname) []:graylog.engwsc.example.com
-# Email Address []:
-openssl req -x509 -nodes -newkey rsa:4096 \
-    -keyout "/etc/graylog/ssl/graylog.engwsc.example.com.key" \
-    -out "/etc/graylog/ssl/graylog.engwsc.example.com.crt" \
-    -subj "/CN=graylog.engwsc.example.com/C=US/ST=New York/L=New York/O=engwsc" \
-    -days 365
+# Create OpenSSL configuration file
+cat > /etc/graylog/ssl/graylog.engwsc.example.com.cnf <<EOF
+[req]
+distinguished_name = req_distinguished_name
+x509_extensions = v3_req
+prompt = no
 
+# Details about the issuer of the certificate
+[req_distinguished_name]
+C = ${OPENSSL_C}
+ST = ${OPENSSL_ST}
+L = ${OPENSSL_L}
+O = ${OPENSSL_O}
+CN = ${OPENSSL_CN}
+
+[v3_req]
+keyUsage = nonRepudiation, digitalSignature, keyEncipherment
+extendedKeyUsage = serverAuth
+subjectAltName = @alt_names
+
+# IP addresses and DNS names the certificate should include
+# Use IP.### for IP addresses and DNS.### for DNS names,
+# with "###" being a consecutive number.
+[alt_names]
+IP.1 = ${OPENSSL_IP}
+DNS.1 = ${OPENSSL_CN}
+EOF
+
+# Create Scertificate
+openssl req -x509 -days 365 -nodes -newkey rsa:4096 \
+    -config /etc/graylog/ssl/graylog.engwsc.example.com.cnf \
+    -keyout /etc/graylog/ssl/graylog.engwsc.example.com.key \
+    -out    /etc/graylog/ssl/graylog.engwsc.example.com.crt
+
+# Set permissions
 chown graylog:graylog /etc/graylog/ssl/graylog.engwsc.example.com.key
 chown graylog:graylog /etc/graylog/ssl/graylog.engwsc.example.com.crt
 chmod 600 /etc/graylog/ssl/graylog.engwsc.example.com.key
@@ -170,6 +248,7 @@ systemctl enable --now graylog-server
 # Set firewalld rules
 firewall-cmd --zone=public --add-source=${ALLOWED_IPV4} --permanent
 firewall-cmd --zone=public --add-port=${GRAYLOG_PORT}/tcp --permanent
+firewall-cmd --zone=public --add-port=${RSYSLOG_PORT}/tcp --permanent
 firewall-cmd --reload
 
 timestamp=$(date +"%Y-%m-%d_%H-%M-%S")
@@ -184,6 +263,8 @@ printf "**    Graylog Secret: %-64s **\n" ${GRAYLOG_SECRET}                     
 echo   "**                                                                                     **"  | tee -a .deploy-greylog-${timestamp}
 echo   "**    Graylog Dashboard:                                                               **"  | tee -a .deploy-greylog-${timestamp}
 printf "**      https://%-70s **\n" "${HOST_NAME}:${GRAYLOG_PORT}"                                  | tee -a .deploy-greylog-${timestamp}
+echo   "**                                                                                     **"  | tee -a .deploy-greylog-${timestamp}
+printf "**    Rsyslog Server Port: %-59s" "${RSYSLOG_PORT}"                                         | tee -a .deploy-greylog-${timestamp}
 echo   "**                                                                                     **"  | tee -a .deploy-greylog-${timestamp}
 echo   "*****************************************************************************************"  | tee -a .deploy-greylog-${timestamp}
 echo   "*****************************************************************************************"  | tee -a .deploy-greylog-${timestamp}

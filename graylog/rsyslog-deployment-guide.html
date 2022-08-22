@@ -7,7 +7,7 @@
         <link rel="canonical" href="https://engwsc.com/graylog/rsyslog-deployment-guide.html" />
 
     <meta name="generator" content="sphinx-5.0.2, furo 2022.06.21"/>
-        <title>rsyslog Deployment Guide - Engineering Workstation Cluster Deployment Guide documentation</title>
+        <title>RSyslog Deployment Guide - Engineering Workstation Cluster Deployment Guide documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?digest=40978830699223671f4072448e654b5958f38b89" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?digest=30d1aed668e5c3a91c3e3bf6a60b675221979f0e" />
@@ -135,7 +135,7 @@
           <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
         </button>
       </div>
-      <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
         <div class="visually-hidden">Toggle table of contents sidebar</div>
         <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
       </label>
@@ -263,7 +263,7 @@
 <li class="toctree-l1 has-children"><a class="reference internal" href="graylog-deployment-guide.html">Graylog Deployment Guide</a><input class="toctree-checkbox" id="toctree-checkbox-29" name="toctree-checkbox-29" role="switch" type="checkbox"/><label for="toctree-checkbox-29"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="simple">
 </ul>
 </li>
-<li class="toctree-l1 current has-children current-page"><a class="current reference internal" href="#">rsyslog Deployment Guide</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-30" name="toctree-checkbox-30" role="switch" type="checkbox"/><label for="toctree-checkbox-30"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="simple">
+<li class="toctree-l1 current has-children current-page"><a class="current reference internal" href="#">RSyslog Deployment Guide</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-30" name="toctree-checkbox-30" role="switch" type="checkbox"/><label for="toctree-checkbox-30"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="simple">
 </ul>
 </li>
 </ul>
@@ -365,18 +365,97 @@
               <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
             </button>
           </div>
-          <label class="toc-overlay-icon toc-content-icon no-toc" for="__toc">
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
             <div class="visually-hidden">Toggle table of contents sidebar</div>
             <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
           </label>
         </div>
         <article role="main">
           <section id="rsyslog-deployment-guide">
-<h1>rsyslog Deployment Guide<a class="headerlink" href="#rsyslog-deployment-guide" title="Permalink to this heading">#</a></h1>
+<h1>RSyslog Deployment Guide<a class="headerlink" href="#rsyslog-deployment-guide" title="Permalink to this heading">#</a></h1>
 <div class="toctree-wrapper compound">
 </div>
-<p>The following instructions are for deploying rsyslog using TLS.</p>
-<p>TODO</p>
+<p>The following instructions are for deploying RSyslog using TLS.</p>
+<section id="prerequisites">
+<h2>Prerequisites<a class="headerlink" href="#prerequisites" title="Permalink to this heading">#</a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="graylog-deployment-guide.html"><span class="doc">Graylog Deployment Guide</span></a></p></li>
+</ul>
+</section>
+<section id="references">
+<h2>References<a class="headerlink" href="#references" title="Permalink to this heading">#</a></h2>
+<blockquote>
+<div><p>These instructions were written for RSyslog <code class="docutils literal notranslate"><span class="pre">8.x.x</span></code></p>
+</div></blockquote>
+<blockquote>
+<div><p>Instructions are based on the following documentation: <br />
+<a class="reference external" href="https://docs.graylog.org/docs/syslog">https://docs.graylog.org/docs/syslog</a></p>
+</div></blockquote>
+</section>
+<section id="deployment-scripts">
+<h2>Deployment Scripts<a class="headerlink" href="#deployment-scripts" title="Permalink to this heading">#</a></h2>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>An example bash script of the instructions has been provided: <br />
+<a class="reference download internal" download="" href="../_downloads/bd375c1f1c9f6faad596e0f4849fbced/deploy-rsyslog.sh"><code class="xref download docutils literal notranslate"><span class="pre">../_static/graylog/deploy-rsyslog.sh</span></code></a></p>
+</div>
+</section>
+<section id="deployment-steps">
+<h2>Deployment Steps<a class="headerlink" href="#deployment-steps" title="Permalink to this heading">#</a></h2>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Instructions assume execution using the <code class="docutils literal notranslate"><span class="pre">root</span></code> account.</p>
+</div>
+<ol class="arabic simple">
+<li><p>Install Dependencies:</p></li>
+</ol>
+<blockquote>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>dnf -y install rsyslog
+</pre></div>
+</div>
+</div></blockquote>
+<ol class="arabic simple" start="2">
+<li><p>Create rsyslog configuration file:</p></li>
+</ol>
+<blockquote>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cat &gt; /etc/rsyslog.d/graylog.conf <span class="s">&lt;&lt;EOF</span>
+<span class="s">*.* action(</span>
+<span class="s">   Action.resumeInterval=&quot;10&quot;</span>
+<span class="s">   RebindInterval=&quot;10000&quot;</span>
+<span class="s">   Queue.Size=&quot;100000&quot;</span>
+<span class="s">   Queue.DiscardMark=&quot;97500&quot;</span>
+<span class="s">   Queue.HighWaterMark=&quot;80000&quot;</span>
+<span class="s">   Queue.Type=&quot;LinkedList&quot;</span>
+<span class="s">   Queue.FileName=&quot;rsyslogqueue&quot;</span>
+<span class="s">   Queue.CheckpointInterval=&quot;100&quot;</span>
+<span class="s">   Queue.MaxDiskSpace=&quot;2g&quot;</span>
+<span class="s">   Action.ResumeRetryCount=&quot;-1&quot;</span>
+<span class="s">   Queue.SaveOnShutdown=&quot;on&quot;</span>
+<span class="s">   Queue.TimeoutEnqueue=&quot;10&quot;</span>
+<span class="s">   Queue.DiscardSeverity=&quot;0&quot;</span>
+<span class="s">   type=&quot;omfwd&quot;</span>
+<span class="s">   target=&quot;${GRAYLOG_SERVER}&quot;</span>
+<span class="s">   protocol=&quot;tcp&quot;</span>
+<span class="s">   port=&quot;${RSYSLOG_PORT}&quot;</span>
+<span class="s">   template=&quot;RSYSLOG_SyslogProtocol23Format&quot;</span>
+<span class="s">   StreamDriver=&quot;gtls&quot;</span>
+<span class="s">   StreamDriverMode=&quot;1&quot;</span>
+<span class="s">   StreamDriverAuthMode=&quot;anon&quot;</span>
+<span class="s">)</span>
+<span class="s">EOF</span>
+</pre></div>
+</div>
+</div></blockquote>
+<ol class="arabic simple" start="3">
+<li><p>Start/Restart Rsyslog service:</p></li>
+</ol>
+<blockquote>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>systemctl <span class="nb">enable</span> rsyslog
+systemctl restart rsyslog
+</pre></div>
+</div>
+</div></blockquote>
+</section>
 </section>
 
         </article>
@@ -424,8 +503,30 @@
         
       </footer>
     </div>
-    <aside class="toc-drawer no-toc">
+    <aside class="toc-drawer">
       
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            Contents
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">RSyslog Deployment Guide</a><ul>
+<li><a class="reference internal" href="#prerequisites">Prerequisites</a></li>
+<li><a class="reference internal" href="#references">References</a></li>
+<li><a class="reference internal" href="#deployment-scripts">Deployment Scripts</a></li>
+<li><a class="reference internal" href="#deployment-steps">Deployment Steps</a></li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
       
       
     </aside>

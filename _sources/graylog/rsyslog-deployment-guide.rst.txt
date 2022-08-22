@@ -1,17 +1,97 @@
-.. rsyslog Deployment Guide
+.. RSyslog Deployment Guide
 
 .. |br| raw:: html
 
    <br />
 
 ########################
-rsyslog Deployment Guide
+RSyslog Deployment Guide
 ########################
 
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
 
-The following instructions are for deploying rsyslog using TLS.
+The following instructions are for deploying RSyslog using TLS.
 
-TODO
+*************
+Prerequisites
+*************
+
+* :doc:`graylog-deployment-guide`
+
+
+**********
+References
+**********
+
+..
+
+  These instructions were written for RSyslog ``8.x.x``
+
+..
+
+  Instructions are based on the following documentation: |br|
+  https://docs.graylog.org/docs/syslog
+
+
+******************
+Deployment Scripts
+******************
+
+.. note::
+
+  An example bash script of the instructions has been provided: |br|
+  :download:`../_static/graylog/deploy-rsyslog.sh`
+
+
+****************
+Deployment Steps
+****************
+
+.. note::
+
+  Instructions assume execution using the ``root`` account.
+
+1. Install Dependencies:
+
+  .. code-block:: bash
+
+    dnf -y install rsyslog
+
+2. Create rsyslog configuration file:
+
+  .. code-block:: bash
+
+    cat > /etc/rsyslog.d/graylog.conf <<EOF
+    *.* action(
+       Action.resumeInterval="10"
+       RebindInterval="10000"
+       Queue.Size="100000"
+       Queue.DiscardMark="97500"
+       Queue.HighWaterMark="80000"
+       Queue.Type="LinkedList"
+       Queue.FileName="rsyslogqueue"
+       Queue.CheckpointInterval="100"
+       Queue.MaxDiskSpace="2g"
+       Action.ResumeRetryCount="-1"
+       Queue.SaveOnShutdown="on"
+       Queue.TimeoutEnqueue="10"
+       Queue.DiscardSeverity="0"
+       type="omfwd"
+       target="${GRAYLOG_SERVER}"
+       protocol="tcp"
+       port="${RSYSLOG_PORT}"
+       template="RSYSLOG_SyslogProtocol23Format"
+       StreamDriver="gtls"
+       StreamDriverMode="1"
+       StreamDriverAuthMode="anon"
+    )
+    EOF
+
+3. Start/Restart Rsyslog service:
+
+  .. code-block:: bash
+
+    systemctl enable rsyslog
+    systemctl restart rsyslog

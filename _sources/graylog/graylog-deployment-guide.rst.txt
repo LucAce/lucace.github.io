@@ -44,7 +44,10 @@ References
 ..
 
   Instructions are based on the following documentation: |br|
-  https://docs.graylog.org/docs/operating-system-packages
+  - https://docs.graylog.org/docs/operating-system-packages |br|
+  - https://docs.graylog.org/docs/centos |br|
+  - https://docs.graylog.org/docs/https |br|
+  - https://docs.graylog.org/docs/syslog
 
 
 ***************
@@ -57,7 +60,7 @@ Post Deployment
   https://graylog.engwsc.example.com:9000
 
   User name: ``admin`` |br|
-  Password: ``password_secret`` (from Step 13)
+  Password: ``password_secret`` (from Step 16)
 
 ******************
 Deployment Scripts
@@ -92,7 +95,8 @@ Deployment Steps
     dnf -y install epel-release
 
     dnf -y distro-sync
-    dnf -y install pwgen java-1.8.0-openjdk-headless
+    dnf -y install pwgen java-1.8.0-openjdk-headless \
+        checkpolicy policycoreutils selinux-policy-devel
 
 
 MongoDB
@@ -102,7 +106,7 @@ MongoDB
 
   .. code-block:: bash
 
-    cat <<EOF | sudo tee /etc/yum.repos.d/mongodb-org-6.0.repo
+    cat > /etc/yum.repos.d/mongodb-org-6.0.repo <<EOF
     [mongodb-org-6.0]
     name=MongoDB Repository
     baseurl=https://repo.mongodb.org/yum/redhat/\$releasever/mongodb-org/6.0/x86_64/
@@ -118,7 +122,61 @@ MongoDB
     dnf -y distro-sync
     dnf -y install mongodb-org
 
-6. Start MongoDB:
+6. Add SELinux policy to permit access to cgroup:
+
+  .. code-block:: bash
+
+    mkdir -p /etc/mongod/selinux/
+
+    cat > /etc/mongod/selinux/mongodb_cgroup_memory.te <<EOF
+    module mongodb_cgroup_memory 1.0;
+    require {
+          type cgroup_t;
+          type mongod_t;
+          class dir search;
+          class file { getattr open read };
+    }
+    #============= mongod_t ==============
+    allow mongod_t cgroup_t:dir search;
+    allow mongod_t cgroup_t:file { getattr open read };
+    EOF
+
+    checkmodule -M -m \
+        -o /etc/mongod/selinux/mongodb_cgroup_memory.mod \
+        /etc/mongod/selinux/mongodb_cgroup_memory.te
+
+    semodule_package \
+        -o /etc/mongod/selinux/mongodb_cgroup_memory.pp \
+        -m /etc/mongod/selinux/mongodb_cgroup_memory.mod
+
+    semodule -i /etc/mongod/selinux/mongodb_cgroup_memory.pp
+
+7. Add SELinux policy to permit access to netstat:
+
+  .. code-block:: bash
+
+    cat > /etc/mongod/selinux/mongodb_proc_net.te <<EOF
+    module mongodb_proc_net 1.0;
+    require {
+        type proc_net_t;
+        type mongod_t;
+        class file { open read };
+    }
+    #============= mongod_t ==============
+    allow mongod_t proc_net_t:file { open read };
+    EOF
+
+    checkmodule -M -m \
+        -o /etc/mongod/selinux/mongodb_proc_net.mod \
+        /etc/mongod/selinux/mongodb_proc_net.te
+
+    semodule_package \
+        -o /etc/mongod/selinux/mongodb_proc_net.pp \
+        -m /etc/mongod/selinux/mongodb_proc_net.mod
+
+    semodule -i /etc/mongod/selinux/mongodb_proc_net.pp
+
+8. Start MongoDB:
 
   .. code-block:: bash
 
@@ -129,13 +187,13 @@ MongoDB
 ElasticSearch
 ~~~~~~~~~~~~~
 
-7. Add the ElasticSearch Yum Repository:
+9. Add the ElasticSearch Yum Repository:
 
   .. code-block:: bash
 
     rpm --import https://artifacts.elastic.co/GPG-KEY-elasticsearch
 
-    cat <<EOF | sudo tee /etc/yum.repos.d/elasticsearch.repo
+    cat > /etc/yum.repos.d/elasticsearch.repo <<EOF
     [elasticsearch-7.x]
     name=Elasticsearch repository for 7.x packages
     baseurl=https://artifacts.elastic.co/packages/oss-7.x/yum
@@ -146,14 +204,14 @@ ElasticSearch
     type=rpm-md
     EOF
 
-8. Install ElasticSearch:
+10. Install ElasticSearch:
 
   .. code-block:: bash
 
     dnf -y distro-sync
     dnf -y install elasticsearch-oss
 
-9. Configure ElasticSearch for Graylog:
+11. Configure ElasticSearch for Graylog:
 
   .. code-block:: bash
 
@@ -162,7 +220,7 @@ ElasticSearch
     action.auto_create_index: false
     EOT
 
-10. Start ElasticSearch:
+12. Start ElasticSearch:
 
   .. code-block:: bash
 
@@ -173,7 +231,7 @@ ElasticSearch
 Graylog
 ~~~~~~~
 
-11. Install Graylog:
+13. Install Graylog:
 
   .. code-block:: bash
 
@@ -182,7 +240,7 @@ Graylog
     dnf -y distro-sync
     dnf -y install graylog-server
 
-12. Create Self-Signed SSL Certificate:
+14. Create Self-Signed SSL Certificate:
 
   .. important::
 
@@ -190,28 +248,60 @@ Graylog
 
   .. code-block:: bash
 
-    mkdir -p /etc/graylog/ssl
+    # Create directory structure
+    mkdir -p  /etc/graylog/ssl/
     chmod 755 /etc/graylog/ssl
 
-    # Country Name (2 letter code) [XX]:US
-    # State or Province Name (full name) []:New York
-    # Locality Name (eg, city) [Default City]:New York
-    # Organization Name (eg, company) [Default Company Ltd]:engwsc
-    # Organizational Unit Name (eg, section) []:
-    # Common Name (eg, your name or your server's hostname) []:graylog.engwsc.example.com
-    # Email Address []:
+    # Create OpenSSL configuration file
+    cat > /etc/graylog/ssl/graylog.engwsc.example.com.cnf <<EOF
+    [req]
+    distinguished_name = req_distinguished_name
+    x509_extensions = v3_req
+    prompt = no
 
-    openssl req -x509 -nodes -newkey rsa:4096 \
-        -keyout "/etc/graylog/ssl/graylog.engwsc.example.com.key" \
-        -out "/etc/graylog/ssl/graylog.engwsc.example.com.crt" \
-        -subj "/CN=graylog.engwsc.example.com/C=US/ST=New York/L=New York/O=engwsc" \
-        -days 365
+    # Details about the issuer of the certificate
+    [req_distinguished_name]
+    C = US
+    ST = NY
+    L = New York City
+    O = engwsc
+    CN = graylog.engwsc.example.com
 
+    [v3_req]
+    keyUsage = nonRepudiation, digitalSignature, keyEncipherment
+    extendedKeyUsage = serverAuth
+    subjectAltName = @alt_names
+
+    # IP addresses and DNS names the certificate should include
+    # Use IP.### for IP addresses and DNS.### for DNS names,
+    # with "###" being a consecutive number.
+    [alt_names]
+    IP.1 = 192.168.1.83
+    DNS.1 = graylog.engwsc.example.com
+    EOF
+
+    # Create Scertificate
+    openssl req -x509 -days 365 -nodes -newkey rsa:4096 \
+        -config /etc/graylog/ssl/graylog.engwsc.example.com.cnf \
+        -keyout /etc/graylog/ssl/graylog.engwsc.example.com.key \
+        -out    /etc/graylog/ssl/graylog.engwsc.example.com.crt
+
+    # Set permissions
     chown graylog:graylog /etc/graylog/ssl/graylog.engwsc.example.com.key
     chown graylog:graylog /etc/graylog/ssl/graylog.engwsc.example.com.crt
     chmod 600 /etc/graylog/ssl/graylog.engwsc.example.com.key
 
-13. Set required ``password_secret`` and ``root_password_sha2``:
+15. Import certificate into java Key Store:
+
+  .. code-block:: bash
+
+    keytool -importcert -noprompt \
+        -keystore /etc/pki/java/cacerts \
+        -storepass changeit \
+        -alias graylog-self-signed \
+        -file /etc/graylog/ssl/graylog.engwsc.example.com.crt
+
+16. Set required ``password_secret`` and ``root_password_sha2``:
 
   .. important::
 
@@ -234,21 +324,21 @@ Graylog
     sed -i "s|#http_tls_cert_file =.*|http_tls_cert_file = /etc/graylog/ssl/graylog.engwsc.example.com.crt|g" /etc/graylog/server/server.conf
     sed -i "s|#http_tls_key_file =.*|http_tls_key_file = /etc/graylog/ssl/graylog.engwsc.example.com.key|g" /etc/graylog/server/server.conf
 
-14. Configure SELinux:
+17. Configure SELinux:
 
   .. code-block:: bash
 
     setsebool -P httpd_can_network_connect 1
     semanage port -a -t http_port_t -p tcp 9000
 
-15. Start Graylog:
+18. Start Graylog:
 
   .. code-block:: bash
 
     systemctl daemon-reload
     systemctl enable --now graylog-server
 
-16. Set firewalld rules:
+19. Set firewalld rules:
 
   .. important::
 
@@ -258,4 +348,5 @@ Graylog
 
     firewall-cmd --zone=public --add-source=192.168.1.0/24 --permanent
     firewall-cmd --zone=public --add-port=9000/tcp --permanent
+    firewall-cmd --zone=public --add-port=6514/tcp --permanent
     firewall-cmd --reload

@@ -39,7 +39,6 @@ Work In Progress
 
 Some of the guides still need to be written:
 
-- Graylog
 - Repository Mirror
 - (All) Usage Guides
 
