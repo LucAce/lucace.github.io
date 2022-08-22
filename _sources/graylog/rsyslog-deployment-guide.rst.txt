@@ -61,6 +61,10 @@ Deployment Steps
 
 2. Create rsyslog configuration file:
 
+  .. important::
+
+    Replace the ``target`` and ``port`` with the value of your network.
+
   .. code-block:: bash
 
     cat > /etc/rsyslog.d/graylog.conf <<EOF
@@ -79,9 +83,9 @@ Deployment Steps
        Queue.TimeoutEnqueue="10"
        Queue.DiscardSeverity="0"
        type="omfwd"
-       target="${GRAYLOG_SERVER}"
+       target="graylog.engwsc.example.com"
        protocol="tcp"
-       port="${RSYSLOG_PORT}"
+       port="6514"
        template="RSYSLOG_SyslogProtocol23Format"
        StreamDriver="gtls"
        StreamDriverMode="1"
