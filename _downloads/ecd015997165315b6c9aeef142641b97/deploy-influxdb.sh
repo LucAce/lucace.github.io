@@ -1,10 +1,26 @@
 #!/bin/bash
+###############################################################################
+#
+#   Filename: deploy-influxdb.sh
+#
+#   Functional Description:
+#
+#       Bash script which deploys InfluxDB.
+#
+#   Usage:
+#
+#       ./deploy-idm-influxdb.sh
+#
+###############################################################################
+
 
 # Ensure running as root or sudo
 if [ "$EUID" -ne 0 ]; then
   echo -e "ERROR: Please run as root or use sudo\n"
   exit 1
 fi
+
+echo -e "\n[$(date +"%Y-%m-%d %H:%M:%S")] Deploying InfluxDB...\n"
 
 
 ###############################################################################
@@ -141,4 +157,5 @@ echo   "************************************************************************
 echo   "****************************************************************************"
 echo
 
+echo -e "\n[$(date +"%Y-%m-%d %H:%M:%S")] Deploying InfluxDB Complete\n"
 exit 0

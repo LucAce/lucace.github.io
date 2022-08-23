@@ -1,10 +1,26 @@
 #!/bin/bash
+###############################################################################
+#
+#   Filename: deploy-nfs-server.sh
+#
+#   Functional Description:
+#
+#       Bash script which deploys NFS Server.
+#
+#   Usage:
+#
+#       ./deploy-nfs-server.sh
+#
+###############################################################################
+
 
 # Ensure running as root or sudo
 if [ "$EUID" -ne 0 ]; then
   echo -e "ERROR: Please run as root or use sudo\n"
   exit 1
 fi
+
+echo -e "\n[$(date +"%Y-%m-%d %H:%M:%S")] Deploying NFS Server...\n"
 
 
 ###############################################################################
@@ -79,4 +95,5 @@ firewall-cmd --zone=public --add-service=cockpit --permanent
 firewall-cmd --zone=public --add-service=nfs --permanent
 firewall-cmd --reload
 
+echo -e "\n[$(date +"%Y-%m-%d %H:%M:%S")] Deploying NFS Server Complete\n"
 exit 0

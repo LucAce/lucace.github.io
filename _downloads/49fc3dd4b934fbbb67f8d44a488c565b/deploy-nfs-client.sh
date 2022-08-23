@@ -1,10 +1,26 @@
 #!/bin/bash
+###############################################################################
+#
+#   Filename: deploy-nfs-client.sh
+#
+#   Functional Description:
+#
+#       Bash script which deploys NFS Client.
+#
+#   Usage:
+#
+#       ./deploy-nfs-client.sh
+#
+###############################################################################
+
 
 # Ensure running as root or sudo
 if [ "$EUID" -ne 0 ]; then
   echo -e "ERROR: Please run as root or use sudo\n"
   exit
 fi
+
+echo -e "\n[$(date +"%Y-%m-%d %H:%M:%S")] Deploying NFS Client...\n"
 
 
 ###############################################################################
@@ -72,4 +88,5 @@ mount /app
 mount /home
 mount /scratch
 
+echo -e "\n[$(date +"%Y-%m-%d %H:%M:%S")] Deploying NFS Client Complete\n"
 exit 0

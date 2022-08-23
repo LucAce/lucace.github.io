@@ -1,10 +1,26 @@
 #!/bin/bash
+###############################################################################
+#
+#   Filename: deploy-slurm-compute-node.sh
+#
+#   Functional Description:
+#
+#       Bash script which deploys Slurm Compute Node.
+#
+#   Usage:
+#
+#       ./deploy-slurm-compute-node.sh
+#
+###############################################################################
+
 
 # Ensure running as root (not sudo)
 if [ "$EUID" -ne 0 ]; then
   echo -e "ERROR: Please run as root\n"
   exit 1
 fi
+
+echo -e "\n[$(date +"%Y-%m-%d %H:%M:%S")] Deploying Slurm Compute Node...\n"
 
 
 ###############################################################################
@@ -145,4 +161,5 @@ echo -e "\nEnabling Slurm Compute Node Service..."
 
 systemctl enable --now slurmd
 
+echo -e "\n[$(date +"%Y-%m-%d %H:%M:%S")] Deploying Slurm Compute Node Complete\n"
 exit 0

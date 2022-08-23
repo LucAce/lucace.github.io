@@ -1,4 +1,18 @@
 #!/bin/bash
+###############################################################################
+#
+#   Filename: deploy-graylog.sh
+#
+#   Functional Description:
+#
+#       Bash script which deploys Graylog.
+#
+#   Usage:
+#
+#       ./deploy-graylog.sh
+#
+###############################################################################
+
 
 # Ensure running as root or sudo
 if [ "$EUID" -ne 0 ]; then
@@ -6,15 +20,7 @@ if [ "$EUID" -ne 0 ]; then
   exit
 fi
 
-echo
-echo "*****************************"
-echo "*****************************"
-echo "**                         **"
-echo "**    Deploying Graylog    **"
-echo "**                         **"
-echo "*****************************"
-echo "*****************************"
-echo
+echo -e "\n[$(date +"%Y-%m-%d %H:%M:%S")] Deploying Graylog...\n"
 
 
 ###############################################################################
@@ -279,4 +285,5 @@ echo
 echo "REQUIRED: Create RSyslog Input in Web Interface (https://${HOST_NAME}:${GRAYLOG_PORT})"
 echo
 
+echo -e "\n[$(date +"%Y-%m-%d %H:%M:%S")] Deploying Graylog Complete\n"
 exit 0

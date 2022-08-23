@@ -1,4 +1,18 @@
 #!/bin/bash
+###############################################################################
+#
+#   Filename: deploy-rsyslog.sh
+#
+#   Functional Description:
+#
+#       Bash script which deploys RSyslog.
+#
+#   Usage:
+#
+#       ./deploy-rsyslog.sh
+#
+###############################################################################
+
 
 # Ensure running as root or sudo
 if [ "$EUID" -ne 0 ]; then
@@ -6,15 +20,7 @@ if [ "$EUID" -ne 0 ]; then
   exit
 fi
 
-echo
-echo "*****************************"
-echo "*****************************"
-echo "**                         **"
-echo "**    Deploying RSyslog    **"
-echo "**                         **"
-echo "*****************************"
-echo "*****************************"
-echo
+echo -e "\n[$(date +"%Y-%m-%d %H:%M:%S")] Deploying RSyslog...\n"
 
 
 ###############################################################################
@@ -69,7 +75,5 @@ EOF
 systemctl enable rsyslog
 systemctl restart rsyslog
 
-timestamp=$(date +"%Y-%m-%d_%H-%M-%S")
-echo "$timestamp" | tee .deploy-rsyslog-${timestamp}
-
+echo -e "\n[$(date +"%Y-%m-%d %H:%M:%S")] Deploying RSyslog Complete\n"
 exit 0

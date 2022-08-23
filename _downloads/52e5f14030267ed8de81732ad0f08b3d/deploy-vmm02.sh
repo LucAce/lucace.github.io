@@ -1,10 +1,25 @@
 #!/bin/bash
+###############################################################################
+#
+#   Filename: deploy-vmm02.sh
+#
+#   Functional Description:
+#
+#       Bash script which deploys Virtual Machine Manager 2.
+#
+#   Usage:
+#
+#       ./deploy-vmm02.sh
+#
+###############################################################################
 
 ### Ensure running as root
 if [ "$EUID" -ne 0 ]; then
   echo -e "ERROR: Please run as root\n"
   exit
 fi
+
+echo -e "\n[$(date +"%Y-%m-%d %H:%M:%S")] Deploying Virtual Machine Manager 2...\n"
 
 
 ###############################################################################
@@ -120,4 +135,5 @@ virsh net-define /tmp/bridge.xml
 virsh net-start ${BRIDGE_NAME}
 virsh net-autostart ${BRIDGE_NAME}
 
+echo -e "\n[$(date +"%Y-%m-%d %H:%M:%S")] Deploying Virtual Machine Manager 2 Complete\n"
 exit 0

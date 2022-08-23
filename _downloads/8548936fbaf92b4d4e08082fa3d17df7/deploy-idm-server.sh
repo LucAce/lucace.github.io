@@ -1,10 +1,26 @@
 #!/bin/bash
+###############################################################################
+#
+#   Filename: deploy-idm-server.sh
+#
+#   Functional Description:
+#
+#       Bash script which deploys IdM/FreeIPA Server.
+#
+#   Usage:
+#
+#       ./deploy-idm-server.sh
+#
+###############################################################################
+
 
 # Ensure running as root or sudo
 if [ "$EUID" -ne 0 ]; then
   echo -e "ERROR: Please run as root or use sudo\n"
   exit
 fi
+
+echo -e "\n[$(date +"%Y-%m-%d %H:%M:%S")] Deploying IdM Server...\n"
 
 
 ###############################################################################
@@ -127,4 +143,5 @@ echo   "************************************************************************
 echo   "*************************************************************************"
 echo
 
+echo -e "\n[$(date +"%Y-%m-%d %H:%M:%S")] Deploying IdM Server Complete\n"
 exit 0

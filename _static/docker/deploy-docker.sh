@@ -1,10 +1,26 @@
 #!/bin/bash
+###############################################################################
+#
+#   Filename: deploy-docker.sh
+#
+#   Functional Description:
+#
+#       Bash script which deploys Docker.
+#
+#   Usage:
+#
+#       ./deploy-docker.sh
+#
+###############################################################################
+
 
 # Ensure running as root or sudo
 if [ "$EUID" -ne 0 ]; then
   echo -e "ERROR: Please run as root or use sudo\n"
   exit 1
 fi
+
+echo -e "\n[$(date +"%Y-%m-%d %H:%M:%S")] Deploying Docker...\n"
 
 
 ###############################################################################
@@ -47,4 +63,5 @@ systemctl enable --now docker
 # Verify Docker is Operating
 docker run hello-world
 
+echo -e "\n[$(date +"%Y-%m-%d %H:%M:%S")] Deploying Docker Complete\n"
 exit 0

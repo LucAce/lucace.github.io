@@ -1,10 +1,26 @@
 #!/bin/bash
+###############################################################################
+#
+#   Filename: deploy-idm-client.sh
+#
+#   Functional Description:
+#
+#       Bash script which deploys IdM/FreeIPA Client.
+#
+#   Usage:
+#
+#       ./deploy-idm-client.sh
+#
+###############################################################################
+
 
 # Ensure running as root or sudo
 if [ "$EUID" -ne 0 ]; then
   echo -e "ERROR: Please run as root or use sudo\n"
   exit
 fi
+
+echo -e "\n[$(date +"%Y-%m-%d %H:%M:%S")] Deploying IdM Client...\n"
 
 
 ###############################################################################
@@ -80,4 +96,5 @@ ipa-client-install \
   --password=${ADMIN_PASSWORD} \
   --unattended
 
+echo -e "\n[$(date +"%Y-%m-%d %H:%M:%S")] Deploying IdM Client Complete\n"
 exit 0

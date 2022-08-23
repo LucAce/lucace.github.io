@@ -1,10 +1,26 @@
 #!/bin/bash
+###############################################################################
+#
+#   Filename: deploy-telegraf.sh
+#
+#   Functional Description:
+#
+#       Bash script which deploys Telegraf Agent.
+#
+#   Usage:
+#
+#       ./deploy-idm-telegraf.sh
+#
+###############################################################################
+
 
 # Ensure running as root or sudo
 if [ "$EUID" -ne 0 ]; then
   echo -e "ERROR: Please run as root or use sudo\n"
   exit
 fi
+
+echo -e "\n[$(date +"%Y-%m-%d %H:%M:%S")] Deploying Telegraf Agent...\n"
 
 
 ###############################################################################
@@ -102,4 +118,5 @@ echo "Defaults!SMARTCTL !logfile, !syslog, !pam_session" >> /etc/sudoers.d/teleg
 # Enable telegraf service
 systemctl enable --now telegraf
 
+echo -e "\n[$(date +"%Y-%m-%d %H:%M:%S")] Deploying Telegraf Agent Complete\n"
 exit 0

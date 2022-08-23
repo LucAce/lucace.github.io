@@ -1,10 +1,26 @@
 #!/bin/bash
+###############################################################################
+#
+#   Filename: deploy-grafana.sh
+#
+#   Functional Description:
+#
+#       Bash script which deploys Grafana.
+#
+#   Usage:
+#
+#       ./deploy-grafana.sh
+#
+###############################################################################
+
 
 # Ensure running as root or sudo
 if [ "$EUID" -ne 0 ]; then
   echo -e "ERROR: Please run as root or use sudo\n"
   exit
 fi
+
+echo -e "\n[$(date +"%Y-%m-%d %H:%M:%S")] Deploying Grafana...\n"
 
 
 ###############################################################################
@@ -119,4 +135,5 @@ echo   "************************************************************************
 echo   "****************************************************************************"
 echo
 
+echo -e "\n[$(date +"%Y-%m-%d %H:%M:%S")] Deploying Grafana Complete\n"
 exit 0

@@ -1,4 +1,18 @@
 #!/bin/bash
+###############################################################################
+#
+#   Filename: change_ip_address.sh
+#
+#   Functional Description:
+#
+#       Bash script which changes the system IPv4 address.
+#
+#   Usage:
+#
+#       ./change_ip_address.sh
+#
+###############################################################################
+
 
 # Ensure running as root or sudo
 if [ "$EUID" -ne 0 ]; then
@@ -35,11 +49,11 @@ case $input in
   [yY])
     sed -i "s@IPADDR=.*@IPADDR=${NEW_IPV4_ADDRESS}@g" ${CONFIG_FILE}
     cat ${CONFIG_FILE}
-    echo "IPv4 Address Name Changed"
+    echo -e "\nIPv4 Address Changed"
     echo -e "\nNOTICE: Reboot Required\n"
     ;;
   *)
-    echo "IPv4 Address Not Changed"
+    echo -e "\nIPv4 Address Not Changed"
     ;;
 esac
 

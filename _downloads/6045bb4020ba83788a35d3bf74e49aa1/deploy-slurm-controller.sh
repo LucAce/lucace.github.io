@@ -1,10 +1,26 @@
 #!/bin/bash
+###############################################################################
+#
+#   Filename: deploy-slurm-controller.sh
+#
+#   Functional Description:
+#
+#       Bash script which deploys Slurm Controller.
+#
+#   Usage:
+#
+#       ./deploy-slurm-controller.sh
+#
+###############################################################################
+
 
 # Ensure running as root (not sudo)
 if [ "$EUID" -ne 0 ]; then
   echo -e "ERROR: Please run as root\n"
   exit 1
 fi
+
+echo -e "\n[$(date +"%Y-%m-%d %H:%M:%S")] Deploying Slurm Controller...\n"
 
 
 ###############################################################################
@@ -348,4 +364,5 @@ echo   "************************************************************************
 echo   "*************************************************************************"
 echo
 
+echo -e "\n[$(date +"%Y-%m-%d %H:%M:%S")] Deploying Slurm Controller Complete\n"
 exit 0

@@ -1,4 +1,17 @@
 #!/bin/bash
+###############################################################################
+#
+#   Filename: change_hostname.sh
+#
+#   Functional Description:
+#
+#       Bash script which changes the system hostname.
+#
+#   Usage:
+#
+#       ./change_hostname.sh
+#
+###############################################################################
 
 # Ensure running as root or sudo
 if [ "$EUID" -ne 0 ]; then

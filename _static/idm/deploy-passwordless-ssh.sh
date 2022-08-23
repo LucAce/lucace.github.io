@@ -1,10 +1,26 @@
 #!/bin/bash
+###############################################################################
+#
+#   Filename: deploy-passwordless-ssh.sh
+#
+#   Functional Description:
+#
+#       Bash script which deploys passwordless ssh.
+#
+#   Usage:
+#
+#       ./deploy-passwordless-ssh.sh
+#
+###############################################################################
+
 
 # Ensure running as user
 if [ "$EUID" -eq 0 ]; then
   echo -e "ERROR: Please run as a user\n"
   exit 1
 fi
+
+echo -e "\n[$(date +"%Y-%m-%d %H:%M:%S")] Deploying Passwordless SSH...\n"
 
 
 ###############################################################################
@@ -34,4 +50,5 @@ chmod 700 ~/.ssh
 # Upload Public Key to IdM / FreeIPA
 ipa user-mod ${USER} --sshpubkey="$(cat ~/.ssh/id_rsa.pub)"
 
+echo -e "\n[$(date +"%Y-%m-%d %H:%M:%S")] Deploying Deploying Passwordless SSH Complete\n"
 exit 0

@@ -1,10 +1,26 @@
 #!/bin/bash
+###############################################################################
+#
+#   Filename: deploy-gitlab.sh
+#
+#   Functional Description:
+#
+#       Bash script which deploys GitLab.
+#
+#   Usage:
+#
+#       ./deploy-gitlab.sh
+#
+###############################################################################
+
 
 # Ensure running as root or sudo
 if [ "$EUID" -ne 0 ]; then
   echo -e "ERROR: Please run as root or use sudo\n"
   exit
 fi
+
+echo -e "\n[$(date +"%Y-%m-%d %H:%M:%S")] Deploying GitLab...\n"
 
 
 ###############################################################################
@@ -91,4 +107,5 @@ echo -e "\nTemporary GitLab root user password\n"
 cat /etc/gitlab/initial_root_password
 echo -e "\n"
 
+echo -e "\n[$(date +"%Y-%m-%d %H:%M:%S")] Deploying GitLab Complete\n"
 exit 0

@@ -1,10 +1,26 @@
 #!/bin/bash
+###############################################################################
+#
+#   Filename: deploy-ansible-control-node.sh
+#
+#   Functional Description:
+#
+#       Bash script which deploys an Ansible Control Node.
+#
+#   Usage:
+#
+#       ./deploy-ansible-control-node.sh
+#
+###############################################################################
+
 
 # Ensure running as root or sudo
 if [ "$EUID" -ne 0 ]; then
   echo -e "ERROR: Please run as root or use sudo\n"
   exit 1
 fi
+
+echo -e "\n[$(date +"%Y-%m-%d %H:%M:%S")] Deploying Ansible Control Node...\n"
 
 
 ###############################################################################
@@ -43,4 +59,5 @@ ansible-config init --disabled > /etc/ansible/ansible.cfg
 # Set default options
 sed -i "s/;nocows=.*/nocows=True/g" /etc/ansible/ansible.cfg
 
+echo -e "\n[$(date +"%Y-%m-%d %H:%M:%S")] Deploying Ansible Control Node Complete\n"
 exit 0
