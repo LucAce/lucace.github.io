@@ -66,7 +66,8 @@ cat > /etc/rsyslog.d/graylog.conf <<EOF
 EOF
 
 # Restart Rsyslog service
-systemctl enable --now rsyslog
+systemctl enable rsyslog
+systemctl restart rsyslog
 
 timestamp=$(date +"%Y-%m-%d_%H-%M-%S")
 echo "$timestamp" | tee .deploy-rsyslog-${timestamp}

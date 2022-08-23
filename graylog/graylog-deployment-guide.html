@@ -733,6 +733,60 @@ firewall-cmd --reload
 </pre></div>
 </div>
 </div></blockquote>
+<ol class="arabic simple" start="20">
+<li><p>Log into Graylog:</p></li>
+</ol>
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<p>The remainder of this guide requires using the Graylog Web Interface.</p>
+</div>
+<blockquote>
+<div><p>Log into Graylog using user <code class="docutils literal notranslate"><span class="pre">admin</span></code> and password <code class="docutils literal notranslate"><span class="pre">password_secret</span></code>.</p>
+<p>Graylog: <a class="reference external" href="https://graylog.engwsc.example.com:9000">https://graylog.engwsc.example.com:9000</a></p>
+<img alt="../_images/login-page.png" src="../_images/login-page.png" />
+</div></blockquote>
+<ol class="arabic simple" start="21">
+<li><p>Create Input:</p></li>
+</ol>
+<blockquote>
+<div><p>Initial Landing Page</p>
+<img alt="../_images/landing-page.png" src="../_images/landing-page.png" />
+</div></blockquote>
+<blockquote>
+<div><p>System -&gt; Inputs</p>
+<img alt="../_images/input-dropdown.png" src="../_images/input-dropdown.png" />
+</div></blockquote>
+<blockquote>
+<div><ul class="simple">
+<li><p>Click dropdown and select “Syslog TCP”</p></li>
+<li><p>Click on “Launch new input”</p></li>
+</ul>
+<img alt="../_images/input-page.png" src="../_images/input-page.png" />
+</div></blockquote>
+<blockquote>
+<div><p>Fillout form:</p>
+<ul class="simple">
+<li><p>Click the “Global” check box (box should be checked)</p></li>
+<li><p>In the “Title” box enter: RSyslog</p></li>
+<li><p>In the “Port” box enter: 6514</p></li>
+<li><p>In the “No. of worker threads” box enter: 4</p></li>
+<li><p>In the “TLS cert file” box enter: /etc/graylog/ssl/graylog.engwsc.example.com.crt</p></li>
+<li><p>In the “TLS private key file” box enter: /etc/graylog/ssl/graylog.engwsc.example.com.key</p></li>
+<li><p>Click the “Enable TLS” check box (box should be checked)</p></li>
+<li><p>In the “TLS client authentication” box enter: disabled</p></li>
+<li><p>Click the “TCP keepalive” check box (box should be checked)</p></li>
+<li><p>Ensure the “Allow overriding date?” check box is checked</p></li>
+<li><p>Click the “Save” button</p></li>
+</ul>
+<img alt="../_images/form1-page.png" src="../_images/form1-page.png" />
+<p><br /></p>
+<img alt="../_images/form2-page.png" src="../_images/form2-page.png" />
+<p><br /></p>
+<ul class="simple">
+<li><p>If successful, input should start automatically and say “1 RUNNING”</p></li>
+</ul>
+<img alt="../_images/running-page.png" src="../_images/running-page.png" />
+</div></blockquote>
 </section>
 </section>
 </section>

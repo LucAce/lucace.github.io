@@ -351,3 +351,66 @@ Graylog
     firewall-cmd --zone=public --add-port=9000/tcp --permanent
     firewall-cmd --zone=public --add-port=6514/tcp --permanent
     firewall-cmd --reload
+
+20. Log into Graylog:
+
+.. important::
+
+  The remainder of this guide requires using the Graylog Web Interface.
+
+..
+
+  Log into Graylog using user ``admin`` and password ``password_secret``.
+
+  Graylog: https://graylog.engwsc.example.com:9000
+
+  .. image:: ../_static/graylog/login-page.png
+
+21. Create Input:
+
+..
+
+  Initial Landing Page
+
+  .. image:: ../_static/graylog/landing-page.png
+
+..
+
+  System -> Inputs
+
+  .. image:: ../_static/graylog/input-dropdown.png
+
+..
+
+  * Click dropdown and select "Syslog TCP"
+  * Click on "Launch new input"
+
+  .. image:: ../_static/graylog/input-page.png
+
+..
+
+  Fillout form:
+
+  * Click the "Global" check box (box should be checked)
+  * In the "Title" box enter: RSyslog
+  * In the "Port" box enter: 6514
+  * In the "No. of worker threads" box enter: 4
+  * In the "TLS cert file" box enter: /etc/graylog/ssl/graylog.engwsc.example.com.crt
+  * In the "TLS private key file" box enter: /etc/graylog/ssl/graylog.engwsc.example.com.key
+  * Click the "Enable TLS" check box (box should be checked)
+  * In the "TLS client authentication" box enter: disabled
+  * Click the "TCP keepalive" check box (box should be checked)
+  * Ensure the "Allow overriding date?" check box is checked
+  * Click the "Save" button
+
+  .. image:: ../_static/graylog/form1-page.png
+
+  |br|
+
+  .. image:: ../_static/graylog/form2-page.png
+
+  |br|
+
+  * If successful, input should start automatically and say "1 RUNNING"
+
+  .. image:: ../_static/graylog/running-page.png

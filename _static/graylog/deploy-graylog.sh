@@ -276,4 +276,7 @@ echo   "************************************************************************
 echo   "*****************************************************************************************"  | tee -a .deploy-greylog-${timestamp}
 echo
 
+echo "REQUIRED: Create RSyslog Input in Web Interface (https://${HOST_NAME}:${GRAYLOG_PORT})"
+echo
+
 exit 0
