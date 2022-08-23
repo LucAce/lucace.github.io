@@ -216,7 +216,7 @@ IP.1 = ${OPENSSL_IP}
 DNS.1 = ${OPENSSL_CN}
 EOF
 
-# Create Scertificate
+# Create certificate
 openssl req -x509 -days 365 -nodes -newkey rsa:4096 \
     -config /etc/graylog/ssl/graylog.engwsc.example.com.cnf \
     -keyout /etc/graylog/ssl/graylog.engwsc.example.com.key \
@@ -226,6 +226,13 @@ openssl req -x509 -days 365 -nodes -newkey rsa:4096 \
 chown graylog:graylog /etc/graylog/ssl/graylog.engwsc.example.com.key
 chown graylog:graylog /etc/graylog/ssl/graylog.engwsc.example.com.crt
 chmod 600 /etc/graylog/ssl/graylog.engwsc.example.com.key
+
+# Import certificate into java Key Store:
+keytool -importcert -noprompt \
+    -keystore /etc/pki/java/cacerts \
+    -storepass changeit \
+    -alias graylog-self-signed \
+    -file /etc/graylog/ssl/graylog.engwsc.example.com.crt
 
 # Set Graylog Secrets
 sed -i "s|password_secret =.*|password_secret = ${GRAYLOG_SECRET}|g" /etc/graylog/server/server.conf
@@ -263,7 +270,7 @@ echo   "**                                                                      
 echo   "**    Graylog Dashboard:                                                               **"  | tee -a .deploy-greylog-${timestamp}
 printf "**      https://%-70s **\n" "${HOST_NAME}:${GRAYLOG_PORT}"                                  | tee -a .deploy-greylog-${timestamp}
 echo   "**                                                                                     **"  | tee -a .deploy-greylog-${timestamp}
-printf "**    Rsyslog Server Port: %-59s" "${RSYSLOG_PORT}"                                         | tee -a .deploy-greylog-${timestamp}
+printf "**    Rsyslog Server Port: %-60s**\n" "${RSYSLOG_PORT}"                                     | tee -a .deploy-greylog-${timestamp}
 echo   "**                                                                                     **"  | tee -a .deploy-greylog-${timestamp}
 echo   "*****************************************************************************************"  | tee -a .deploy-greylog-${timestamp}
 echo   "*****************************************************************************************"  | tee -a .deploy-greylog-${timestamp}

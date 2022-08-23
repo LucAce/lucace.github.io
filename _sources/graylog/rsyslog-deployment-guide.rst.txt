@@ -53,7 +53,7 @@ Deployment Steps
 
   Instructions assume execution using the ``root`` account.
 
-1. Install Dependencies:
+1. Install dependencies:
 
   .. code-block:: bash
 

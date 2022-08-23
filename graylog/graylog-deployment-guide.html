@@ -650,7 +650,7 @@ cat &gt; /etc/graylog/ssl/graylog.engwsc.example.com.cnf <span class="s">&lt;&lt
 <span class="s">DNS.1 = graylog.engwsc.example.com</span>
 <span class="s">EOF</span>
 
-<span class="c1"># Create Scertificate</span>
+<span class="c1"># Create certificate</span>
 openssl req -x509 -days <span class="m">365</span> -nodes -newkey rsa:4096 <span class="se">\</span>
     -config /etc/graylog/ssl/graylog.engwsc.example.com.cnf <span class="se">\</span>
     -keyout /etc/graylog/ssl/graylog.engwsc.example.com.key <span class="se">\</span>

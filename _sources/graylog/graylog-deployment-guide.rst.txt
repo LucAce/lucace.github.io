@@ -281,7 +281,7 @@ Graylog
     DNS.1 = graylog.engwsc.example.com
     EOF
 
-    # Create Scertificate
+    # Create certificate
     openssl req -x509 -days 365 -nodes -newkey rsa:4096 \
         -config /etc/graylog/ssl/graylog.engwsc.example.com.cnf \
         -keyout /etc/graylog/ssl/graylog.engwsc.example.com.key \
