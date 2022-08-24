@@ -58,6 +58,9 @@ Post Deployment
   The GitLab can be accessed at the following URL: |br|
   https://gitlab.engwsc.example.com
 
+  Username: ``root`` |br|
+  Password (In File): ``/etc/gitlab/initial_root_password``
+
 
 ******************
 Deployment Scripts

@@ -57,11 +57,11 @@ Post Deployment
 
 ..
 
-  The Graylog can be accessed at the following URL:|br|
+  The Graylog can be accessed at the following URL: |br|
   https://graylog.engwsc.example.com:9000
 
-  User name: ``admin`` |br|
-  Password: ``password_secret`` (from Step 16)
+  Username: ``admin`` |br|
+  Password: ``password_secret`` (from step 16)
 
 ******************
 Deployment Scripts

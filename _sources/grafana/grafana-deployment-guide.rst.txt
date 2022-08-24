@@ -54,8 +54,11 @@ Post Deployment
 
 ..
 
-  The Grafana can be accessed at the following URL:|br|
+  The Grafana can be accessed at the following URL: |br|
   https://grafana.engwsc.example.com:3000
+
+  Username: ``GRAFANA_ADMIN_USERNAME`` |br|
+  Password: ``GRAFANA_ADMIN_PASSWORD`` (from step 7)
 
 
 ******************

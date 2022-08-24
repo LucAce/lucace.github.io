@@ -122,17 +122,18 @@ systemctl enable --now firewalld
 firewall-cmd --zone=public --add-port=3000/tcp --permanent
 firewall-cmd --reload
 
+timestamp=$(date +"%Y-%m-%d_%H-%M-%S")
 echo
-echo   "****************************************************************************"
-echo   "****************************************************************************"
-echo   "**                                                                        **"
-echo   "**    Required for Grafana server access:                                 **"
-echo   "**                                                                        **"
-printf "**    Grafana Administrator Username: %-35s **\n" ${GRAFANA_ADMIN_USERNAME}
-printf "**    Grafana Administrator Password: %-35s **\n" ${GRAFANA_ADMIN_PASSWORD}
-echo   "**                                                                        **"
-echo   "****************************************************************************"
-echo   "****************************************************************************"
+echo   "****************************************************************************"  | tee    .deploy-grafana-${timestamp}
+echo   "****************************************************************************"  | tee -a .deploy-grafana-${timestamp}
+echo   "**                                                                        **"  | tee -a .deploy-grafana-${timestamp}
+echo   "**    Required for Grafana server access:                                 **"  | tee -a .deploy-grafana-${timestamp}
+echo   "**                                                                        **"  | tee -a .deploy-grafana-${timestamp}
+printf "**    Grafana Administrator Username: %-35s **\n" ${GRAFANA_ADMIN_USERNAME}    | tee -a .deploy-grafana-${timestamp}
+printf "**    Grafana Administrator Password: %-35s **\n" ${GRAFANA_ADMIN_PASSWORD}    | tee -a .deploy-grafana-${timestamp}
+echo   "**                                                                        **"  | tee -a .deploy-grafana-${timestamp}
+echo   "****************************************************************************"  | tee -a .deploy-grafana-${timestamp}
+echo   "****************************************************************************"  | tee -a .deploy-grafana-${timestamp}
 echo
 
 echo -e "\n[$(date +"%Y-%m-%d %H:%M:%S")] Deploying Grafana Complete\n"

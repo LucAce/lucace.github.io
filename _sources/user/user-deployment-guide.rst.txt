@@ -19,6 +19,7 @@ The following instructions are for deploying the User and Compute nodes.
 Prerequisites
 *************
 
+* :doc:`user-os-installation-guide`
 * :doc:`../idm/idm-client-deployment-guide`
 * :doc:`../nfs/nfs-client-deployment-guide`
 

@@ -55,11 +55,11 @@ Post Deployment
 
 ..
 
-  The IdM Management Dashboard can be accessed at the following URL:|br|
+  The IdM Management Dashboard can be accessed at the following URL: |br|
   https://idm.engwsc.example.com
 
-  The default administrator user name is ``admin`` and the password is defined
-  in step 13.
+  Username: ``admin`` |br|
+  Password: ``ADMIN_PASSWORD`` (from step 15)
 
 ..
 
@@ -70,8 +70,6 @@ Post Deployment
 ******************
 Deployment Scripts
 ******************
-
-  **Record the generated passwords when using the deployment script**
 
   An example bash script of the instructions has been provided: |br|
   :download:`../_static/idm/deploy-idm-server.sh`
@@ -202,7 +200,20 @@ This Guide is writen for a standalone VM instance.
 
     dnf module -y install idm:DL1/server
 
-14. Install IdM Server:
+14. Suppress Negotiate headers (Prevents HTML Log In Box Popup in Windows):
+
+  .. note::
+
+    This is optional.
+
+  .. code-block:: bash
+
+    mkdir -p /etc/httpd/conf.d/
+    cat > /etc/httpd/conf.d/gssapi.conf <<EOF
+    BrowserMatch Windows gssapi-no-negotiate
+    EOF
+
+15. Install IdM Server:
 
   .. note::
 
@@ -222,7 +233,7 @@ This Guide is writen for a standalone VM instance.
       --admin-password=ADMIN_PASSWORD \
       --unattended
 
-15. Configure firewalld rules:
+16. Configure firewalld rules:
 
   .. important::
 

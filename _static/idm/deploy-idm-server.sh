@@ -109,6 +109,12 @@ dnf distro-sync
 # Install IdM server without an integrated DNS:
 dnf module -y install idm:DL1/server
 
+# Suppress Negotiate headers (Prevents HTML Log In Box Popup in Windows):
+mkdir -p /etc/httpd/conf.d/
+cat > /etc/httpd/conf.d/gssapi.conf <<EOF
+BrowserMatch Windows gssapi-no-negotiate
+EOF
+
 # Install IdM Server:
 REALM_NAME_UC=$(echo ${REALM_NAME} | tr '[:lower:]' '[:upper:]')
 ipa-server-install \
@@ -124,23 +130,24 @@ firewall-cmd --zone=public --add-source=${IDM_SUBNET} --permanent
 firewall-cmd --zone=public --add-service={http,https,ntp,freeipa-4} --permanent
 firewall-cmd --reload
 
+timestamp=$(date +"%Y-%m-%d_%H-%M-%S")
 echo
-echo   "*************************************************************************"
-echo   "*************************************************************************"
-echo   "**                                                                     **"
-echo   "**    Required for client deployments:                                 **"
-echo   "**                                                                     **"
-printf "**    Directory Manager Password:  %-35s **\n" ${DM_PASSWORD}
-printf "**    IdM Administrator Username:  %-35s **\n" ${ADMIN_PRINCIPAL}
-printf "**    IdM Administrator Password:  %-35s **\n" ${ADMIN_PASSWORD}
-printf "**    IdM Domain Name:             %-35s **\n" ${DOMAIN_NAME}
-printf "**    IdM Realm:                   %-35s **\n" ${REALM_NAME_UC}
-echo   "**                                                                     **"
-echo   "**    IdM Management Dashboard:                                        **"
-printf "**      https://%-54s **\n" ${IDM_HOST_NAME_FQDN}
-echo   "**                                                                     **"
-echo   "*************************************************************************"
-echo   "*************************************************************************"
+echo   "*************************************************************************"  | tee    .deploy-idm-server-${timestamp}
+echo   "*************************************************************************"  | tee -a .deploy-idm-server-${timestamp}
+echo   "**                                                                     **"  | tee -a .deploy-idm-server-${timestamp}
+echo   "**    Required for client deployments:                                 **"  | tee -a .deploy-idm-server-${timestamp}
+echo   "**                                                                     **"  | tee -a .deploy-idm-server-${timestamp}
+printf "**    Directory Manager Password:  %-35s **\n" ${DM_PASSWORD}               | tee -a .deploy-idm-server-${timestamp}
+printf "**    IdM Administrator Username:  %-35s **\n" ${ADMIN_PRINCIPAL}           | tee -a .deploy-idm-server-${timestamp}
+printf "**    IdM Administrator Password:  %-35s **\n" ${ADMIN_PASSWORD}            | tee -a .deploy-idm-server-${timestamp}
+printf "**    IdM Domain Name:             %-35s **\n" ${DOMAIN_NAME}               | tee -a .deploy-idm-server-${timestamp}
+printf "**    IdM Realm:                   %-35s **\n" ${REALM_NAME_UC}             | tee -a .deploy-idm-server-${timestamp}
+echo   "**                                                                     **"  | tee -a .deploy-idm-server-${timestamp}
+echo   "**    IdM Management Dashboard:                                        **"  | tee -a .deploy-idm-server-${timestamp}
+printf "**      https://%-54s **\n" ${IDM_HOST_NAME_FQDN}                           | tee -a .deploy-idm-server-${timestamp}
+echo   "**                                                                     **"  | tee -a .deploy-idm-server-${timestamp}
+echo   "*************************************************************************"  | tee -a .deploy-idm-server-${timestamp}
+echo   "*************************************************************************"  | tee -a .deploy-idm-server-${timestamp}
 echo
 
 echo -e "\n[$(date +"%Y-%m-%d %H:%M:%S")] Deploying IdM Server Complete\n"

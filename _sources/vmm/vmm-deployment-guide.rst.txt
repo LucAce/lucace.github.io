@@ -53,6 +53,9 @@ Deployment Scripts
   :download:`../_static/vmm/deploy-vmm01.sh` |br|
   :download:`../_static/vmm/deploy-vmm02.sh`
 
+  Username: ``root`` |br|
+  Password: ``ROOT_PASSWORD``
+
 
 ****************
 Deployment Steps

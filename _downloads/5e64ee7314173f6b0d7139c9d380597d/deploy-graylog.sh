@@ -265,21 +265,21 @@ firewall-cmd --reload
 
 timestamp=$(date +"%Y-%m-%d_%H-%M-%S")
 echo
-echo   "*****************************************************************************************"  | tee    .deploy-greylog-${timestamp}
-echo   "*****************************************************************************************"  | tee -a .deploy-greylog-${timestamp}
-echo   "**                                                                                     **"  | tee -a .deploy-greylog-${timestamp}
-echo   "**    Required for Graylog server access:                                              **"  | tee -a .deploy-greylog-${timestamp}
-echo   "**                                                                                     **"  | tee -a .deploy-greylog-${timestamp}
-echo   "**    Graylog Administrator User: admin                                                **"  | tee -a .deploy-greylog-${timestamp}
-printf "**    Graylog Secret: %-64s **\n" ${GRAYLOG_SECRET}                                         | tee -a .deploy-greylog-${timestamp}
-echo   "**                                                                                     **"  | tee -a .deploy-greylog-${timestamp}
-echo   "**    Graylog Dashboard:                                                               **"  | tee -a .deploy-greylog-${timestamp}
-printf "**      https://%-70s **\n" "${HOST_NAME}:${GRAYLOG_PORT}"                                  | tee -a .deploy-greylog-${timestamp}
-echo   "**                                                                                     **"  | tee -a .deploy-greylog-${timestamp}
-printf "**    Rsyslog Server Port: %-60s**\n" "${RSYSLOG_PORT}"                                     | tee -a .deploy-greylog-${timestamp}
-echo   "**                                                                                     **"  | tee -a .deploy-greylog-${timestamp}
-echo   "*****************************************************************************************"  | tee -a .deploy-greylog-${timestamp}
-echo   "*****************************************************************************************"  | tee -a .deploy-greylog-${timestamp}
+echo   "*****************************************************************************************"  | tee    .deploy-graylog-${timestamp}
+echo   "*****************************************************************************************"  | tee -a .deploy-graylog-${timestamp}
+echo   "**                                                                                     **"  | tee -a .deploy-graylog-${timestamp}
+echo   "**    Required for Graylog server access:                                              **"  | tee -a .deploy-graylog-${timestamp}
+echo   "**                                                                                     **"  | tee -a .deploy-graylog-${timestamp}
+echo   "**    Graylog Administrator User: admin                                                **"  | tee -a .deploy-graylog-${timestamp}
+printf "**    Graylog Secret: %-64s **\n" ${GRAYLOG_SECRET}                                         | tee -a .deploy-graylog-${timestamp}
+echo   "**                                                                                     **"  | tee -a .deploy-graylog-${timestamp}
+echo   "**    Graylog Dashboard:                                                               **"  | tee -a .deploy-graylog-${timestamp}
+printf "**      https://%-70s **\n" "${HOST_NAME}:${GRAYLOG_PORT}"                                  | tee -a .deploy-graylog-${timestamp}
+echo   "**                                                                                     **"  | tee -a .deploy-graylog-${timestamp}
+printf "**    Rsyslog Server Port: %-60s**\n" "${RSYSLOG_PORT}"                                     | tee -a .deploy-graylog-${timestamp}
+echo   "**                                                                                     **"  | tee -a .deploy-graylog-${timestamp}
+echo   "*****************************************************************************************"  | tee -a .deploy-graylog-${timestamp}
+echo   "*****************************************************************************************"  | tee -a .deploy-graylog-${timestamp}
 echo
 
 echo "REQUIRED: Create RSyslog Input in Web Interface (https://${HOST_NAME}:${GRAYLOG_PORT})"

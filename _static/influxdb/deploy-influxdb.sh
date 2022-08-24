@@ -143,18 +143,19 @@ firewall-cmd --zone=public --add-source=${ALLOWED_IPV4} --permanent
 firewall-cmd --zone=public --add-port=8086/tcp --permanent
 firewall-cmd --reload
 
+timestamp=$(date +"%Y-%m-%d_%H-%M-%S")
 echo
-echo   "****************************************************************************"
-echo   "****************************************************************************"
-echo   "**                                                                        **"
-echo   "**    Required for InfluxDB server access:                                **"
-echo   "**                                                                        **"
-printf "**    InfluxDB Administrator Username: %-34s **\n" ${INFLUXDB_ADMIN_USERNAME}
-printf "**    InfluxDB Administrator Password: %-34s **\n" ${INFLUXDB_ADMIN_PASSWORD}
-printf "**    InfluxDB Default Bucket:         %-34s **\n" ${INFLUXDB_DEFAULT_BUCKET}
-echo   "**                                                                        **"
-echo   "****************************************************************************"
-echo   "****************************************************************************"
+echo   "****************************************************************************"  | tee    .deploy-influxdb-${timestamp}
+echo   "****************************************************************************"  | tee -a .deploy-influxdb-${timestamp}
+echo   "**                                                                        **"  | tee -a .deploy-influxdb-${timestamp}
+echo   "**    Required for InfluxDB server access:                                **"  | tee -a .deploy-influxdb-${timestamp}
+echo   "**                                                                        **"  | tee -a .deploy-influxdb-${timestamp}
+printf "**    InfluxDB Administrator Username: %-34s **\n" ${INFLUXDB_ADMIN_USERNAME}  | tee -a .deploy-influxdb-${timestamp}
+printf "**    InfluxDB Administrator Password: %-34s **\n" ${INFLUXDB_ADMIN_PASSWORD}  | tee -a .deploy-influxdb-${timestamp}
+printf "**    InfluxDB Default Bucket:         %-34s **\n" ${INFLUXDB_DEFAULT_BUCKET}  | tee -a .deploy-influxdb-${timestamp}
+echo   "**                                                                        **"  | tee -a .deploy-influxdb-${timestamp}
+echo   "****************************************************************************"  | tee -a .deploy-influxdb-${timestamp}
+echo   "****************************************************************************"  | tee -a .deploy-influxdb-${timestamp}
 echo
 
 echo -e "\n[$(date +"%Y-%m-%d %H:%M:%S")] Deploying InfluxDB Complete\n"

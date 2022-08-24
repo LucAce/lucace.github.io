@@ -406,10 +406,10 @@
 <section id="post-deployment">
 <h2>Post Deployment<a class="headerlink" href="#post-deployment" title="Permalink to this heading">#</a></h2>
 <blockquote>
-<div><p>The IdM Management Dashboard can be accessed at the following URL:<br />
+<div><p>The IdM Management Dashboard can be accessed at the following URL: <br />
 <a class="reference external" href="https://idm.engwsc.example.com">https://idm.engwsc.example.com</a></p>
-<p>The default administrator user name is <code class="docutils literal notranslate"><span class="pre">admin</span></code> and the password is defined
-in step 13.</p>
+<p>Username: <code class="docutils literal notranslate"><span class="pre">admin</span></code> <br />
+Password: <code class="docutils literal notranslate"><span class="pre">ADMIN_PASSWORD</span></code> (from step 15)</p>
 </div></blockquote>
 <blockquote>
 <div><p>It is recommended that the default shell settings within IdM for user accounts
@@ -419,8 +419,7 @@ be changed to <code class="docutils literal notranslate"><span class="pre">/bin/
 <section id="deployment-scripts">
 <h2>Deployment Scripts<a class="headerlink" href="#deployment-scripts" title="Permalink to this heading">#</a></h2>
 <blockquote>
-<div><p><strong>Record the generated passwords when using the deployment script</strong></p>
-<p>An example bash script of the instructions has been provided: <br />
+<div><p>An example bash script of the instructions has been provided: <br />
 <a class="reference download internal" download="" href="../_downloads/8548936fbaf92b4d4e08082fa3d17df7/deploy-idm-server.sh"><code class="xref download docutils literal notranslate"><span class="pre">../_static/idm/deploy-idm-server.sh</span></code></a></p>
 </div></blockquote>
 </section>
@@ -572,6 +571,21 @@ dnf distro-sync
 </div>
 </div></blockquote>
 <ol class="arabic simple" start="14">
+<li><p>Suppress Negotiate headers (Prevents HTML Log In Box Popup in Windows):</p></li>
+</ol>
+<blockquote>
+<div><div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This is optional.</p>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mkdir -p /etc/httpd/conf.d/
+cat &gt; /etc/httpd/conf.d/gssapi.conf <span class="s">&lt;&lt;EOF</span>
+<span class="s">BrowserMatch Windows gssapi-no-negotiate</span>
+<span class="s">EOF</span>
+</pre></div>
+</div>
+</div></blockquote>
+<ol class="arabic simple" start="15">
 <li><p>Install IdM Server:</p></li>
 </ol>
 <blockquote>
@@ -593,7 +607,7 @@ Replace <code class="docutils literal notranslate"><span class="pre">ADMIN_PASSW
 </pre></div>
 </div>
 </div></blockquote>
-<ol class="arabic simple" start="15">
+<ol class="arabic simple" start="16">
 <li><p>Configure firewalld rules:</p></li>
 </ol>
 <blockquote>

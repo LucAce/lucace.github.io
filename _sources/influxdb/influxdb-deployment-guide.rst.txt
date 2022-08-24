@@ -57,7 +57,8 @@ Post Deployment
   The InfluxDB Dashboard can be accessed at the following URL:|br|
   https://influxdb.engwsc.example.com:8086
 
-  The adminstrator account information is defined in step 7.
+  Username: ``INFLUXDB_ADMIN_USERNAME`` |br|
+  Password: ``INFLUXDB_ADMIN_PASSWORD`` (from step 11)
 
 
 ******************

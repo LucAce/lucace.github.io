@@ -349,19 +349,20 @@ systemctl enable --now slurmctld
 # Slurm Administration Message
 ###############################################################################
 
+timestamp=$(date +"%Y-%m-%d_%H-%M-%S")
 echo
-echo   "*************************************************************************"
-echo   "*************************************************************************"
-echo   "**                                                                     **"
-echo   "**    Required for Slurm administration:                               **"
-echo   "**                                                                     **"
-printf "**    MariaDB Root Password:  %-40s **\n" ${MARIADB_ROOT_PASSWD}
-printf "**    MariaDB Slurm Database: %-40s **\n" ${MARIADB_SLURM_DATABASE}
-printf "**    MariaDB Slurm Username: %-40s **\n" ${MARIADB_SLURM_USER}
-printf "**    MariaDB Slurm Password: %-40s **\n" ${MARIADB_SLURM_USER_PASSWD}
-echo   "**                                                                     **"
-echo   "*************************************************************************"
-echo   "*************************************************************************"
+echo   "*************************************************************************"  | tee    .deploy-slurm-controller-${timestamp}
+echo   "*************************************************************************"  | tee -a .deploy-slurm-controller-${timestamp}
+echo   "**                                                                     **"  | tee -a .deploy-slurm-controller-${timestamp}
+echo   "**    Required for Slurm administration:                               **"  | tee -a .deploy-slurm-controller-${timestamp}
+echo   "**                                                                     **"  | tee -a .deploy-slurm-controller-${timestamp}
+printf "**    MariaDB Root Password:  %-40s **\n" ${MARIADB_ROOT_PASSWD}            | tee -a .deploy-slurm-controller-${timestamp}
+printf "**    MariaDB Slurm Database: %-40s **\n" ${MARIADB_SLURM_DATABASE}         | tee -a .deploy-slurm-controller-${timestamp}
+printf "**    MariaDB Slurm Username: %-40s **\n" ${MARIADB_SLURM_USER}             | tee -a .deploy-slurm-controller-${timestamp}
+printf "**    MariaDB Slurm Password: %-40s **\n" ${MARIADB_SLURM_USER_PASSWD}      | tee -a .deploy-slurm-controller-${timestamp}
+echo   "**                                                                     **"  | tee -a .deploy-slurm-controller-${timestamp}
+echo   "*************************************************************************"  | tee -a .deploy-slurm-controller-${timestamp}
+echo   "*************************************************************************"  | tee -a .deploy-slurm-controller-${timestamp}
 echo
 
 echo -e "\n[$(date +"%Y-%m-%d %H:%M:%S")] Deploying Slurm Controller Complete\n"
