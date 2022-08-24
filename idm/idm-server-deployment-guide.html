@@ -571,12 +571,12 @@ dnf distro-sync
 </div>
 </div></blockquote>
 <ol class="arabic simple" start="14">
-<li><p>Suppress Negotiate headers (Prevents HTML Log In Box Popup in Windows):</p></li>
+<li><p>Suppress Negotiate Headers:</p></li>
 </ol>
 <blockquote>
 <div><div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>This is optional.</p>
+<p>This is optional and prevents falling back to HTML login boxes in Windows browsers.</p>
 </div>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mkdir -p /etc/httpd/conf.d/
 cat &gt; /etc/httpd/conf.d/gssapi.conf <span class="s">&lt;&lt;EOF</span>

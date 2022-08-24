@@ -200,11 +200,11 @@ This Guide is writen for a standalone VM instance.
 
     dnf module -y install idm:DL1/server
 
-14. Suppress Negotiate headers (Prevents HTML Log In Box Popup in Windows):
+14. Suppress Negotiate Headers:
 
   .. note::
 
-    This is optional.
+    This is optional and prevents falling back to HTML login boxes in Windows browsers.
 
   .. code-block:: bash
 
