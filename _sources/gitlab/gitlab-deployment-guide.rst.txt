@@ -40,7 +40,7 @@ References
 
 ..
 
-  These instructions were written for GitLab Community Edition (CE) ``15.2.2``
+  These instructions were written for GitLab Community Edition (CE) ``15.2.3``
 
 ..
 

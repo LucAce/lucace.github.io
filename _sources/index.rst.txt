@@ -56,7 +56,7 @@ available until a later point in time.
    :caption: Overview:
 
    topology
-   acryonms
+   acronyms
    assumptions
    license
 

@@ -40,7 +40,7 @@ References
 
 ..
 
-  These instructions were written for Grafana ``9.0.6``
+  These instructions were written for Grafana ``9.1.1``
 
 ..
 

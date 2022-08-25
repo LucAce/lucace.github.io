@@ -1,5 +1,9 @@
 .. Assumptions and Warnings
 
+.. |br| raw:: html
+
+   <br />
+
 ========================
 Assumptions and Warnings
 ========================
@@ -20,14 +24,28 @@ The following are warnings that apply to the cluster and/or all guides.
 
 ..
 
-  2. **Implement a Backup Strategy**
+  2. **Use Trusted Certificates**
+
+  These guides utilize self signed certificates for TLS encryption.  Self signed
+  certificates are suspectable to Man In The Middle (MITM) attacks and should
+  not be considered secure.  It is recommended that certificates be issued by
+  an internal or reputable Certificate Authority (CA).  Keep in mind that most
+  Certificate Authorities publish recently issued certificates to
+  Certificate Transparency (CT) logs and you should not use sensitive server
+  names. |br| |br|
+  Search the Certificate Transparency logs:
+  https://ui.ctsearch.entrust.com/ui/ctsearchui
+
+..
+
+  3. **Implement a Backup Strategy**
 
   These guides do not cover backing up of the cluster.  Backups and restoration
   strageties is a required element to a cluster.  RAID is not a backup.
 
 ..
 
-  3. **Implement a Redundancy/Resilancy Strategy**
+  4. **Implement a Redundancy/Resilancy Strategy**
 
   These guides only provide techniquies for improving fault tolernace such as
   providing RAID on systems.  Redundancy strageties is a required element to

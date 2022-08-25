@@ -3,7 +3,7 @@
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-<link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="License" href="license.html" /><link rel="prev" title="Acronyms and Abbreviations" href="acryonms.html" />
+<link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="License" href="license.html" /><link rel="prev" title="Acronyms and Abbreviations" href="acronyms.html" />
         <link rel="canonical" href="https://engwsc.com/assumptions.html" />
 
     <meta name="generator" content="sphinx-5.0.2, furo 2022.06.21"/>
@@ -160,7 +160,7 @@
 <li class="toctree-l1 has-children"><a class="reference internal" href="topology.html">Cluster Topology</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="simple">
 </ul>
 </li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="acryonms.html">Acronyms and Abbreviations</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="simple">
+<li class="toctree-l1 has-children"><a class="reference internal" href="acronyms.html">Acronyms and Abbreviations</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="simple">
 </ul>
 </li>
 <li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Assumptions and Warnings</a></li>
@@ -387,13 +387,27 @@ hardening techniques for exposing them to the internet.</p>
 </div></blockquote>
 <blockquote>
 <div><ol class="arabic simple" start="2">
+<li><p><strong>Use Trusted Certificates</strong></p></li>
+</ol>
+<p>These guides utilize self signed certificates for TLS encryption.  Self signed
+certificates are suspectable to Man In The Middle (MITM) attacks and should
+not be considered secure.  It is recommended that certificates be issued by
+an internal or reputable Certificate Authority (CA).  Keep in mind that most
+Certificate Authorities publish recently issued certificates to
+Certificate Transparency (CT) logs and you should not use sensitive server
+names. <br /> <br />
+Search the Certificate Transparency logs:
+<a class="reference external" href="https://ui.ctsearch.entrust.com/ui/ctsearchui">https://ui.ctsearch.entrust.com/ui/ctsearchui</a></p>
+</div></blockquote>
+<blockquote>
+<div><ol class="arabic simple" start="3">
 <li><p><strong>Implement a Backup Strategy</strong></p></li>
 </ol>
 <p>These guides do not cover backing up of the cluster.  Backups and restoration
 strageties is a required element to a cluster.  RAID is not a backup.</p>
 </div></blockquote>
 <blockquote>
-<div><ol class="arabic simple" start="3">
+<div><ol class="arabic simple" start="4">
 <li><p><strong>Implement a Redundancy/Resilancy Strategy</strong></p></li>
 </ol>
 <p>These guides only provide techniquies for improving fault tolernace such as
@@ -443,7 +457,7 @@ down time should not result in downtime of critical corporate resources.</p>
               </div>
               <svg><use href="#svg-arrow-right"></use></svg>
             </a>
-          <a class="prev-page" href="acryonms.html">
+          <a class="prev-page" href="acronyms.html">
               <svg><use href="#svg-arrow-right"></use></svg>
               <div class="page-info">
                 <div class="context">
