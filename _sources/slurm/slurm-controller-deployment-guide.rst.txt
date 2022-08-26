@@ -429,8 +429,8 @@ Firewall
   .. code-block:: bash
 
     systemctl enable --now firewalld
-    firewall-cmd --remove-port=3306/tcp --permanent
-    firewall-cmd --remove-port=3306/udp --permanent
+    firewall-cmd --remove-port=3306/tcp --permanent 2> /dev/null
+    firewall-cmd --remove-port=3306/udp --permanent 2> /dev/null
 
     firewall-cmd --zone=public --add-source=192.168.1.0/24 --permanent
     firewall-cmd --zone=public --add-port={6817/tcp, 6818/tcp, 6819/tcp} --permanent

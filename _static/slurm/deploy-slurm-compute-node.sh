@@ -40,7 +40,7 @@ echo -e "\n[$(date +"%Y-%m-%d %H:%M:%S")] Deploying Slurm Compute Node...\n"
 CLUSTER_SUBNET_MASK="192.168.1.0/24"
 
 # Slurm Version
-SLURM_VERSION="22.05.2"
+SLURM_VERSION="22.05.3"
 
 # Slurm User UID, GID
 SLURMUSERID=64030
