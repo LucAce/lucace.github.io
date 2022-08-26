@@ -45,7 +45,7 @@ IP_GATEWAY="192.168.1.1"
 ###############################################################################
 
 # Update System
-dnf -y update
+dnf -y upgrade
 
 # Install RPM Packages
 dnf -y install tar openssl-devel cockpit cockpit-packagekit \

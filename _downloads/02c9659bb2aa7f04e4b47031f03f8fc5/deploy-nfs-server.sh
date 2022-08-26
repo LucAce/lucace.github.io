@@ -39,7 +39,7 @@ ALLOWED_IPV4="192.168.1.0/24"
 ###############################################################################
 
 # Update System
-dnf -y update
+dnf -y upgrade
 
 # Install NFS Utilities
 dnf -y install nfs-utils

@@ -33,6 +33,19 @@ The following guides can be applied after the deployment of their associated nod
 * :doc:`../graylog/rsyslog-deployment-guide`
 * :doc:`../slurm/slurm-compute-node-deployment-guide`
 * :doc:`../influxdb/telegraf-deployment-guide`
+* :doc:`env-modules-deployment-guide`
+* :doc:`tool-deployment-guide`
+* :doc:`xrdp-deployment-guide` (User Nodes Only)
+
+
+******************
+Deployment Scripts
+******************
+
+..
+
+  An example bash script of the instructions has been provided: |br|
+  :download:`../_static/user/deploy-user.sh`
 
 
 ****************
@@ -51,20 +64,52 @@ Deployment Steps
 
   See Guide: :doc:`../idm/idm-client-deployment-guide`
 
-3. Set firewalld rules:
+3. Disable online account integration:
+
+  .. code-block:: bash
+
+    # Make sure gnome-online-accounts is installed
+    dnf -y install gnome-online-accounts
+
+    # Create the user profile:
+    mkdir -p /etc/dconf/profile/
+    cat > /etc/dconf/profile/user <<EOL
+    user-db:user
+    system-db:local
+    EOL
+
+    # Disable all providers:
+    mkdir -p /etc/dconf/db/local.d/
+    cat > /etc/dconf/db/local.d/00-goa <<EOL
+    [org/gnome/online-accounts]
+    whitelisted-providers= ['']
+    EOL
+
+    # Prevent the user from overriding these settings:
+    mkdir -p /etc/dconf/db/local.db/locks/
+    cat > /etc/dconf/db/local.db/locks/goa <<EOL
+    # Lock the list of providers that are allowed to be loaded
+    /org/gnome/online-accounts/whitelisted-providers
+    EOL
+
+    # Update the system databases:
+    dconf update
+
+4. Set firewalld rules:
 
   .. code-block:: bash
 
     systemctl enable --now firewalld
     firewall-cmd --add-service=ssh --permanent
+    firewall-cmd --reload
 
-4. Reboot
+5. Reboot
 
 .. important::
 
   The remainder of this guide requires Direct Attached Video.
 
-5. Using Direct Attached Video, Accept the EULA:
+6. Using Direct Attached Video, Accept the EULA:
 
   .. note::
 
@@ -77,26 +122,26 @@ Deployment Steps
     * Click on the "Done" button
     * Click on the "Finish Configuration" button
 
-6. Pass the Welcome screen:
+7. Pass the Welcome screen:
 
   ::
 
     * Click on the "Next" button
 
-7. Disable Location Services:
+8. Disable Location Services:
 
   ::
 
     * Click on the switch so that it shows "OFF"
     * Click on the "Next" button
 
-8. Skip Connecting Online Accounts:
+9. Skip Connecting Online Accounts:
 
   ::
 
     * Click on the "Skip" button
 
-9. Login using Enterprise Login:
+10. Login using Enterprise Login:
 
   .. important::
 

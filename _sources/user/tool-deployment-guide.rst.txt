@@ -1,0 +1,60 @@
+.. Tool Deployment Guide
+
+.. |br| raw:: html
+
+   <br />
+
+#####################
+Tool Deployment Guide
+#####################
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Contents:
+
+The following instructions are for deploying Developer
+Application and Tools on the User and Compute nodes.
+
+
+*************
+Prerequisites
+*************
+
+* :doc:`user-deployment-guide`
+
+
+******************
+Deployment Scripts
+******************
+
+.. note::
+
+  An example bash script of the instructions has been provided: |br|
+  :download:`../_static/user/deploy-tool.sh`
+
+
+****************
+Deployment Steps
+****************
+
+.. note::
+
+  Instructions assume execution using the ``root`` account.
+
+1. Install Extra Packages for Enterprise Linux (EPEL) Repository:
+
+  .. code-block:: bash
+
+    dnf -y install epel-release
+    dnf -y distro-sync
+
+2. Install user packages
+
+  .. code-block:: bash
+
+    dnf -y install \
+        filezilla emacs meld geany \
+        vim-X11 cmake p7zip \
+        ncurses ncurses-devel \
+        lm_sensors lm_sensors-devel \
+        hwloc hwloc-libs

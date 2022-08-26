@@ -168,3 +168,6 @@ available until a later point in time.
    user/user-overview
    user/user-os-installation-guide
    user/user-deployment-guide
+   user/tool-deployment-guide
+   user/env-modules-deployment-guide
+   user/xrdp-deployment-guide

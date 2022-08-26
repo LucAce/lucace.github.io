@@ -55,7 +55,7 @@ ADMIN_PASSWORD='XXXXXXXXXXXXXXXXXXXXXXXXX'
 ###############################################################################
 
 # Update System:
-dnf -y update
+dnf -y upgrade
 
 # Ensure the timezone is properly set:
 timedatectl set-timezone ${TIME_ZONE}

@@ -45,7 +45,7 @@ INFLUX_TOKEN="XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
 ###############################################################################
 
 # Update System
-dnf -y update
+dnf -y upgrade
 
 # Add the InfluxDB yum repository
 #

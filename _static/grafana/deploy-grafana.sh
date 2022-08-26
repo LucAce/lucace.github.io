@@ -60,7 +60,7 @@ ALLOWED_IPV4="192.168.1.0/24"
 ###############################################################################
 
 # Update System
-dnf -y update
+dnf -y upgrade
 
 # Add the Grafana Yum Repository
 cat <<EOF | sudo tee /etc/yum.repos.d/grafana.repo

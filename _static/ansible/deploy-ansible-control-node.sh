@@ -28,7 +28,7 @@ echo -e "\n[$(date +"%Y-%m-%d %H:%M:%S")] Deploying Ansible Control Node...\n"
 ###############################################################################
 
 # Update System
-dnf -y update
+dnf -y upgrade
 
 #
 # Enable Red Hat Enterprise Linux Codeready Repository

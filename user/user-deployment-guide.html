@@ -3,7 +3,7 @@
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-<link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="prev" title="User/Compute Node OS Installation Guide" href="user-os-installation-guide.html" />
+<link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="Tool Deployment Guide" href="tool-deployment-guide.html" /><link rel="prev" title="User/Compute Node OS Installation Guide" href="user-os-installation-guide.html" />
         <link rel="canonical" href="https://engwsc.com/user/user-deployment-guide.html" />
 
     <meta name="generator" content="sphinx-5.0.2, furo 2022.06.21"/>
@@ -338,6 +338,15 @@
 <li class="toctree-l1 current has-children current-page"><a class="current reference internal" href="#">User/Compute Node Deployment Guide</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-49" name="toctree-checkbox-49" role="switch" type="checkbox"/><label for="toctree-checkbox-49"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="simple">
 </ul>
 </li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="tool-deployment-guide.html">Tool Deployment Guide</a><input class="toctree-checkbox" id="toctree-checkbox-50" name="toctree-checkbox-50" role="switch" type="checkbox"/><label for="toctree-checkbox-50"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="simple">
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="env-modules-deployment-guide.html">Environment Modules Deployment Guide</a><input class="toctree-checkbox" id="toctree-checkbox-51" name="toctree-checkbox-51" role="switch" type="checkbox"/><label for="toctree-checkbox-51"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="simple">
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="xrdp-deployment-guide.html">xrdp Deployment Guide</a><input class="toctree-checkbox" id="toctree-checkbox-52" name="toctree-checkbox-52" role="switch" type="checkbox"/><label for="toctree-checkbox-52"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="simple">
+</ul>
+</li>
 </ul>
 
 </div>
@@ -391,7 +400,17 @@
 <li><p><a class="reference internal" href="../graylog/rsyslog-deployment-guide.html"><span class="doc">RSyslog Deployment Guide</span></a></p></li>
 <li><p><a class="reference internal" href="../slurm/slurm-compute-node-deployment-guide.html"><span class="doc">Slurm Compute Node Deployment Guide</span></a></p></li>
 <li><p><a class="reference internal" href="../influxdb/telegraf-deployment-guide.html"><span class="doc">Telegraf Deployment Guide</span></a></p></li>
+<li><p><a class="reference internal" href="env-modules-deployment-guide.html"><span class="doc">Environment Modules Deployment Guide</span></a></p></li>
+<li><p><a class="reference internal" href="tool-deployment-guide.html"><span class="doc">Tool Deployment Guide</span></a></p></li>
+<li><p><a class="reference internal" href="xrdp-deployment-guide.html"><span class="doc">xrdp Deployment Guide</span></a> (User Nodes Only)</p></li>
 </ul>
+</section>
+<section id="deployment-scripts">
+<h2>Deployment Scripts<a class="headerlink" href="#deployment-scripts" title="Permalink to this heading">#</a></h2>
+<blockquote>
+<div><p>An example bash script of the instructions has been provided: <br />
+<a class="reference download internal" download="" href="../_downloads/e6d7e0d055c80a4538e6454a988fc103/deploy-user.sh"><code class="xref download docutils literal notranslate"><span class="pre">../_static/user/deploy-user.sh</span></code></a></p>
+</div></blockquote>
 </section>
 <section id="deployment-steps">
 <h2>Deployment Steps<a class="headerlink" href="#deployment-steps" title="Permalink to this heading">#</a></h2>
@@ -412,22 +431,56 @@
 <div><p>See Guide: <a class="reference internal" href="../idm/idm-client-deployment-guide.html"><span class="doc">IdM Client Deployment Guide</span></a></p>
 </div></blockquote>
 <ol class="arabic simple" start="3">
+<li><p>Disable online account integration:</p></li>
+</ol>
+<blockquote>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Make sure gnome-online-accounts is installed</span>
+dnf -y install gnome-online-accounts
+
+<span class="c1"># Create the user profile:</span>
+mkdir -p /etc/dconf/profile/
+cat &gt; /etc/dconf/profile/user <span class="s">&lt;&lt;EOL</span>
+<span class="s">user-db:user</span>
+<span class="s">system-db:local</span>
+<span class="s">EOL</span>
+
+<span class="c1"># Disable all providers:</span>
+mkdir -p /etc/dconf/db/local.d/
+cat &gt; /etc/dconf/db/local.d/00-goa <span class="s">&lt;&lt;EOL</span>
+<span class="s">[org/gnome/online-accounts]</span>
+<span class="s">whitelisted-providers= [&#39;&#39;]</span>
+<span class="s">EOL</span>
+
+<span class="c1"># Prevent the user from overriding these settings:</span>
+mkdir -p /etc/dconf/db/local.db/locks/
+cat &gt; /etc/dconf/db/local.db/locks/goa <span class="s">&lt;&lt;EOL</span>
+<span class="s"># Lock the list of providers that are allowed to be loaded</span>
+<span class="s">/org/gnome/online-accounts/whitelisted-providers</span>
+<span class="s">EOL</span>
+
+<span class="c1"># Update the system databases:</span>
+dconf update
+</pre></div>
+</div>
+</div></blockquote>
+<ol class="arabic simple" start="4">
 <li><p>Set firewalld rules:</p></li>
 </ol>
 <blockquote>
 <div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>systemctl <span class="nb">enable</span> --now firewalld
 firewall-cmd --add-service<span class="o">=</span>ssh --permanent
+firewall-cmd --reload
 </pre></div>
 </div>
 </div></blockquote>
-<ol class="arabic simple" start="4">
+<ol class="arabic simple" start="5">
 <li><p>Reboot</p></li>
 </ol>
 <div class="admonition important">
 <p class="admonition-title">Important</p>
 <p>The remainder of this guide requires Direct Attached Video.</p>
 </div>
-<ol class="arabic simple" start="5">
+<ol class="arabic simple" start="6">
 <li><p>Using Direct Attached Video, Accept the EULA:</p></li>
 </ol>
 <blockquote>
@@ -442,7 +495,7 @@ firewall-cmd --add-service<span class="o">=</span>ssh --permanent
 </pre></div>
 </div>
 </div></blockquote>
-<ol class="arabic simple" start="6">
+<ol class="arabic simple" start="7">
 <li><p>Pass the Welcome screen:</p></li>
 </ol>
 <blockquote>
@@ -450,7 +503,7 @@ firewall-cmd --add-service<span class="o">=</span>ssh --permanent
 </pre></div>
 </div>
 </div></blockquote>
-<ol class="arabic simple" start="7">
+<ol class="arabic simple" start="8">
 <li><p>Disable Location Services:</p></li>
 </ol>
 <blockquote>
@@ -459,7 +512,7 @@ firewall-cmd --add-service<span class="o">=</span>ssh --permanent
 </pre></div>
 </div>
 </div></blockquote>
-<ol class="arabic simple" start="8">
+<ol class="arabic simple" start="9">
 <li><p>Skip Connecting Online Accounts:</p></li>
 </ol>
 <blockquote>
@@ -467,7 +520,7 @@ firewall-cmd --add-service<span class="o">=</span>ssh --permanent
 </pre></div>
 </div>
 </div></blockquote>
-<ol class="arabic simple" start="9">
+<ol class="arabic simple" start="10">
 <li><p>Login using Enterprise Login:</p></li>
 </ol>
 <blockquote>
@@ -496,7 +549,15 @@ Replace <code class="docutils literal notranslate"><span class="pre">USER_PASSWO
       <footer>
         
         <div class="related-pages">
-          
+          <a class="next-page" href="tool-deployment-guide.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">Tool Deployment Guide</div>
+              </div>
+              <svg><use href="#svg-arrow-right"></use></svg>
+            </a>
           <a class="prev-page" href="user-os-installation-guide.html">
               <svg><use href="#svg-arrow-right"></use></svg>
               <div class="page-info">
@@ -543,6 +604,7 @@ Replace <code class="docutils literal notranslate"><span class="pre">USER_PASSWO
 <li><a class="reference internal" href="#">User/Compute Node Deployment Guide</a><ul>
 <li><a class="reference internal" href="#prerequisites">Prerequisites</a></li>
 <li><a class="reference internal" href="#follow-on-deployments">Follow-on Deployments</a></li>
+<li><a class="reference internal" href="#deployment-scripts">Deployment Scripts</a></li>
 <li><a class="reference internal" href="#deployment-steps">Deployment Steps</a></li>
 </ul>
 </li>

@@ -39,7 +39,7 @@ RSYSLOG_PORT="6514"
 ###############################################################################
 
 # Update System
-dnf -y update
+dnf -y upgrade
 
 # Install Dependencies
 dnf -y install rsyslog

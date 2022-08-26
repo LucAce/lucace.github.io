@@ -60,7 +60,7 @@ then
 fi
 
 # Update System
-dnf -y update
+dnf -y upgrade
 
 # Install NFS Utilities
 dnf -y install nfs-utils

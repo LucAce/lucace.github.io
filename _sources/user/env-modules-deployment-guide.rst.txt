@@ -1,0 +1,77 @@
+.. Environment Modules Deployment Guide
+
+.. |br| raw:: html
+
+   <br />
+
+####################################
+Environment Modules Deployment Guide
+####################################
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Contents:
+
+The following instructions are for deploying Developer
+Application and Tools on the User and Compute nodes.
+
+
+*************
+Prerequisites
+*************
+
+* :doc:`user-deployment-guide`
+* :doc:`../idm/idm-client-deployment-guide`
+* :doc:`../nfs/nfs-client-deployment-guide`
+
+
+******************
+Deployment Scripts
+******************
+
+.. note::
+
+  An example bash script of the instructions has been provided: |br|
+  :download:`../_static/user/deploy-env-modules.sh`
+
+
+****************
+Deployment Steps
+****************
+
+.. note::
+
+  Instructions assume execution using the ``root`` account.
+
+1. Install user packages:
+
+  .. code-block:: bash
+
+    dnf -y install environment-modules
+
+2. Create Environment Modules directory:
+
+  .. code-block:: bash
+
+    mkdir -p /apps/modulefiles/
+
+3. Add/Remove Environment Modules directories
+
+  .. code-block:: bash
+
+    cp /etc/environment-modules/initrc /etc/environment-modules/initrc.bak
+    cp /etc/environment-modules/modulespath /etc/environment-modules/modulespath.bak
+
+    sed -i 's|^module use|# module use|g' /etc/environment-modules/initrc
+
+    cat >> /etc/environment-modules/initrc <<EOF
+    module use --append {/apps/modulefiles}
+    EOF
+
+    sed -i \
+        's|^/usr/share/Modules/modulefiles:/etc/modulefiles:/usr/share/modulefiles|# /usr/share/Modules/modulefiles:/etc/modulefiles:/usr/share/modulefiles|g' \
+        /etc/environment-modules/modulespath
+
+    cat >> /etc/environment-modules/modulespath <<EOF
+    /apps/modulefiles
+    EOF

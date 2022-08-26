@@ -92,7 +92,7 @@ if [ ! -f /root/tmp/slurmdbd.conf ]; then
 fi
 
 # Update System
-dnf -y update
+dnf -y upgrade
 
 
 ###############################################################################

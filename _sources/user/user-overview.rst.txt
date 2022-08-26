@@ -78,3 +78,20 @@ Guides
 
   #. :doc:`user-os-installation-guide`
   #. :doc:`user-deployment-guide`
+
+..
+
+  The following guides are for User nodes:
+
+  #. :doc:`env-modules-deployment-guide`
+  #. :doc:`tool-deployment-guide`
+  #. :doc:`user-deployment-guide`
+  #. :doc:`xrdp-deployment-guide`
+
+..
+
+  The following guides are for Compute nodes:
+
+  #. :doc:`env-modules-deployment-guide`
+  #. :doc:`tool-deployment-guide`
+  #. :doc:`user-deployment-guide`

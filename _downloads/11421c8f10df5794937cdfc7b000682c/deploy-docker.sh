@@ -28,7 +28,7 @@ echo -e "\n[$(date +"%Y-%m-%d %H:%M:%S")] Deploying Docker...\n"
 ###############################################################################
 
 # Update System
-dnf -y update
+dnf -y upgrade
 
 # Install Dependencies
 dnf -y install yum-utils

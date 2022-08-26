@@ -50,7 +50,7 @@ ALLOWED_IPV4="192.168.1.0/24"
 GITLAB_EDITION=$(echo $GITLAB_EDITION | tr '[:upper:]' '[:lower:]')
 
 # Update System
-dnf -y update
+dnf -y upgrade
 
 # Install and configure the necessary dependencies
 dnf -y install curl policycoreutils openssh-server perl postfix yum-utils

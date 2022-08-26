@@ -63,7 +63,7 @@ echo -e "\nDeploying IdM Server...\n"
 ###############################################################################
 
 # Update System:
-dnf -y update
+dnf -y upgrade
 
 # Install the Random Number Generator
 dnf -y install rng-tools
