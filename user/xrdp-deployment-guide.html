@@ -3,7 +3,7 @@
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-<link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="prev" title="Environment Modules Deployment Guide" href="env-modules-deployment-guide.html" />
+<link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="prev" title="Modulefile Deployment Example Guide" href="modulefile-deployment-example-guide.html" />
         <link rel="canonical" href="https://engwsc.com/user/xrdp-deployment-guide.html" />
 
     <meta name="generator" content="sphinx-5.0.2, furo 2022.06.21"/>
@@ -344,7 +344,10 @@
 <li class="toctree-l1 has-children"><a class="reference internal" href="env-modules-deployment-guide.html">Environment Modules Deployment Guide</a><input class="toctree-checkbox" id="toctree-checkbox-51" name="toctree-checkbox-51" role="switch" type="checkbox"/><label for="toctree-checkbox-51"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="simple">
 </ul>
 </li>
-<li class="toctree-l1 current has-children current-page"><a class="current reference internal" href="#">xrdp Deployment Guide</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-52" name="toctree-checkbox-52" role="switch" type="checkbox"/><label for="toctree-checkbox-52"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="simple">
+<li class="toctree-l1 has-children"><a class="reference internal" href="modulefile-deployment-example-guide.html">Modulefile Deployment Example Guide</a><input class="toctree-checkbox" id="toctree-checkbox-52" name="toctree-checkbox-52" role="switch" type="checkbox"/><label for="toctree-checkbox-52"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="simple">
+</ul>
+</li>
+<li class="toctree-l1 current has-children current-page"><a class="current reference internal" href="#">xrdp Deployment Guide</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-53" name="toctree-checkbox-53" role="switch" type="checkbox"/><label for="toctree-checkbox-53"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="simple">
 </ul>
 </li>
 </ul>
@@ -411,6 +414,17 @@ desktop access.</p>
 <p>An example bash script of the instructions has been provided: <br />
 <a class="reference download internal" download="" href="../_downloads/699d632f158c8ca6449b0167128b83f2/deploy-xrdp.sh"><code class="xref download docutils literal notranslate"><span class="pre">../_static/user/deploy-xrdp.sh</span></code></a></p>
 </div>
+</section>
+<section id="user-experience">
+<h2>User Experience<a class="headerlink" href="#user-experience" title="Permalink to this heading">#</a></h2>
+<blockquote>
+<div><p>When using Self-Signed certificates, the Windows RDP client will show
+a warning that the remote computer cannot be verified.  Users can check
+the “Don’t ask me again for connections to this computer” to avoid this
+warning in the future.  This warning will not be displayed if using a
+trusted CA to issue the certificate.</p>
+<img alt="../_images/rdp_warning.png" src="../_images/rdp_warning.png" />
+</div></blockquote>
 </section>
 <section id="deployment-steps">
 <h2>Deployment Steps<a class="headerlink" href="#deployment-steps" title="Permalink to this heading">#</a></h2>
@@ -504,14 +518,14 @@ systemctl restart xrdp
         
         <div class="related-pages">
           
-          <a class="prev-page" href="env-modules-deployment-guide.html">
+          <a class="prev-page" href="modulefile-deployment-example-guide.html">
               <svg><use href="#svg-arrow-right"></use></svg>
               <div class="page-info">
                 <div class="context">
                   <span>Previous</span>
                 </div>
                 
-                <div class="title">Environment Modules Deployment Guide</div>
+                <div class="title">Modulefile Deployment Example Guide</div>
                 
               </div>
             </a>
@@ -551,6 +565,7 @@ systemctl restart xrdp
 <li><a class="reference internal" href="#prerequisites">Prerequisites</a></li>
 <li><a class="reference internal" href="#references">References</a></li>
 <li><a class="reference internal" href="#deployment-scripts">Deployment Scripts</a></li>
+<li><a class="reference internal" href="#user-experience">User Experience</a></li>
 <li><a class="reference internal" href="#deployment-steps">Deployment Steps</a></li>
 </ul>
 </li>

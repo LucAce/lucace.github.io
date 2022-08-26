@@ -1,0 +1,189 @@
+.. Modulefile Deployment Example Guide
+
+.. |br| raw:: html
+
+   <br />
+
+###################################
+Modulefile Deployment Example Guide
+###################################
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Contents:
+
+The following instructions are an example of how to deploy an
+Environment Modules Modulefile to configure an application.  This
+example uses htop as an example application which is needed across
+all user system.
+
+This can be executed on any user or compute node.  The modulefile
+and application will be stored on the /app/ NFS share an avialable
+to all nodes once complete.
+
+
+*************
+Prerequisites
+*************
+
+* :doc:`user-deployment-guide`
+* :doc:`../idm/idm-client-deployment-guide`
+* :doc:`../nfs/nfs-client-deployment-guide`
+* :doc:`env-modules-deployment-guide`
+
+
+******************
+Deployment Scripts
+******************
+
+.. note::
+
+  An example bash script of the instructions has been provided: |br|
+  :download:`../_static/user/deploy-modulefile.sh`
+
+
+****************
+Deployment Steps
+****************
+
+.. note::
+
+  Instructions assume execution using the ``root`` account.
+
+.. warning::
+
+  The /app/ path must have been previously configured as an NFS mount.
+  See: :doc:`../nfs/nfs-client-deployment-guide`
+
+1. Create application directory:
+
+  .. code-block:: bash
+
+    mkdir -p /app/htop/htop-3.2.1/build/
+
+2. Create modulefiles directory:
+
+  .. code-block:: bash
+
+    mkdir -p /app/modulefiles/htop/
+
+3. Download the htop source files:
+
+  .. code-block:: bash
+
+    wget -nv \
+      https://github.com/htop-dev/htop/releases/download/3.2.1/htop-3.2.1.tar.xz \
+      -P /app/htop/htop-3.2.1/build/
+
+4. Create htop build script:
+
+  .. code-block:: bash
+
+    cd /app/htop/htop-3.2.1/build/
+
+    cat > /app/htop/htop-3.2.1/build/build.sh <<EOF
+    #!/bin/bash
+
+    VERSION=3.2.1
+
+    dnf -y install ncurses ncurses-devel lm_sensors lm_sensors-devel
+
+    cat > .build_info << EOI
+    Hostname:
+      \`hostname -f\`
+    Build Date:
+      \`date\`
+    System:
+      \`uname -a\`
+      \`cat /etc/redhat-release\`
+    EOI
+
+    tar --no-same-owner --xz -xf htop-\${VERSION}.tar.xz
+    cd htop-\${VERSION}
+
+    ./configure --prefix=/app/htop/htop-\${VERSION}
+    make
+    make install || true
+
+    cd ../
+    rm -rf htop-\${VERSION}
+    EOF
+
+5. Build htop:
+
+  .. note::
+
+    htop will be installed to /app/htop/htop-3.2.1/bin
+
+  .. code-block:: bash
+
+    cd /app/htop/htop-3.2.1/build/
+    ./build.sh
+
+6. Create modulefile:
+
+  .. code-block:: bash
+
+    cat > /app/modulefiles/htop/3.2.1 <<EOF
+    #%Module1.0####################################################################
+    ##
+    ## htop 3.2.1 modulefile
+    ##
+    ###############################################################################
+
+
+    # --- Application Specific Information ----------------------------------------
+
+    # Application information
+    set             app_name        "htop"
+    set             app_version     3.2.1
+    set             app_root        /app/htop/htop-\${app_version}
+    set             mod_name        htop
+    set             mod_conflicts   "htop"
+    conflict        htop
+
+
+    # --- Module Configuration ----------------------------------------------------
+
+    # Environment module messages
+    module-whatis   "Loads \${app_name} \${app_version} module into your environment"
+    module-version  \$mod_name/\${app_version}
+
+    # Set environment variables
+    prepend-path    PATH            \${app_root}/bin
+
+    # Module configuration
+    set             module_info     [module-info name]
+    if { [ module-info mode load ] } {
+        puts stderr "Module for \${app_name} '\${module_info}' loaded."
+    } elseif { [ module-info mode remove ] } {
+        puts stderr "Module for \${app_name} '\${module_info}' unloaded."
+    }
+
+
+    # --- Module Help Information -------------------------------------------------
+
+    proc ModulesHelp { } {
+        global app_name
+        global app_version
+        global app_root
+        global mod_name
+        global mod_conflicts
+
+        puts stderr "\${app_name} \${app_version}"
+
+        puts stderr "\nPath:      \${app_root}"
+        puts stderr "Website:   https://htop.dev/"
+        puts stderr "Conflicts: \${mod_conflicts}"
+    }
+    EOF
+
+7. Test modulefile:
+
+  .. code-block:: bash
+
+    module help htop/3.2.1
+    module unload htop
+    module load htop/3.2.1
+    which htop
+    echo -e "\nLaunch Command: \"htop\""

@@ -3,7 +3,7 @@
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-<link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="xrdp Deployment Guide" href="xrdp-deployment-guide.html" /><link rel="prev" title="Tool Deployment Guide" href="tool-deployment-guide.html" />
+<link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="Modulefile Deployment Example Guide" href="modulefile-deployment-example-guide.html" /><link rel="prev" title="Tool Deployment Guide" href="tool-deployment-guide.html" />
         <link rel="canonical" href="https://engwsc.com/user/env-modules-deployment-guide.html" />
 
     <meta name="generator" content="sphinx-5.0.2, furo 2022.06.21"/>
@@ -344,7 +344,10 @@
 <li class="toctree-l1 current has-children current-page"><a class="current reference internal" href="#">Environment Modules Deployment Guide</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-51" name="toctree-checkbox-51" role="switch" type="checkbox"/><label for="toctree-checkbox-51"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="simple">
 </ul>
 </li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="xrdp-deployment-guide.html">xrdp Deployment Guide</a><input class="toctree-checkbox" id="toctree-checkbox-52" name="toctree-checkbox-52" role="switch" type="checkbox"/><label for="toctree-checkbox-52"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="simple">
+<li class="toctree-l1 has-children"><a class="reference internal" href="modulefile-deployment-example-guide.html">Modulefile Deployment Example Guide</a><input class="toctree-checkbox" id="toctree-checkbox-52" name="toctree-checkbox-52" role="switch" type="checkbox"/><label for="toctree-checkbox-52"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="simple">
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="xrdp-deployment-guide.html">xrdp Deployment Guide</a><input class="toctree-checkbox" id="toctree-checkbox-53" name="toctree-checkbox-53" role="switch" type="checkbox"/><label for="toctree-checkbox-53"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="simple">
 </ul>
 </li>
 </ul>
@@ -384,8 +387,14 @@
 <h1>Environment Modules Deployment Guide<a class="headerlink" href="#environment-modules-deployment-guide" title="Permalink to this heading">#</a></h1>
 <div class="toctree-wrapper compound">
 </div>
-<p>The following instructions are for deploying Developer
-Application and Tools on the User and Compute nodes.</p>
+<p>The following instructions are for deploying Environment
+Modules on the Slurm, User and Compute nodes.</p>
+<p>The following instructions are for deploying Environment Modules
+which is a TCL based application for setting environment information
+for applications they will reference during the session.  Environment
+Modules is intended to be installed on the Slurm Controller, User,
+and Compute nodes.</p>
+<p><a class="reference external" href="http://modules.sourceforge.net/">http://modules.sourceforge.net/</a></p>
 <section id="prerequisites">
 <h2>Prerequisites<a class="headerlink" href="#prerequisites" title="Permalink to this heading">#</a></h2>
 <ul class="simple">
@@ -393,6 +402,12 @@ Application and Tools on the User and Compute nodes.</p>
 <li><p><a class="reference internal" href="../idm/idm-client-deployment-guide.html"><span class="doc">IdM Client Deployment Guide</span></a></p></li>
 <li><p><a class="reference internal" href="../nfs/nfs-client-deployment-guide.html"><span class="doc">NFS Client Deployment Guide</span></a></p></li>
 </ul>
+</section>
+<section id="references">
+<h2>References<a class="headerlink" href="#references" title="Permalink to this heading">#</a></h2>
+<blockquote>
+<div><p>These instructions were written for Environment Modules <code class="docutils literal notranslate"><span class="pre">4.5.2</span></code></p>
+</div></blockquote>
 </section>
 <section id="deployment-scripts">
 <h2>Deployment Scripts<a class="headerlink" href="#deployment-scripts" title="Permalink to this heading">#</a></h2>
@@ -420,7 +435,12 @@ Application and Tools on the User and Compute nodes.</p>
 <li><p>Create Environment Modules directory:</p></li>
 </ol>
 <blockquote>
-<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mkdir -p /apps/modulefiles/
+<div><div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>The /app/ path must have been previously configured as an NFS mount.
+See: <a class="reference internal" href="../nfs/nfs-client-deployment-guide.html"><span class="doc">NFS Client Deployment Guide</span></a></p>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mkdir -p /app/modulefiles/
 </pre></div>
 </div>
 </div></blockquote>
@@ -428,25 +448,35 @@ Application and Tools on the User and Compute nodes.</p>
 <li><p>Add/Remove Environment Modules directories</p></li>
 </ol>
 <blockquote>
-<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cp /etc/environment-modules/initrc /etc/environment-modules/initrc.bak
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create a backup of the configuration files</span>
+cp /etc/environment-modules/initrc /etc/environment-modules/initrc.bak
 cp /etc/environment-modules/modulespath /etc/environment-modules/modulespath.bak
 
+<span class="c1"># Disable default locations in initrc</span>
 sed -i <span class="s1">&#39;s|^module use|# module use|g&#39;</span> /etc/environment-modules/initrc
 
+<span class="c1"># Enable new NFS based location in initrc</span>
 cat &gt;&gt; /etc/environment-modules/initrc <span class="s">&lt;&lt;EOF</span>
-<span class="s">module use --append {/apps/modulefiles}</span>
+<span class="s">module use --append {/app/modulefiles}</span>
 <span class="s">EOF</span>
 
+<span class="c1"># Disable default locations in modulespath</span>
 sed -i <span class="se">\</span>
     <span class="s1">&#39;s|^/usr/share/Modules/modulefiles:/etc/modulefiles:/usr/share/modulefiles|# /usr/share/Modules/modulefiles:/etc/modulefiles:/usr/share/modulefiles|g&#39;</span> <span class="se">\</span>
     /etc/environment-modules/modulespath
 
+<span class="c1"># Enable new NFS based location in modulespath</span>
 cat &gt;&gt; /etc/environment-modules/modulespath <span class="s">&lt;&lt;EOF</span>
-<span class="s">/apps/modulefiles</span>
+<span class="s">/app/modulefiles</span>
 <span class="s">EOF</span>
 </pre></div>
 </div>
 </div></blockquote>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The Environment Modules commands will be available after
+logging-out and back in.</p>
+</div>
 </section>
 </section>
 
@@ -455,12 +485,12 @@ cat &gt;&gt; /etc/environment-modules/modulespath <span class="s">&lt;&lt;EOF</s
       <footer>
         
         <div class="related-pages">
-          <a class="next-page" href="xrdp-deployment-guide.html">
+          <a class="next-page" href="modulefile-deployment-example-guide.html">
               <div class="page-info">
                 <div class="context">
                   <span>Next</span>
                 </div>
-                <div class="title">xrdp Deployment Guide</div>
+                <div class="title">Modulefile Deployment Example Guide</div>
               </div>
               <svg><use href="#svg-arrow-right"></use></svg>
             </a>
@@ -509,6 +539,7 @@ cat &gt;&gt; /etc/environment-modules/modulespath <span class="s">&lt;&lt;EOF</s
             <ul>
 <li><a class="reference internal" href="#">Environment Modules Deployment Guide</a><ul>
 <li><a class="reference internal" href="#prerequisites">Prerequisites</a></li>
+<li><a class="reference internal" href="#references">References</a></li>
 <li><a class="reference internal" href="#deployment-scripts">Deployment Scripts</a></li>
 <li><a class="reference internal" href="#deployment-steps">Deployment Steps</a></li>
 </ul>

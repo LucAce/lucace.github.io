@@ -50,6 +50,21 @@ Deployment Scripts
   :download:`../_static/user/deploy-xrdp.sh`
 
 
+***************
+User Experience
+***************
+
+..
+
+  When using Self-Signed certificates, the Windows RDP client will show
+  a warning that the remote computer cannot be verified.  Users can check
+  the "Don't ask me again for connections to this computer" to avoid this
+  warning in the future.  This warning will not be displayed if using a
+  trusted CA to issue the certificate.
+
+  .. image:: ../_static/user/rdp_warning.png
+
+
 ****************
 Deployment Steps
 ****************

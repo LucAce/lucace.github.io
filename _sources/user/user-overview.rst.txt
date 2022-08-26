@@ -74,24 +74,24 @@ Guides
 
 ..
 
-  The following guides are required to deploy User and Compute nodes:
+  The following guides are required to deploy on all
+  User and Compute nodes:
 
   #. :doc:`user-os-installation-guide`
   #. :doc:`user-deployment-guide`
+  #. :doc:`env-modules-deployment-guide`
+  #. :doc:`user-deployment-guide`
+  #. :doc:`tool-deployment-guide`
 
 ..
 
-  The following guides are for User nodes:
+  The following guides are for just the User nodes:
 
-  #. :doc:`env-modules-deployment-guide`
-  #. :doc:`tool-deployment-guide`
-  #. :doc:`user-deployment-guide`
   #. :doc:`xrdp-deployment-guide`
+  #. :doc:`modulefile-deployment-example-guide`
 
 ..
 
-  The following guides are for Compute nodes:
+  The following guides are deployed once from any User node:
 
-  #. :doc:`env-modules-deployment-guide`
-  #. :doc:`tool-deployment-guide`
-  #. :doc:`user-deployment-guide`
+  #. :doc:`modulefile-deployment-example-guide`

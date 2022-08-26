@@ -12,8 +12,16 @@ Environment Modules Deployment Guide
    :maxdepth: 2
    :caption: Contents:
 
-The following instructions are for deploying Developer
-Application and Tools on the User and Compute nodes.
+The following instructions are for deploying Environment
+Modules on the Slurm, User and Compute nodes.
+
+The following instructions are for deploying Environment Modules
+which is a TCL based application for setting environment information
+for applications they will reference during the session.  Environment
+Modules is intended to be installed on the Slurm Controller, User,
+and Compute nodes.
+
+http://modules.sourceforge.net/
 
 
 *************
@@ -23,6 +31,15 @@ Prerequisites
 * :doc:`user-deployment-guide`
 * :doc:`../idm/idm-client-deployment-guide`
 * :doc:`../nfs/nfs-client-deployment-guide`
+
+
+**********
+References
+**********
+
+..
+
+  These instructions were written for Environment Modules ``4.5.2``
 
 
 ******************
@@ -51,27 +68,42 @@ Deployment Steps
 
 2. Create Environment Modules directory:
 
+  .. warning::
+
+    The /app/ path must have been previously configured as an NFS mount.
+    See: :doc:`../nfs/nfs-client-deployment-guide`
+
   .. code-block:: bash
 
-    mkdir -p /apps/modulefiles/
+    mkdir -p /app/modulefiles/
 
 3. Add/Remove Environment Modules directories
 
   .. code-block:: bash
 
+    # Create a backup of the configuration files
     cp /etc/environment-modules/initrc /etc/environment-modules/initrc.bak
     cp /etc/environment-modules/modulespath /etc/environment-modules/modulespath.bak
 
+    # Disable default locations in initrc
     sed -i 's|^module use|# module use|g' /etc/environment-modules/initrc
 
+    # Enable new NFS based location in initrc
     cat >> /etc/environment-modules/initrc <<EOF
-    module use --append {/apps/modulefiles}
+    module use --append {/app/modulefiles}
     EOF
 
+    # Disable default locations in modulespath
     sed -i \
         's|^/usr/share/Modules/modulefiles:/etc/modulefiles:/usr/share/modulefiles|# /usr/share/Modules/modulefiles:/etc/modulefiles:/usr/share/modulefiles|g' \
         /etc/environment-modules/modulespath
 
+    # Enable new NFS based location in modulespath
     cat >> /etc/environment-modules/modulespath <<EOF
-    /apps/modulefiles
+    /app/modulefiles
     EOF
+
+.. note::
+
+  The Environment Modules commands will be available after
+  logging-out and back in.
