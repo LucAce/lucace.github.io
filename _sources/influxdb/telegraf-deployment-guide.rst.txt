@@ -28,12 +28,12 @@ References
 
 ..
 
-  These instructions were written for Telegraf ``v1.23.3``
+  These instructions were written for Telegraf ``v1.23.x``
 
 ..
 
   Official Telegraf installation instructions: |br|
-  https://docs.influxdata.com/telegraf/v1.23/install/
+  https://docs.influxdata.com/telegraf/latest/install/
 
 
 ******************
