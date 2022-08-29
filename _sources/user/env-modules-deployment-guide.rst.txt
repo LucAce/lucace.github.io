@@ -12,14 +12,11 @@ Environment Modules Deployment Guide
    :maxdepth: 2
    :caption: Contents:
 
-The following instructions are for deploying Environment
-Modules on the Slurm, User and Compute nodes.
-
-The following instructions are for deploying Environment Modules
-which is a TCL based application for setting environment information
-for applications they will reference during the session.  Environment
-Modules is intended to be installed on the Slurm Controller, User,
-and Compute nodes.
+The following instructions are for deploying of Environment
+Modules on the Slurm, User, and Compute nodes.  Environment Modules
+is a TCL based application for configuring and setting environment
+variables for applications that users will execute during their
+sessions.
 
 http://modules.sourceforge.net/
 
@@ -39,7 +36,8 @@ References
 
 ..
 
-  These instructions were written for Environment Modules ``4.5.2``
+  These instructions were written for Environment Modules ``4.5.2`` which
+  is available in the baseos repository.
 
 
 ******************

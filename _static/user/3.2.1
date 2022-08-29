@@ -1,0 +1,50 @@
+#%Module1.0####################################################################
+##
+## htop 3.2.1 modulefile
+##
+###############################################################################
+
+
+# --- Application Specific Information ----------------------------------------
+
+# Application information
+set             app_name        "htop"
+set             app_version     3.2.1
+set             app_root        /app/htop/htop-${app_version}
+set             mod_name        htop
+set             mod_conflicts   "htop"
+conflict        htop
+
+
+# --- Module Configuration ----------------------------------------------------
+
+# Environment module messages
+module-whatis   "Loads ${app_name} ${app_version} module into your environment"
+module-version  $mod_name/${app_version}
+
+# Set environment variables
+prepend-path    PATH            ${app_root}/bin
+
+# Module configuration
+set             module_info     [module-info name]
+if { [ module-info mode load ] } {
+    puts stderr "Module for ${app_name} '${module_info}' loaded."
+} elseif { [ module-info mode remove ] } {
+    puts stderr "Module for ${app_name} '${module_info}' unloaded."
+}
+
+
+# --- Module Help Information -------------------------------------------------
+
+proc ModulesHelp { } {
+    global app_name
+    global app_version
+    global app_root
+    global mod_conflicts
+
+    puts stderr "${app_name} ${app_version}"
+
+    puts stderr "\nPath:      ${app_root}"
+    puts stderr "Website:   https://htop.dev/"
+    puts stderr "Conflicts: ${mod_conflicts}"
+}

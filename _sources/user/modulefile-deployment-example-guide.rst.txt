@@ -14,11 +14,11 @@ Modulefile Deployment Example Guide
 
 The following instructions are an example of how to deploy an
 Environment Modules Modulefile to configure an application.  This
-example uses htop as an example application which is needed across
-all user system.
+example uses htop as representative application which users might
+utilize across all user and compute nodes.
 
 This can be executed on any user or compute node.  The modulefile
-and application will be stored on the /app/ NFS share an avialable
+and application will be stored on the /app/ NFS share and avialable
 to all nodes once complete.
 
 
@@ -77,6 +77,11 @@ Deployment Steps
 
 4. Create htop build script:
 
+  .. note::
+
+    A copy of this build script had been provided: |br|
+    :download:`../_static/user/build.sh`
+
   .. code-block:: bash
 
     cd /app/htop/htop-3.2.1/build/
@@ -109,6 +114,8 @@ Deployment Steps
     rm -rf htop-\${VERSION}
     EOF
 
+    chmod 755 /app/htop/htop-3.2.1/build/build.sh
+
 5. Build htop:
 
   .. note::
@@ -121,6 +128,11 @@ Deployment Steps
     ./build.sh
 
 6. Create modulefile:
+
+  .. note::
+
+    A copy of this modulefile had been provided: |br|
+    :download:`../_static/user/3.2.1`
 
   .. code-block:: bash
 
@@ -167,7 +179,6 @@ Deployment Steps
         global app_name
         global app_version
         global app_root
-        global mod_name
         global mod_conflicts
 
         puts stderr "\${app_name} \${app_version}"

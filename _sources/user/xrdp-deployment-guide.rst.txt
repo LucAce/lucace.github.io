@@ -14,7 +14,7 @@ xrdp Deployment Guide
 
 The following instructions are for deploying xrdp which is an
 implementation of Microsoft's RDP server that enables remote
-desktop access.
+desktop access on Linux.
 
 http://xrdp.org
 

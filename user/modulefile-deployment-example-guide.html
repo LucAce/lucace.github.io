@@ -389,10 +389,10 @@
 </div>
 <p>The following instructions are an example of how to deploy an
 Environment Modules Modulefile to configure an application.  This
-example uses htop as an example application which is needed across
-all user system.</p>
+example uses htop as representative application which users might
+utilize across all user and compute nodes.</p>
 <p>This can be executed on any user or compute node.  The modulefile
-and application will be stored on the /app/ NFS share an avialable
+and application will be stored on the /app/ NFS share and avialable
 to all nodes once complete.</p>
 <section id="prerequisites">
 <h2>Prerequisites<a class="headerlink" href="#prerequisites" title="Permalink to this heading">#</a></h2>
@@ -452,7 +452,12 @@ See: <a class="reference internal" href="../nfs/nfs-client-deployment-guide.html
 <li><p>Create htop build script:</p></li>
 </ol>
 <blockquote>
-<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span> /app/htop/htop-3.2.1/build/
+<div><div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>A copy of this build script had been provided: <br />
+<a class="reference download internal" download="" href="../_downloads/929c4da8bf9c708c9fd0b735fa61c8f4/build.sh"><code class="xref download docutils literal notranslate"><span class="pre">../_static/user/build.sh</span></code></a></p>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span> /app/htop/htop-3.2.1/build/
 
 cat &gt; /app/htop/htop-3.2.1/build/build.sh <span class="s">&lt;&lt;EOF</span>
 <span class="s">#!/bin/bash</span>
@@ -481,6 +486,8 @@ cat &gt; /app/htop/htop-3.2.1/build/build.sh <span class="s">&lt;&lt;EOF</span>
 <span class="s">cd ../</span>
 <span class="s">rm -rf htop-\${VERSION}</span>
 <span class="s">EOF</span>
+
+chmod <span class="m">755</span> /app/htop/htop-3.2.1/build/build.sh
 </pre></div>
 </div>
 </div></blockquote>
@@ -501,7 +508,12 @@ cat &gt; /app/htop/htop-3.2.1/build/build.sh <span class="s">&lt;&lt;EOF</span>
 <li><p>Create modulefile:</p></li>
 </ol>
 <blockquote>
-<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cat &gt; /app/modulefiles/htop/3.2.1 <span class="s">&lt;&lt;EOF</span>
+<div><div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>A copy of this modulefile had been provided: <br />
+<a class="reference download internal" download="" href="../_downloads/0fd41a069f6056a95b716f12c1d969ed/3.2.1"><code class="xref download docutils literal notranslate"><span class="pre">../_static/user/3.2.1</span></code></a></p>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cat &gt; /app/modulefiles/htop/3.2.1 <span class="s">&lt;&lt;EOF</span>
 <span class="s">#%Module1.0####################################################################</span>
 <span class="s">##</span>
 <span class="s">## htop 3.2.1 modulefile</span>
@@ -544,7 +556,6 @@ cat &gt; /app/htop/htop-3.2.1/build/build.sh <span class="s">&lt;&lt;EOF</span>
 <span class="s">    global app_name</span>
 <span class="s">    global app_version</span>
 <span class="s">    global app_root</span>
-<span class="s">    global mod_name</span>
 <span class="s">    global mod_conflicts</span>
 
 <span class="s">    puts stderr &quot;\${app_name} \${app_version}&quot;</span>
