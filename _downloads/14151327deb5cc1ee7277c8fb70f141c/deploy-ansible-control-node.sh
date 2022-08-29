@@ -50,7 +50,7 @@ dnf -y install ansible
 
 # Install Ansible command shell completion
 python3 -m pip install --user argcomplete
-activate-global-python-argcomplete
+/root/.local/bin/activate-global-python-argcomplete
 
 # Create a default configuration file
 mv /etc/ansible/ansible.cfg /etc/ansible/ansible.cfg.old
