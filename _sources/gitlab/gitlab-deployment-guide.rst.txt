@@ -112,7 +112,10 @@ Deployment Notes
     Running handlers:
     There was an error running gitlab-ctl reconfigure:
 
-    letsencrypt_certificate[gitlab] (letsencrypt::http_authorization line 6) had an error: Acme::Client::Error::RejectedIdentifier: acme_certificate[staging] (/opt/gitlab/embedded/cookbooks/cache/cookbooks/letsencrypt/resources/certificate.rb line 41) had an error: Acme::Client::Error::RejectedIdentifier: Error creating new order :: Cannot issue for "gitlab": Domain name needs at least one dot
+    letsencrypt_certificate[gitlab] (letsencrypt::http_authorization line 6) had an error: Acme::Client::Error::RejectedIdentifier:
+    acme_certificate[staging] (/opt/gitlab/embedded/cookbooks/cache/cookbooks/letsencrypt/resources/certificate.rb line 41) had
+    an error: Acme::Client::Error::RejectedIdentifier: Error creating new order :: Cannot issue for "gitlab": Domain name needs
+    at least one dot
 
   The error is caused by a failure for Let's Encrypt to acquire an SSL certificate which it
   attempts to aquire during installation.  GitLab should be deployed with a valid SSL
@@ -218,7 +221,7 @@ Deployment Steps
     initial root password is stored in a file named ``/etc/gitlab/initial_root_password``
     but the file is automatically erased 24-hours after installation.
 
-10. Disable GitLab Yum Repositories:
+10. Disable GitLab repositories:
 
   .. important::
 
@@ -226,15 +229,15 @@ Deployment Steps
     will disable the yum/dnf repository.  When updating GitLab the dnf/yum command will need to include
     the GitLab repository name.
 
+  .. note::
+
+    The following command can be used to update GitLab when the repository is disabled by default: |br|
+    dnf -y --repo gitlab_gitlab-ce,gitlab_gitlab-ce-source update gitlab-ce
+
   .. code-block:: bash
 
     yum-config-manager --disable gitlab_gitlab-ce
     yum-config-manager --disable gitlab_gitlab-ce-source
-
-  .. code-block:: bash
-
-    # Command to update GitLab |br|
-    dnf -y --repo gitlab_gitlab-ce,gitlab_gitlab-ce-source update gitlab-ce
 
 11. Create Self-Signed SSL Certificate:
 
@@ -265,9 +268,16 @@ Deployment Steps
 
   .. code-block:: bash
 
+    # Set GitLab's external URL
     sed -i "s|external_url 'http://gitlab.engwsc.example.com'|external_url 'https://gitlab.engwsc.example.com'|g" /etc/gitlab/gitlab.rb
+
+    # Disable GitLab "Usage Ping"
     sed -i "s/^.*gitlab_rails\['usage_ping_enabled'\].*$/gitlab_rails['usage_ping_enabled'] = false/g" /etc/gitlab/gitlab.rb
+
+    # Enable http to https redirects
     sed -i "s/^.*nginx\['redirect_http_to_https'\].*$/nginx['redirect_http_to_https'] = true/g" /etc/gitlab/gitlab.rb
+
+    # Disable Let's Encrypt (In-favor of Self-Signed or CA issued certs)
     sed -i "s/^.*letsencrypt\['enable'\].*$/letsencrypt['enable'] = false/g" /etc/gitlab/gitlab.rb
 
 13. Reconfigure GitLab

@@ -462,7 +462,10 @@ and has known issues with executing from NFS mounts either hosted inside the VM 
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Running</span> <span class="n">handlers</span><span class="p">:</span>
 <span class="n">There</span> <span class="n">was</span> <span class="n">an</span> <span class="n">error</span> <span class="n">running</span> <span class="n">gitlab</span><span class="o">-</span><span class="n">ctl</span> <span class="n">reconfigure</span><span class="p">:</span>
 
-<span class="n">letsencrypt_certificate</span><span class="p">[</span><span class="n">gitlab</span><span class="p">]</span> <span class="p">(</span><span class="n">letsencrypt</span><span class="p">::</span><span class="n">http_authorization</span> <span class="n">line</span> <span class="mi">6</span><span class="p">)</span> <span class="n">had</span> <span class="n">an</span> <span class="n">error</span><span class="p">:</span> <span class="n">Acme</span><span class="p">::</span><span class="n">Client</span><span class="p">::</span><span class="n">Error</span><span class="p">::</span><span class="n">RejectedIdentifier</span><span class="p">:</span> <span class="n">acme_certificate</span><span class="p">[</span><span class="n">staging</span><span class="p">]</span> <span class="p">(</span><span class="o">/</span><span class="n">opt</span><span class="o">/</span><span class="n">gitlab</span><span class="o">/</span><span class="n">embedded</span><span class="o">/</span><span class="n">cookbooks</span><span class="o">/</span><span class="n">cache</span><span class="o">/</span><span class="n">cookbooks</span><span class="o">/</span><span class="n">letsencrypt</span><span class="o">/</span><span class="n">resources</span><span class="o">/</span><span class="n">certificate</span><span class="o">.</span><span class="n">rb</span> <span class="n">line</span> <span class="mi">41</span><span class="p">)</span> <span class="n">had</span> <span class="n">an</span> <span class="n">error</span><span class="p">:</span> <span class="n">Acme</span><span class="p">::</span><span class="n">Client</span><span class="p">::</span><span class="n">Error</span><span class="p">::</span><span class="n">RejectedIdentifier</span><span class="p">:</span> <span class="n">Error</span> <span class="n">creating</span> <span class="n">new</span> <span class="n">order</span> <span class="p">::</span> <span class="n">Cannot</span> <span class="n">issue</span> <span class="k">for</span> <span class="s2">&quot;gitlab&quot;</span><span class="p">:</span> <span class="n">Domain</span> <span class="n">name</span> <span class="n">needs</span> <span class="n">at</span> <span class="n">least</span> <span class="n">one</span> <span class="n">dot</span>
+<span class="n">letsencrypt_certificate</span><span class="p">[</span><span class="n">gitlab</span><span class="p">]</span> <span class="p">(</span><span class="n">letsencrypt</span><span class="p">::</span><span class="n">http_authorization</span> <span class="n">line</span> <span class="mi">6</span><span class="p">)</span> <span class="n">had</span> <span class="n">an</span> <span class="n">error</span><span class="p">:</span> <span class="n">Acme</span><span class="p">::</span><span class="n">Client</span><span class="p">::</span><span class="n">Error</span><span class="p">::</span><span class="n">RejectedIdentifier</span><span class="p">:</span>
+<span class="n">acme_certificate</span><span class="p">[</span><span class="n">staging</span><span class="p">]</span> <span class="p">(</span><span class="o">/</span><span class="n">opt</span><span class="o">/</span><span class="n">gitlab</span><span class="o">/</span><span class="n">embedded</span><span class="o">/</span><span class="n">cookbooks</span><span class="o">/</span><span class="n">cache</span><span class="o">/</span><span class="n">cookbooks</span><span class="o">/</span><span class="n">letsencrypt</span><span class="o">/</span><span class="n">resources</span><span class="o">/</span><span class="n">certificate</span><span class="o">.</span><span class="n">rb</span> <span class="n">line</span> <span class="mi">41</span><span class="p">)</span> <span class="n">had</span>
+<span class="n">an</span> <span class="n">error</span><span class="p">:</span> <span class="n">Acme</span><span class="p">::</span><span class="n">Client</span><span class="p">::</span><span class="n">Error</span><span class="p">::</span><span class="n">RejectedIdentifier</span><span class="p">:</span> <span class="n">Error</span> <span class="n">creating</span> <span class="n">new</span> <span class="n">order</span> <span class="p">::</span> <span class="n">Cannot</span> <span class="n">issue</span> <span class="k">for</span> <span class="s2">&quot;gitlab&quot;</span><span class="p">:</span> <span class="n">Domain</span> <span class="n">name</span> <span class="n">needs</span>
+<span class="n">at</span> <span class="n">least</span> <span class="n">one</span> <span class="n">dot</span>
 </pre></div>
 </div>
 <p>The error is caused by a failure for Let’s Encrypt to acquire an SSL certificate which it
@@ -585,7 +588,7 @@ but the file is automatically erased 24-hours after installation.</p>
 </div>
 </div></blockquote>
 <ol class="arabic simple" start="10">
-<li><p>Disable GitLab Yum Repositories:</p></li>
+<li><p>Disable GitLab repositories:</p></li>
 </ol>
 <blockquote>
 <div><div class="admonition important">
@@ -594,12 +597,13 @@ but the file is automatically erased 24-hours after installation.</p>
 will disable the yum/dnf repository.  When updating GitLab the dnf/yum command will need to include
 the GitLab repository name.</p>
 </div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The following command can be used to update GitLab when the repository is disabled by default: <br />
+dnf -y –repo gitlab_gitlab-ce,gitlab_gitlab-ce-source update gitlab-ce</p>
+</div>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>yum-config-manager --disable gitlab_gitlab-ce
 yum-config-manager --disable gitlab_gitlab-ce-source
-</pre></div>
-</div>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Command to update GitLab |br|</span>
-dnf -y --repo gitlab_gitlab-ce,gitlab_gitlab-ce-source update gitlab-ce
 </pre></div>
 </div>
 </div></blockquote>
@@ -634,9 +638,16 @@ openssl req -x509 -nodes -newkey rsa:4096 <span class="se">\</span>
 <li><p>Set <code class="docutils literal notranslate"><span class="pre">gitlab.rb</span></code> options:</p></li>
 </ol>
 <blockquote>
-<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sed -i <span class="s2">&quot;s|external_url &#39;http://gitlab.engwsc.example.com&#39;|external_url &#39;https://gitlab.engwsc.example.com&#39;|g&quot;</span> /etc/gitlab/gitlab.rb
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Set GitLab&#39;s external URL</span>
+sed -i <span class="s2">&quot;s|external_url &#39;http://gitlab.engwsc.example.com&#39;|external_url &#39;https://gitlab.engwsc.example.com&#39;|g&quot;</span> /etc/gitlab/gitlab.rb
+
+<span class="c1"># Disable GitLab &quot;Usage Ping&quot;</span>
 sed -i <span class="s2">&quot;s/^.*gitlab_rails\[&#39;usage_ping_enabled&#39;\].*</span>$<span class="s2">/gitlab_rails[&#39;usage_ping_enabled&#39;] = false/g&quot;</span> /etc/gitlab/gitlab.rb
+
+<span class="c1"># Enable http to https redirects</span>
 sed -i <span class="s2">&quot;s/^.*nginx\[&#39;redirect_http_to_https&#39;\].*</span>$<span class="s2">/nginx[&#39;redirect_http_to_https&#39;] = true/g&quot;</span> /etc/gitlab/gitlab.rb
+
+<span class="c1"># Disable Let&#39;s Encrypt (In-favor of Self-Signed or CA issued certs)</span>
 sed -i <span class="s2">&quot;s/^.*letsencrypt\[&#39;enable&#39;\].*</span>$<span class="s2">/letsencrypt[&#39;enable&#39;] = false/g&quot;</span> /etc/gitlab/gitlab.rb
 </pre></div>
 </div>
