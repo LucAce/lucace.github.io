@@ -1,0 +1,109 @@
+.. Repository Mirror Client Deployment Guide
+
+.. |br| raw:: html
+
+   <br />
+
+#########################################
+Repository Mirror Client Deployment Guide
+#########################################
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Contents:
+
+The following instructions are for configuring yum to use the
+local a mirror.
+
+
+*************
+Prerequisites
+*************
+
+* :doc:`mirror-server-deployment-guide`
+
+
+**********
+References
+**********
+
+..
+
+  Instructions are based on the following documentation: |br|
+  https://www.golinuxcloud.com/local-offline-yum-dnf-repo-http-rocky-linux-8/
+
+
+******************
+Deployment Scripts
+******************
+
+.. note::
+
+  An example bash script of the instructions has been provided: |br|
+  :download:`../_static/mirror/deploy-mirror-client.sh`
+
+
+****************
+Deployment Steps
+****************
+
+.. note::
+
+  Instructions assume execution using the ``root`` account.
+
+1. Create repository configuration file:
+
+  .. code-block:: bash
+
+    cat > /etc/yum.repos.d/localmirror.repo <<EOF
+    [localrepo-baseos]
+    name=Local AlmaLinux 8 - BaseOS
+    baseurl=http://mirror.engwsc.example.com/almalinux/8/baseos
+    gpgcheck=1
+    enabled=1
+    countme=0
+    gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-AlmaLinux
+
+    [localrepo-appstream]
+    name=Local AlmaLinux 8 - AppStream
+    baseurl=http://mirror.engwsc.example.com/almalinux/8/appstream
+    gpgcheck=1
+    enabled=1
+    countme=0
+    gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-AlmaLinux
+
+    [localrepo-extras]
+    name=Local AlmaLinux 8 - Extras
+    baseurl=http://mirror.engwsc.example.com/almalinux/8/extras
+    gpgcheck=1
+    enabled=1
+    countme=0
+    gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-AlmaLinux
+
+    [localrepo-powertools]
+    name=Local AlmaLinux 8 - PowerTools
+    baseurl=http://mirror.engwsc.example.com/almalinux/8/powertools
+    gpgcheck=1
+    enabled=1
+    countme=0
+    gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-AlmaLinux
+
+    EOF
+
+2. Disable Primary repositories:
+
+  .. code-block:: bash
+
+    sed -i "s|enabled=1|enabled=0|g" /etc/yum.repos.d/almalinux.repo
+
+3. Clean the DNF cache:
+
+  .. code-block:: bash
+
+    dnf clean all
+
+4. Test mirror:
+
+  .. code-block:: bash
+
+    dnf -y upgrade

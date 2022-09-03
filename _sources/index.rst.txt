@@ -39,8 +39,7 @@ Work In Progress
 
 Some of the guides still need to be written:
 
-- Repository Mirror
-- (All) Usage Guides
+- (All) Usage/User Guides
 
 
 ********
@@ -153,13 +152,14 @@ available until a later point in time.
    docker/docker-os-installation-guide
    docker/docker-deployment-guide
 
-.. .. toctree::
-..    :maxdepth: 1
-..    :caption: Mirror
-..
-..    mirror/mirror-overview
-..    mirror/mirror-os-installation-guide
-..    mirror/mirror-deployment-guide
+.. toctree::
+   :maxdepth: 1
+   :caption: Mirror
+
+   mirror/mirror-overview
+   mirror/mirror-server-os-installation-guide
+   mirror/mirror-server-deployment-guide
+   mirror/mirror-client-deployment-guide
 
 .. toctree::
    :maxdepth: 1

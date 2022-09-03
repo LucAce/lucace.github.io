@@ -1,0 +1,177 @@
+.. Repository Mirror Server Deployment Guide
+
+.. |br| raw:: html
+
+   <br />
+
+#########################################
+Repository Mirror Server Deployment Guide
+#########################################
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Contents:
+
+The following instructions are for deploying a repository mirror.
+
+
+*************
+Prerequisites
+*************
+
+* :doc:`mirror-server-os-installation-guide`
+* :doc:`../idm/idm-client-deployment-guide`
+* :doc:`../nfs/nfs-client-deployment-guide`
+
+
+*********************
+Follow-on Deployments
+*********************
+
+The following guides can be applied after the deployment of their associated nodes.
+
+* :doc:`../graylog/rsyslog-deployment-guide`
+* :doc:`../influxdb/telegraf-deployment-guide`
+
+
+
+**********
+References
+**********
+
+..
+
+  Instructions are based on the following documentation: |br|
+  https://www.golinuxcloud.com/local-offline-yum-dnf-repo-http-rocky-linux-8/
+
+
+******************
+Deployment Scripts
+******************
+
+.. note::
+
+  An example bash script of the instructions has been provided: |br|
+  :download:`../_static/mirror/deploy-mirror-server.sh`
+
+
+****************
+Deployment Steps
+****************
+
+.. note::
+
+  Instructions assume execution using the ``root`` account.
+
+1. Connect the system to the NFS Server:
+
+  See Guide: :doc:`../nfs/nfs-client-deployment-guide`
+
+2. Connect the system to the IdM Server:
+
+  See Guide: :doc:`../idm/idm-client-deployment-guide`
+
+3. Install dependencies:
+
+  .. code-block:: bash
+
+    dnf -y install nginx yum-utils
+
+4. Create local directory for the repository mount:
+
+  .. code-block:: bash
+
+    mkdir -p /srv/repos/
+
+5. Configure NFS mount:
+
+  .. important::
+
+    Replace ``engwsc.example.com`` with the domain name of your network.
+
+  .. code-block:: bash
+
+    cat >> /etc/fstab <<EOL
+
+    # Repository Mirror NFS Mount
+    nfs01.engwsc.example.com:/srv/nfs/mirror /srv/repos nfs4 defaults,tcp,soft,nfsvers=4 0 0
+    EOL
+
+6. Mount the mirror path:
+
+  .. code-block:: bash
+
+    mount /srv/repos
+
+6. Create repository paths:
+
+  .. code-block:: bash
+
+    mkdir -p /srv/repos/almalinux/8/{baseos,appstream,extras,powertools}
+
+7. Create a Cron Job to synchronize repositories:
+
+  .. code-block:: bash
+
+    cat > /etc/cron.daily/update-localrepos <<EOF
+    #!/bin/bash
+
+    /bin/dnf reposync --repoid=baseos     -g --delete --newest-only --download-metadata -p /srv/repos/almalinux/8/
+    /bin/dnf reposync --repoid=appstream  -g --delete --newest-only --download-metadata -p /srv/repos/almalinux/8/
+    /bin/dnf reposync --repoid=extras     -g --delete --newest-only --download-metadata -p /srv/repos/almalinux/8/
+    /bin/dnf reposync --repoid=powertools -g --delete --newest-only --download-metadata -p /srv/repos/almalinux/8/
+    EOF
+
+    chmod 755 /etc/cron.daily/update-localrepos
+
+8. Synchronize repositories:
+
+  .. code-block:: bash
+
+    /etc/cron.daily/update-localrepos
+
+9. Configure Nginx to server the repository over http:
+
+  .. important::
+
+    Replace ``engwsc.example.com`` with the domain name of your network.
+
+  .. code-block:: bash
+
+    cat > /etc/nginx/conf.d/localrepos.conf <<EOF
+    server {
+        listen      80;
+        server_name mirror.engwsc.example.com;
+        root        /srv/repos/;
+        index       index.html;
+        location / {
+            autoindex on;
+        }
+    }
+    EOF
+
+10. Set SELinux context and httpd boolean:
+
+  .. code-block:: bash
+
+    # Execute the following if the repository is stored locally
+    # chcon -Rt httpd_sys_content_t ${REPO_PATH}/
+
+    # Set SELinux boolen to allow httpd to use nfs
+    setsebool -P httpd_use_nfs=1
+
+11. Enable Nginx service:
+
+  .. code-block:: bash
+
+    systemctl enable --now nginx
+    systemctl status nginx
+
+12. Configure firewall rules:
+
+  .. code-block:: bash
+
+    systemctl enable --now firewalld
+    firewall-cmd --zone=public --add-source=${ALLOWED_IPV4} --permanent
+    firewall-cmd --zone=public --add-service=http --permanent
+    firewall-cmd --reload

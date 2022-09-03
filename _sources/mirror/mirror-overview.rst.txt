@@ -1,0 +1,125 @@
+.. Repository Mirror
+
+.. |br| raw:: html
+
+   <br />
+
+=================
+Repository Mirror
+=================
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Contents:
+
+YUM/DNF repository hosts a copy of the rpm packages from which the system
+retrieves and installs OS updates and applications.  Having a local repository
+mirror has multiple benefits and faciliates scheduled patching.
+
+.. image:: ../_static/topology/topology.png
+
+
+Operating Systems
+~~~~~~~~~~~~~~~~~
+
+These guides are compatible with AlmaLinux 8 and Rocky Linux 8 only.
+
+
+Access Controls
+~~~~~~~~~~~~~~~
+
+The Repository Mirror should only be accessed directly using SSH by system
+administrators.  Standard cluster user accounts should not be able to SSH
+into the Repository Mirror node.
+
+
+Hostnames
+~~~~~~~~~
+
+These guides use the following example Hostnames and FQDN for the Repository
+Mirror.  FQDNs can be provided by utilizing a DNS server or installing a hosts
+file on the system itself.
+
+.. note::
+
+  An example ``/etc/hosts`` file has been provided: :download:`../_static/hosts`
+
+
+Server
+------
+
+The Repository Mirror Server is deployed on the following node:
+
++----------+-----------------------------+-----------------------+------------+--------------+
+| Hostname | FQDN                        | Function              | Type       | IPv4 Address |
++==========+=============================+=======================+============+==============+
+| mirror   | mirror.engwsc.example.com   | Repository Mirror     | VM Guest   | 192.168.1.88 |
++----------+-----------------------------+-----------------------+------------+--------------+
+
+Clients
+-------
+
+The Repository Mirror Clients are deployed on the following nodes:
+
++----------+-----------------------------+-----------------------+------------+--------------+
+| Hostname | FQDN                        | Function              | Type       | IPv4 Address |
++==========+=============================+=======================+============+==============+
+| nfs01    | nfs01.engwsc.example.com    | NFS Storage           | Bare-Metal | 192.168.1.50 |
++----------+-----------------------------+-----------------------+------------+--------------+
+| vmm01    | vmm01.engwsc.example.com    | VM Manager 1          | Bare-Metal | 192.168.1.51 |
++----------+-----------------------------+-----------------------+------------+--------------+
+| vmm02    | vmm02.engwsc.example.com    | VM Manager 2          | Bare-Metal | 192.168.1.52 |
++----------+-----------------------------+-----------------------+------------+--------------+
+| user01   | user01.engwsc.example.com   | User Node 1           | Bare-Metal | 192.168.1.60 |
++----------+-----------------------------+-----------------------+------------+--------------+
+| user02   | user02.engwsc.example.com   | User Node 2           | Bare-Metal | 192.168.1.61 |
++----------+-----------------------------+-----------------------+------------+--------------+
+| user03   | user03.engwsc.example.com   | User Node 3           | Bare-Metal | 192.168.1.62 |
++----------+-----------------------------+-----------------------+------------+--------------+
+| user04   | user04.engwsc.example.com   | User Node 4           | Bare-Metal | 192.168.1.63 |
++----------+-----------------------------+-----------------------+------------+--------------+
+| comp01   | comp01.engwsc.example.com   | Compute Node 1        | Bare-Metal | 192.168.1.64 |
++----------+-----------------------------+-----------------------+------------+--------------+
+| comp02   | comp02.engwsc.example.com   | Compute Node 2        | Bare-Metal | 192.168.1.65 |
++----------+-----------------------------+-----------------------+------------+--------------+
+| comp03   | comp03.engwsc.example.com   | Compute Node 3        | Bare-Metal | 192.168.1.66 |
++----------+-----------------------------+-----------------------+------------+--------------+
+| comp04   | comp04.engwsc.example.com   | Compute Node 4        | Bare-Metal | 192.168.1.67 |
++----------+-----------------------------+-----------------------+------------+--------------+
+| idm      | idm.engwsc.example.com      | Identity Management   | VM Guest   | 192.168.1.80 |
++----------+-----------------------------+-----------------------+------------+--------------+
+| gitlab   | gitlab.engwsc.example.com   | GitLab CE             | VM Guest   | 192.168.1.81 |
++----------+-----------------------------+-----------------------+------------+--------------+
+| slurm    | slurm.engwsc.example.com    | Slurm Controller      | VM Guest   | 192.168.1.82 |
++----------+-----------------------------+-----------------------+------------+--------------+
+| graylog  | graylog.engwsc.example.com  | Graylog Open          | VM Guest   | 192.168.1.83 |
++----------+-----------------------------+-----------------------+------------+--------------+
+| ansible  | ansible.engwsc.example.com  | Ansible Control Node  | VM Guest   | 192.168.1.84 |
++----------+-----------------------------+-----------------------+------------+--------------+
+| influxdb | influxdb.engwsc.example.com | InfluxDB              | VM Guest   | 192.168.1.85 |
++----------+-----------------------------+-----------------------+------------+--------------+
+| grafana  | grafana.engwsc.example.com  | Grafana               | VM Guest   | 192.168.1.86 |
++----------+-----------------------------+-----------------------+------------+--------------+
+| docker   | docker.engwsc.example.com   | Docker Host           | VM Guest   | 192.168.1.87 |
++----------+-----------------------------+-----------------------+------------+--------------+
+| mirror   | mirror.engwsc.example.com   | DNF Repository Mirror | VM Guest   | 192.168.1.88 |
++----------+-----------------------------+-----------------------+------------+--------------+
+| vmg01    | vmg01.engwsc.example.com    | Legacy OS (Optional)  | VM Guest   | 192.168.1.89 |
++----------+-----------------------------+-----------------------+------------+--------------+
+
+
+Guides
+~~~~~~
+
+..
+
+  The following guides are required to deploy the Repository Mirror Server:
+
+  #. :doc:`mirror-server-os-installation-guide`
+  #. :doc:`mirror-server-deployment-guide`
+
+..
+
+  The following guides are required to deploy the Repository Mirror Client:
+
+  #. :doc:`mirror-client-deployment-guide`
