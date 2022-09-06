@@ -12,8 +12,8 @@ Repository Mirror Client Deployment Guide
    :maxdepth: 2
    :caption: Contents:
 
-The following instructions are for configuring yum to use the
-local a mirror.
+The following instructions are for configuring a node to use the
+repository mirror.
 
 
 *************
@@ -52,6 +52,10 @@ Deployment Steps
   Instructions assume execution using the ``root`` account.
 
 1. Create repository configuration file:
+
+  .. important::
+
+    Replace ``AlmaLinux`` with the ``Rocky`` if using Rocky Linux.
 
   .. code-block:: bash
 
@@ -92,9 +96,21 @@ Deployment Steps
 
 2. Disable Primary repositories:
 
+  AlmaLinux
+
   .. code-block:: bash
 
     sed -i "s|enabled=1|enabled=0|g" /etc/yum.repos.d/almalinux.repo
+
+  Rocky Linux
+
+  .. code-block:: bash
+
+    sed -i "s|enabled=1|enabled=0|g" /etc/yum.repos.d/Rocky-AppStream.repo
+    sed -i "s|enabled=1|enabled=0|g" /etc/yum.repos.d/Rocky-BaseOS.repo
+    sed -i "s|enabled=1|enabled=0|g" /etc/yum.repos.d/Rocky-Extras.repo
+    sed -i "s|enabled=1|enabled=0|g" /etc/yum.repos.d/Rocky-PowerTools.repo
+
 
 3. Clean the DNF cache:
 

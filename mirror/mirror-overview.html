@@ -402,32 +402,37 @@
 <h1>Repository Mirror<a class="headerlink" href="#repository-mirror" title="Permalink to this heading">#</a></h1>
 <div class="toctree-wrapper compound">
 </div>
-<p>YUM/DNF repository hosts a copy of the rpm packages from which the system
-retrieves and installs OS updates and applications.  Having a local repository
-mirror has multiple benefits and faciliates scheduled patching.</p>
+<p>A YUM/DNF repository mirror hosts rpm packages from which the cluseter’s
+systems retrieve and installs OS updates from.  Having a local repository
+mirror has multiple benefits and faciliates scheduled patching in addition
+to reducing network traffic to the internet.</p>
+<p>The repository mirror can be configured to mirror any of the repositories
+used in these guides.  However, these guides only utilize the mirror for
+operating system RPM updates.</p>
 <img alt="../_images/topology.png" src="../_images/topology.png" />
 <section id="operating-systems">
 <h2>Operating Systems<a class="headerlink" href="#operating-systems" title="Permalink to this heading">#</a></h2>
-<p>These guides are compatible with AlmaLinux 8 and Rocky Linux 8 only.</p>
+<p>These guides are compatible with AlmaLinux 8 and Rocky Linux 8.  Other
+solutions are available for Red Hat Enterprise Linux.</p>
 </section>
 <section id="access-controls">
 <h2>Access Controls<a class="headerlink" href="#access-controls" title="Permalink to this heading">#</a></h2>
-<p>The Repository Mirror should only be accessed directly using SSH by system
-administrators.  Standard cluster user accounts should not be able to SSH
-into the Repository Mirror node.</p>
+<p>The node hosting the repository mirror should only be accessed directly using
+SSH by system administrators.  Standard cluster user accounts should not be
+able to SSH into the repository mirror node.</p>
 </section>
 <section id="hostnames">
 <h2>Hostnames<a class="headerlink" href="#hostnames" title="Permalink to this heading">#</a></h2>
-<p>These guides use the following example Hostnames and FQDN for the Repository
-Mirror.  FQDNs can be provided by utilizing a DNS server or installing a hosts
-file on the system itself.</p>
+<p>These guides use the following example Hostnames and FQDN for the node hosting
+the repository mirror.  FQDNs can be provided by utilizing a DNS server or
+installing a hosts file on the system itself.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>An example <code class="docutils literal notranslate"><span class="pre">/etc/hosts</span></code> file has been provided: <a class="reference download internal" download="" href="../_downloads/fe35aab5453ff1ae7df04667a1a00361/hosts"><code class="xref download docutils literal notranslate"><span class="pre">../_static/hosts</span></code></a></p>
 </div>
 <section id="server">
 <h3>Server<a class="headerlink" href="#server" title="Permalink to this heading">#</a></h3>
-<p>The Repository Mirror Server is deployed on the following node:</p>
+<p>The repository mirror is deployed on the following node:</p>
 <div class="table-wrapper docutils container">
 <table class="docutils align-default">
 <colgroup>
@@ -458,7 +463,7 @@ file on the system itself.</p>
 </section>
 <section id="clients">
 <h3>Clients<a class="headerlink" href="#clients" title="Permalink to this heading">#</a></h3>
-<p>The Repository Mirror Clients are deployed on the following nodes:</p>
+<p>The nodes utilizing the repository mirror for updates are the following:</p>
 <div class="table-wrapper docutils container">
 <table class="docutils align-default">
 <colgroup>
@@ -611,14 +616,14 @@ file on the system itself.</p>
 <section id="guides">
 <h2>Guides<a class="headerlink" href="#guides" title="Permalink to this heading">#</a></h2>
 <blockquote>
-<div><p>The following guides are required to deploy the Repository Mirror Server:</p>
+<div><p>The following guides are required to deploy the repository mirror:</p>
 <ol class="arabic simple">
 <li><p><a class="reference internal" href="mirror-server-os-installation-guide.html"><span class="doc">Repository Mirror Server OS Installation Guide</span></a></p></li>
 <li><p><a class="reference internal" href="mirror-server-deployment-guide.html"><span class="doc">Repository Mirror Server Deployment Guide</span></a></p></li>
 </ol>
 </div></blockquote>
 <blockquote>
-<div><p>The following guides are required to deploy the Repository Mirror Client:</p>
+<div><p>The following guides are required to configure systems to utilzie the repository mirror:</p>
 <ol class="arabic simple">
 <li><p><a class="reference internal" href="mirror-client-deployment-guide.html"><span class="doc">Repository Mirror Client Deployment Guide</span></a></p></li>
 </ol>
@@ -655,7 +660,7 @@ file on the system itself.</p>
         <div class="bottom-of-page">
           <div class="left-details">
             <div class="copyright">
-                Copyright &#169; Lucas Roosevelt, CC BY 4.0
+                Copyright &#169; LucAce, CC BY 4.0
             </div>
             Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
             

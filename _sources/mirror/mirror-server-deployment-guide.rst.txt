@@ -12,7 +12,9 @@ Repository Mirror Server Deployment Guide
    :maxdepth: 2
    :caption: Contents:
 
-The following instructions are for deploying a repository mirror.
+The following instructions are for deploying a repository mirror host.
+This node serves as a front end to the repository files which are stored
+on an NFS mount.
 
 
 *************
@@ -32,7 +34,6 @@ The following guides can be applied after the deployment of their associated nod
 
 * :doc:`../graylog/rsyslog-deployment-guide`
 * :doc:`../influxdb/telegraf-deployment-guide`
-
 
 
 **********
@@ -105,11 +106,19 @@ Deployment Steps
 
 6. Create repository paths:
 
+  .. important::
+
+    Replace ``almalinux`` with the ``rocky`` if using Rocky Linux.
+
   .. code-block:: bash
 
     mkdir -p /srv/repos/almalinux/8/{baseos,appstream,extras,powertools}
 
 7. Create a Cron Job to synchronize repositories:
+
+  .. important::
+
+    Replace ``almalinux`` with the ``rocky`` if using Rocky Linux.
 
   .. code-block:: bash
 
@@ -155,7 +164,7 @@ Deployment Steps
   .. code-block:: bash
 
     # Execute the following if the repository is stored locally
-    # chcon -Rt httpd_sys_content_t ${REPO_PATH}/
+    # chcon -Rt httpd_sys_content_t /srv/repos/
 
     # Set SELinux boolen to allow httpd to use nfs
     setsebool -P httpd_use_nfs=1
@@ -169,9 +178,13 @@ Deployment Steps
 
 12. Configure firewall rules:
 
+  .. important::
+
+    Replace the IPv4 Address and Subnet mask with the value of your network.
+
   .. code-block:: bash
 
     systemctl enable --now firewalld
-    firewall-cmd --zone=public --add-source=${ALLOWED_IPV4} --permanent
+    firewall-cmd --zone=public --add-source=192.168.1.0/24 --permanent
     firewall-cmd --zone=public --add-service=http --permanent
     firewall-cmd --reload

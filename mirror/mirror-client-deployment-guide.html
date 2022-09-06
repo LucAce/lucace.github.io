@@ -402,8 +402,8 @@
 <h1>Repository Mirror Client Deployment Guide<a class="headerlink" href="#repository-mirror-client-deployment-guide" title="Permalink to this heading">#</a></h1>
 <div class="toctree-wrapper compound">
 </div>
-<p>The following instructions are for configuring yum to use the
-local a mirror.</p>
+<p>The following instructions are for configuring a node to use the
+repository mirror.</p>
 <section id="prerequisites">
 <h2>Prerequisites<a class="headerlink" href="#prerequisites" title="Permalink to this heading">#</a></h2>
 <ul class="simple">
@@ -435,7 +435,11 @@ local a mirror.</p>
 <li><p>Create repository configuration file:</p></li>
 </ol>
 <blockquote>
-<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cat &gt; /etc/yum.repos.d/localmirror.repo <span class="s">&lt;&lt;EOF</span>
+<div><div class="admonition important">
+<p class="admonition-title">Important</p>
+<p>Replace <code class="docutils literal notranslate"><span class="pre">AlmaLinux</span></code> with the <code class="docutils literal notranslate"><span class="pre">Rocky</span></code> if using Rocky Linux.</p>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cat &gt; /etc/yum.repos.d/localmirror.repo <span class="s">&lt;&lt;EOF</span>
 <span class="s">[localrepo-baseos]</span>
 <span class="s">name=Local AlmaLinux 8 - BaseOS</span>
 <span class="s">baseurl=http://mirror.engwsc.example.com/almalinux/8/baseos</span>
@@ -476,7 +480,15 @@ local a mirror.</p>
 <li><p>Disable Primary repositories:</p></li>
 </ol>
 <blockquote>
-<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sed -i <span class="s2">&quot;s|enabled=1|enabled=0|g&quot;</span> /etc/yum.repos.d/almalinux.repo
+<div><p>AlmaLinux</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sed -i <span class="s2">&quot;s|enabled=1|enabled=0|g&quot;</span> /etc/yum.repos.d/almalinux.repo
+</pre></div>
+</div>
+<p>Rocky Linux</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sed -i <span class="s2">&quot;s|enabled=1|enabled=0|g&quot;</span> /etc/yum.repos.d/Rocky-AppStream.repo
+sed -i <span class="s2">&quot;s|enabled=1|enabled=0|g&quot;</span> /etc/yum.repos.d/Rocky-BaseOS.repo
+sed -i <span class="s2">&quot;s|enabled=1|enabled=0|g&quot;</span> /etc/yum.repos.d/Rocky-Extras.repo
+sed -i <span class="s2">&quot;s|enabled=1|enabled=0|g&quot;</span> /etc/yum.repos.d/Rocky-PowerTools.repo
 </pre></div>
 </div>
 </div></blockquote>
@@ -528,7 +540,7 @@ local a mirror.</p>
         <div class="bottom-of-page">
           <div class="left-details">
             <div class="copyright">
-                Copyright &#169; Lucas Roosevelt, CC BY 4.0
+                Copyright &#169; LucAce, CC BY 4.0
             </div>
             Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
             

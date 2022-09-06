@@ -12,9 +12,14 @@ Repository Mirror
    :maxdepth: 2
    :caption: Contents:
 
-YUM/DNF repository hosts a copy of the rpm packages from which the system
-retrieves and installs OS updates and applications.  Having a local repository
-mirror has multiple benefits and faciliates scheduled patching.
+A YUM/DNF repository mirror hosts rpm packages from which the cluseter's
+systems retrieve and installs OS updates from.  Having a local repository
+mirror has multiple benefits and faciliates scheduled patching in addition
+to reducing network traffic to the internet.
+
+The repository mirror can be configured to mirror any of the repositories
+used in these guides.  However, these guides only utilize the mirror for
+operating system RPM updates.
 
 .. image:: ../_static/topology/topology.png
 
@@ -22,23 +27,24 @@ mirror has multiple benefits and faciliates scheduled patching.
 Operating Systems
 ~~~~~~~~~~~~~~~~~
 
-These guides are compatible with AlmaLinux 8 and Rocky Linux 8 only.
+These guides are compatible with AlmaLinux 8 and Rocky Linux 8.  Other
+solutions are available for Red Hat Enterprise Linux.
 
 
 Access Controls
 ~~~~~~~~~~~~~~~
 
-The Repository Mirror should only be accessed directly using SSH by system
-administrators.  Standard cluster user accounts should not be able to SSH
-into the Repository Mirror node.
+The node hosting the repository mirror should only be accessed directly using
+SSH by system administrators.  Standard cluster user accounts should not be
+able to SSH into the repository mirror node.
 
 
 Hostnames
 ~~~~~~~~~
 
-These guides use the following example Hostnames and FQDN for the Repository
-Mirror.  FQDNs can be provided by utilizing a DNS server or installing a hosts
-file on the system itself.
+These guides use the following example Hostnames and FQDN for the node hosting
+the repository mirror.  FQDNs can be provided by utilizing a DNS server or
+installing a hosts file on the system itself.
 
 .. note::
 
@@ -48,7 +54,7 @@ file on the system itself.
 Server
 ------
 
-The Repository Mirror Server is deployed on the following node:
+The repository mirror is deployed on the following node:
 
 +----------+-----------------------------+-----------------------+------------+--------------+
 | Hostname | FQDN                        | Function              | Type       | IPv4 Address |
@@ -59,7 +65,7 @@ The Repository Mirror Server is deployed on the following node:
 Clients
 -------
 
-The Repository Mirror Clients are deployed on the following nodes:
+The nodes utilizing the repository mirror for updates are the following:
 
 +----------+-----------------------------+-----------------------+------------+--------------+
 | Hostname | FQDN                        | Function              | Type       | IPv4 Address |
@@ -113,13 +119,13 @@ Guides
 
 ..
 
-  The following guides are required to deploy the Repository Mirror Server:
+  The following guides are required to deploy the repository mirror:
 
   #. :doc:`mirror-server-os-installation-guide`
   #. :doc:`mirror-server-deployment-guide`
 
 ..
 
-  The following guides are required to deploy the Repository Mirror Client:
+  The following guides are required to configure systems to utilzie the repository mirror:
 
   #. :doc:`mirror-client-deployment-guide`

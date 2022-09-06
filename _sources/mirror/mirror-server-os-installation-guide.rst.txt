@@ -9,7 +9,7 @@ Repository Mirror Server OS Installation Guide
    :caption: Contents:
 
 The following instructions are for the installation of the operating
-system which will host the Repository Mirror Server.
+system which will host the repository mirror.
 
 
 *************
@@ -24,7 +24,7 @@ Configuration
 *************
 
 +-------------------------------------------------+
-| **Mirror**                                      |
+| **Repository Mirror**                           |
 +===================+=============================+
 | OS                | Red Hat Enterprise Linux 8  |
 +-------------------+-----------------------------+
