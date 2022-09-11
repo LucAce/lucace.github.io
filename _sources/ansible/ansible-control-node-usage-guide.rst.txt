@@ -1,5 +1,9 @@
 .. Ansible Control Node Usage Guide
 
+.. |br| raw:: html
+
+   <br />
+
 ################################
 Ansible Control Node Usage Guide
 ################################
@@ -8,4 +12,216 @@ Ansible Control Node Usage Guide
    :maxdepth: 2
    :caption: Contents:
 
-TODO
+The following examples show how to utilize Ansible Control Node for
+route cluster operations.
+
+
+*************
+Prerequisites
+*************
+
+* :doc:`ansible-control-node-deployment-guide`
+* :doc:`../idm/idm-client-deployment-guide`
+* :doc:`../idm/passwordless-ssh-deployment-guide`
+* :doc:`../nfs/nfs-client-deployment-guide`
+
+
+**********
+References
+**********
+
+..
+
+  Recommended Reference: https://www.ansiblefordevops.com
+
+
+****************
+Deployment Steps
+****************
+
+.. note::
+
+  Instructions assume execution using the ``root`` account.
+
+.. important::
+
+  These examples require the following: |br|
+  * The system hosting ansible is a client to a IdM server. |br|
+  * The user account executing the playbooks is named "ansible" |br|
+  * The "ansible" user account has SUDO access on all nodes |br|
+  * Passwordless SSH has been configured for the "ansible" user account |br|
+  * DNS entries for all target servers
+
+1. Create a directory structure:
+
+  .. code-block:: bash
+
+    mkdir -p /srv/ansible/adhoc/
+    mkdir -p /srv/ansible/inventory/
+    mkdir -p /srv/ansible/playbooks/
+    mkdir -p /srv/ansible/scripts/
+    mkdir -p /srv/ansible/templates/
+
+3. Create a hosts file:
+
+  .. note::
+
+    An YAML based hosts file has been provided: |br|
+    :download:`../_static/ansible/hosts.yml`
+
+  .. code-block:: bash
+
+    cat > /srv/ansible/inventory/hosts.yml <<EOF
+    all:
+      hosts:
+        nfs01.engwsc.example.com:
+        vmm[01:02].engwsc.example.com:
+        user[01:04].engwsc.example.com:
+        comp[01:04].engwsc.example.com:
+        idm.engwsc.example.com:
+        gitlab.engwsc.example.com:
+        slurm.engwsc.example.com:
+        graylog.engwsc.example.com:
+        ansible.engwsc.example.com:
+        influxdb.engwsc.example.com:
+        grafana.engwsc.example.com:
+        docker.engwsc.example.com:
+        mirror.engwsc.example.com:
+
+      children:
+        vmm_nodes:
+          hosts:
+            vmm[01:02].engwsc.example.com:
+
+        user_nodes:
+          hosts:
+            user[01:04].engwsc.example.com:
+
+        comp_nodes:
+          hosts:
+            comp[01:04].engwsc.example.com:
+
+        storage_nodes:
+          hosts:
+            nfs01.engwsc.example.com:
+
+        service_nodes:
+          hosts:
+            idm.engwsc.example.com:
+            gitlab.engwsc.example.com:
+            slurm.engwsc.example.com:
+            graylog.engwsc.example.com:
+            ansible.engwsc.example.com:
+            influxdb.engwsc.example.com:
+            grafana.engwsc.example.com:
+            docker.engwsc.example.com:
+            mirror.engwsc.example.com:
+
+        idm_servers:
+          hosts:
+            idm.engwsc.example.com:
+
+        idm_clients:
+          hosts:
+            nfs01.engwsc.example.com:
+            vmm[01:02].engwsc.example.com:
+            user[01:04].engwsc.example.com:
+            comp[01:04].engwsc.example.com:
+            idm.engwsc.example.com:
+            gitlab.engwsc.example.com:
+            slurm.engwsc.example.com:
+            graylog.engwsc.example.com:
+            ansible.engwsc.example.com:
+            influxdb.engwsc.example.com:
+            grafana.engwsc.example.com:
+            docker.engwsc.example.com:
+            mirror.engwsc.example.com:
+
+        gitlab_servers:
+          hosts:
+            gitlab.engwsc.example.com:
+
+        slurm_controllers:
+          hosts:
+            slurm.engwsc.example.com:
+
+        slurm_clients:
+          children:
+            user_nodes:
+            comp_nodes:
+
+        graylog_servers:
+          hosts:
+            graylog.engwsc.example.com:
+
+        rsyslog_clients:
+          childern:
+            all:
+
+        ansible_controllers:
+          hosts:
+            ansible.engwsc.example.com:
+
+        influxdb_servers:
+          hosts:
+            influxdb.engwsc.example.com:
+
+        telegraf_clients:
+          childern:
+            all:
+
+        grafana_servers:
+          hosts:
+            grafana.engwsc.example.com:
+
+        docker_servers:
+          hosts:
+            docker.engwsc.example.com:
+
+        mirror_servers:
+          hosts:
+            mirror.engwsc.example.com:
+    EOF
+
+3. Create Upgrade Nodes Playbook (Example):
+
+  .. note::
+
+    A copy of this yaml file had been provided: |br|
+    :download:`../_static/ansible/upgrade-all-nodes.yml`
+
+  .. code-block:: bash
+
+    cat > /srv/ansible/playbooks/upgrade-all-nodes.yml <<EOF
+    ---
+    - name: Upgrade all nodes
+      hosts: all
+      become: yes
+      remote_user: ansible
+      tasks:
+      - name: Upgrade all packages
+        dnf:
+          name: "*"
+          state: latest
+    EOF
+
+4. Create Upgrade Nodes Helper Script (Example):
+
+  .. note::
+
+    A copy of this bash script had been provided: |br|
+    :download:`../_static/ansible/upgrade-all-nodes.sh`
+
+  .. code-block:: bash
+
+    cat > /srv/ansible/scripts/upgrade-all-nodes.sh <<EOF
+    #!/bin/bash
+
+    ANSIBLE_HOME='/srv/ansible'
+
+    ansible-playbook \
+        -i \${ANSIBLE_HOME}/inventory/hosts.yml \
+        \${ANSIBLE_HOME}/playbooks/upgrade-all-nodes.yml
+    EOF
+
+    chmod 755 /srv/ansible/scripts/upgrade-all-nodes.sh

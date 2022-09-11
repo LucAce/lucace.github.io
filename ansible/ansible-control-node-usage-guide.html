@@ -135,7 +135,7 @@
           <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
         </button>
       </div>
-      <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
         <div class="visually-hidden">Toggle table of contents sidebar</div>
         <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
       </label>
@@ -392,7 +392,7 @@
               <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
             </button>
           </div>
-          <label class="toc-overlay-icon toc-content-icon no-toc" for="__toc">
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
             <div class="visually-hidden">Toggle table of contents sidebar</div>
             <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
           </label>
@@ -402,7 +402,221 @@
 <h1>Ansible Control Node Usage Guide<a class="headerlink" href="#ansible-control-node-usage-guide" title="Permalink to this heading">#</a></h1>
 <div class="toctree-wrapper compound">
 </div>
-<p>TODO</p>
+<p>The following examples show how to utilize Ansible Control Node for
+route cluster operations.</p>
+<section id="prerequisites">
+<h2>Prerequisites<a class="headerlink" href="#prerequisites" title="Permalink to this heading">#</a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="ansible-control-node-deployment-guide.html"><span class="doc">Ansible Control Node Deployment Guide</span></a></p></li>
+<li><p><a class="reference internal" href="../idm/idm-client-deployment-guide.html"><span class="doc">IdM Client Deployment Guide</span></a></p></li>
+<li><p><a class="reference internal" href="../idm/passwordless-ssh-deployment-guide.html"><span class="doc">Passwordless SSH Deployment Guide</span></a></p></li>
+<li><p><a class="reference internal" href="../nfs/nfs-client-deployment-guide.html"><span class="doc">NFS Client Deployment Guide</span></a></p></li>
+</ul>
+</section>
+<section id="references">
+<h2>References<a class="headerlink" href="#references" title="Permalink to this heading">#</a></h2>
+<blockquote>
+<div><p>Recommended Reference: <a class="reference external" href="https://www.ansiblefordevops.com">https://www.ansiblefordevops.com</a></p>
+</div></blockquote>
+</section>
+<section id="deployment-steps">
+<h2>Deployment Steps<a class="headerlink" href="#deployment-steps" title="Permalink to this heading">#</a></h2>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Instructions assume execution using the <code class="docutils literal notranslate"><span class="pre">root</span></code> account.</p>
+</div>
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<p>These examples require the following: <br />
+* The system hosting ansible is a client to a IdM server. <br />
+* The user account executing the playbooks is named “ansible” <br />
+* The “ansible” user account has SUDO access on all nodes <br />
+* Passwordless SSH has been configured for the “ansible” user account <br />
+* DNS entries for all target servers</p>
+</div>
+<ol class="arabic simple">
+<li><p>Create a directory structure:</p></li>
+</ol>
+<blockquote>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mkdir -p /srv/ansible/adhoc/
+mkdir -p /srv/ansible/inventory/
+mkdir -p /srv/ansible/playbooks/
+mkdir -p /srv/ansible/scripts/
+mkdir -p /srv/ansible/templates/
+</pre></div>
+</div>
+</div></blockquote>
+<ol class="arabic simple" start="3">
+<li><p>Create a hosts file:</p></li>
+</ol>
+<blockquote>
+<div><div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>An YAML based hosts file has been provided: <br />
+<a class="reference download internal" download="" href="../_downloads/a429b2e211045998bc4ca65c5ecf9d26/hosts.yml"><code class="xref download docutils literal notranslate"><span class="pre">../_static/ansible/hosts.yml</span></code></a></p>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cat &gt; /srv/ansible/inventory/hosts.yml <span class="s">&lt;&lt;EOF</span>
+<span class="s">all:</span>
+<span class="s">  hosts:</span>
+<span class="s">    nfs01.engwsc.example.com:</span>
+<span class="s">    vmm[01:02].engwsc.example.com:</span>
+<span class="s">    user[01:04].engwsc.example.com:</span>
+<span class="s">    comp[01:04].engwsc.example.com:</span>
+<span class="s">    idm.engwsc.example.com:</span>
+<span class="s">    gitlab.engwsc.example.com:</span>
+<span class="s">    slurm.engwsc.example.com:</span>
+<span class="s">    graylog.engwsc.example.com:</span>
+<span class="s">    ansible.engwsc.example.com:</span>
+<span class="s">    influxdb.engwsc.example.com:</span>
+<span class="s">    grafana.engwsc.example.com:</span>
+<span class="s">    docker.engwsc.example.com:</span>
+<span class="s">    mirror.engwsc.example.com:</span>
+
+<span class="s">  children:</span>
+<span class="s">    vmm_nodes:</span>
+<span class="s">      hosts:</span>
+<span class="s">        vmm[01:02].engwsc.example.com:</span>
+
+<span class="s">    user_nodes:</span>
+<span class="s">      hosts:</span>
+<span class="s">        user[01:04].engwsc.example.com:</span>
+
+<span class="s">    comp_nodes:</span>
+<span class="s">      hosts:</span>
+<span class="s">        comp[01:04].engwsc.example.com:</span>
+
+<span class="s">    storage_nodes:</span>
+<span class="s">      hosts:</span>
+<span class="s">        nfs01.engwsc.example.com:</span>
+
+<span class="s">    service_nodes:</span>
+<span class="s">      hosts:</span>
+<span class="s">        idm.engwsc.example.com:</span>
+<span class="s">        gitlab.engwsc.example.com:</span>
+<span class="s">        slurm.engwsc.example.com:</span>
+<span class="s">        graylog.engwsc.example.com:</span>
+<span class="s">        ansible.engwsc.example.com:</span>
+<span class="s">        influxdb.engwsc.example.com:</span>
+<span class="s">        grafana.engwsc.example.com:</span>
+<span class="s">        docker.engwsc.example.com:</span>
+<span class="s">        mirror.engwsc.example.com:</span>
+
+<span class="s">    idm_servers:</span>
+<span class="s">      hosts:</span>
+<span class="s">        idm.engwsc.example.com:</span>
+
+<span class="s">    idm_clients:</span>
+<span class="s">      hosts:</span>
+<span class="s">        nfs01.engwsc.example.com:</span>
+<span class="s">        vmm[01:02].engwsc.example.com:</span>
+<span class="s">        user[01:04].engwsc.example.com:</span>
+<span class="s">        comp[01:04].engwsc.example.com:</span>
+<span class="s">        idm.engwsc.example.com:</span>
+<span class="s">        gitlab.engwsc.example.com:</span>
+<span class="s">        slurm.engwsc.example.com:</span>
+<span class="s">        graylog.engwsc.example.com:</span>
+<span class="s">        ansible.engwsc.example.com:</span>
+<span class="s">        influxdb.engwsc.example.com:</span>
+<span class="s">        grafana.engwsc.example.com:</span>
+<span class="s">        docker.engwsc.example.com:</span>
+<span class="s">        mirror.engwsc.example.com:</span>
+
+<span class="s">    gitlab_servers:</span>
+<span class="s">      hosts:</span>
+<span class="s">        gitlab.engwsc.example.com:</span>
+
+<span class="s">    slurm_controllers:</span>
+<span class="s">      hosts:</span>
+<span class="s">        slurm.engwsc.example.com:</span>
+
+<span class="s">    slurm_clients:</span>
+<span class="s">      children:</span>
+<span class="s">        user_nodes:</span>
+<span class="s">        comp_nodes:</span>
+
+<span class="s">    graylog_servers:</span>
+<span class="s">      hosts:</span>
+<span class="s">        graylog.engwsc.example.com:</span>
+
+<span class="s">    rsyslog_clients:</span>
+<span class="s">      childern:</span>
+<span class="s">        all:</span>
+
+<span class="s">    ansible_controllers:</span>
+<span class="s">      hosts:</span>
+<span class="s">        ansible.engwsc.example.com:</span>
+
+<span class="s">    influxdb_servers:</span>
+<span class="s">      hosts:</span>
+<span class="s">        influxdb.engwsc.example.com:</span>
+
+<span class="s">    telegraf_clients:</span>
+<span class="s">      childern:</span>
+<span class="s">        all:</span>
+
+<span class="s">    grafana_servers:</span>
+<span class="s">      hosts:</span>
+<span class="s">        grafana.engwsc.example.com:</span>
+
+<span class="s">    docker_servers:</span>
+<span class="s">      hosts:</span>
+<span class="s">        docker.engwsc.example.com:</span>
+
+<span class="s">    mirror_servers:</span>
+<span class="s">      hosts:</span>
+<span class="s">        mirror.engwsc.example.com:</span>
+<span class="s">EOF</span>
+</pre></div>
+</div>
+</div></blockquote>
+<ol class="arabic simple" start="3">
+<li><p>Create Upgrade Nodes Playbook (Example):</p></li>
+</ol>
+<blockquote>
+<div><div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>A copy of this yaml file had been provided: <br />
+<a class="reference download internal" download="" href="../_downloads/c820dbd18ebbe7508ae781ba873a2a53/upgrade-all-nodes.yml"><code class="xref download docutils literal notranslate"><span class="pre">../_static/ansible/upgrade-all-nodes.yml</span></code></a></p>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cat &gt; /srv/ansible/playbooks/upgrade-all-nodes.yml <span class="s">&lt;&lt;EOF</span>
+<span class="s">---</span>
+<span class="s">- name: Upgrade all nodes</span>
+<span class="s">  hosts: all</span>
+<span class="s">  become: yes</span>
+<span class="s">  remote_user: ansible</span>
+<span class="s">  tasks:</span>
+<span class="s">  - name: Upgrade all packages</span>
+<span class="s">    dnf:</span>
+<span class="s">      name: &quot;*&quot;</span>
+<span class="s">      state: latest</span>
+<span class="s">EOF</span>
+</pre></div>
+</div>
+</div></blockquote>
+<ol class="arabic simple" start="4">
+<li><p>Create Upgrade Nodes Helper Script (Example):</p></li>
+</ol>
+<blockquote>
+<div><div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>A copy of this bash script had been provided: <br />
+<a class="reference download internal" download="" href="../_downloads/210033ca3745ba7671df8520bcbf2956/upgrade-all-nodes.sh"><code class="xref download docutils literal notranslate"><span class="pre">../_static/ansible/upgrade-all-nodes.sh</span></code></a></p>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cat &gt; /srv/ansible/scripts/upgrade-all-nodes.sh <span class="s">&lt;&lt;EOF</span>
+<span class="s">#!/bin/bash</span>
+
+<span class="s">ANSIBLE_HOME=&#39;/srv/ansible&#39;</span>
+
+<span class="s">ansible-playbook \</span>
+<span class="s">    -i \${ANSIBLE_HOME}/inventory/hosts.yml \</span>
+<span class="s">    \${ANSIBLE_HOME}/playbooks/upgrade-all-nodes.yml</span>
+<span class="s">EOF</span>
+
+chmod <span class="m">755</span> /srv/ansible/scripts/upgrade-all-nodes.sh
+</pre></div>
+</div>
+</div></blockquote>
+</section>
 </section>
 
         </article>
@@ -450,8 +664,29 @@
         
       </footer>
     </div>
-    <aside class="toc-drawer no-toc">
+    <aside class="toc-drawer">
       
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            Contents
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">Ansible Control Node Usage Guide</a><ul>
+<li><a class="reference internal" href="#prerequisites">Prerequisites</a></li>
+<li><a class="reference internal" href="#references">References</a></li>
+<li><a class="reference internal" href="#deployment-steps">Deployment Steps</a></li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
       
       
     </aside>

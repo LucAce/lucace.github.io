@@ -78,16 +78,20 @@ EOL
 mount /srv/repos
 
 # Create repository paths
-mkdir -p ${REPO_PATH}/${RELEASE_NAME}/${RELEASE_VER}/{baseos,appstream,extras,powertools}
+mkdir -p ${REPO_PATH}/${RELEASE_NAME}/${RELEASE_VER}/{baseos,appstream,extras,ha,powertools}
 
 # Create a Cron Job to synchronize repositories
 cat > /etc/cron.daily/update-localrepos <<EOF
 #!/bin/bash
 
-/bin/dnf reposync --repoid=baseos     -g --delete --newest-only --download-metadata -p ${REPO_PATH}/${RELEASE_NAME}/${RELEASE_VER}/
-/bin/dnf reposync --repoid=appstream  -g --delete --newest-only --download-metadata -p ${REPO_PATH}/${RELEASE_NAME}/${RELEASE_VER}/
-/bin/dnf reposync --repoid=extras     -g --delete --newest-only --download-metadata -p ${REPO_PATH}/${RELEASE_NAME}/${RELEASE_VER}/
-/bin/dnf reposync --repoid=powertools -g --delete --newest-only --download-metadata -p ${REPO_PATH}/${RELEASE_NAME}/${RELEASE_VER}/
+/bin/dnf reposync --repoid=baseos        -g --delete --newest-only --download-metadata -p ${REPO_PATH}/${RELEASE_NAME}/${RELEASE_VER}/
+/bin/dnf reposync --repoid=appstream     -g --delete --newest-only --download-metadata -p ${REPO_PATH}/${RELEASE_NAME}/${RELEASE_VER}/
+/bin/dnf reposync --repoid=extras        -g --delete --newest-only --download-metadata -p ${REPO_PATH}/${RELEASE_NAME}/${RELEASE_VER}/
+/bin/dnf reposync --repoid=powertools    -g --delete --newest-only --download-metadata -p ${REPO_PATH}/${RELEASE_NAME}/${RELEASE_VER}/
+/bin/dnf reposync --repoid=ha            -g --delete --newest-only --download-metadata -p ${REPO_PATH}/${RELEASE_NAME}/${RELEASE_VER}/
+/bin/dnf reposync --repoid=influxdb      -g --delete --newest-only --download-metadata -p ${REPO_PATH}/influxdb/rhel/${RELEASE_VER}/
+/bin/dnf reposync --repoid=epel          -g --delete --newest-only --download-metadata -p ${REPO_PATH}/epel/${RELEASE_VER}/
+/bin/dnf reposync --repoid=epel-modular  -g --delete --newest-only --download-metadata -p ${REPO_PATH}/epel/${RELEASE_VER}/
 EOF
 
 chmod 755 /etc/cron.daily/update-localrepos

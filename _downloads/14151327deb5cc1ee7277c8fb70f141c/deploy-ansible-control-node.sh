@@ -57,7 +57,8 @@ mv /etc/ansible/ansible.cfg /etc/ansible/ansible.cfg.old
 ansible-config init --disabled > /etc/ansible/ansible.cfg
 
 # Set default options
-sed -i "s/;nocows=.*/nocows=True/g" /etc/ansible/ansible.cfg
+sed -i "s|;interpreter_python=.*|interpreter_python=/usr/libexec/platform-python|g" /etc/ansible/ansible.cfg
+sed -i "s|;nocows=.*|nocows=True|g" /etc/ansible/ansible.cfg
 
 echo -e "\n[$(date +"%Y-%m-%d %H:%M:%S")] Deploying Ansible Control Node Complete\n"
 exit 0

@@ -429,9 +429,6 @@
 <a class="reference external" href="https://docs.ansible.com/ansible/latest/installation_guide/">https://docs.ansible.com/ansible/latest/installation_guide/</a></p>
 </div></blockquote>
 </section>
-<section id="post-deployment">
-<h2>Post Deployment<a class="headerlink" href="#post-deployment" title="Permalink to this heading">#</a></h2>
-</section>
 <section id="deployment-scripts">
 <h2>Deployment Scripts<a class="headerlink" href="#deployment-scripts" title="Permalink to this heading">#</a></h2>
 <div class="admonition note">
@@ -518,7 +515,8 @@ ansible-config init --disabled &gt; /etc/ansible/ansible.cfg
 <li><p>Set default options:</p></li>
 </ol>
 <blockquote>
-<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sed -i <span class="s2">&quot;s/;nocows=.*/nocows=True/g&quot;</span> /etc/ansible/ansible.cfg
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sed -i <span class="s2">&quot;s|;interpreter_python=.*|interpreter_python=/usr/libexec/platform-python|g&quot;</span> /etc/ansible/ansible.cfg
+sed -i <span class="s2">&quot;s|;nocows=.*|nocows=True|g&quot;</span> /etc/ansible/ansible.cfg
 </pre></div>
 </div>
 </div></blockquote>
@@ -586,7 +584,6 @@ ansible-config init --disabled &gt; /etc/ansible/ansible.cfg
 <li><a class="reference internal" href="#prerequisites">Prerequisites</a></li>
 <li><a class="reference internal" href="#follow-on-deployments">Follow-on Deployments</a></li>
 <li><a class="reference internal" href="#references">References</a></li>
-<li><a class="reference internal" href="#post-deployment">Post Deployment</a></li>
 <li><a class="reference internal" href="#deployment-scripts">Deployment Scripts</a></li>
 <li><a class="reference internal" href="#deployment-steps">Deployment Steps</a></li>
 </ul>

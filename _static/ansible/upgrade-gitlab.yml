@@ -1,0 +1,11 @@
+---
+- name: Upgrade GitLab
+  hosts: gitlab_servers
+  become: yes
+  remote_user: ansible
+  tasks:
+  - name: Upgrade GitLab
+    dnf:
+      name: "gitlab-ce"
+      enablerepo: gitlab_gitlab-ce,gitlab_gitlab-ce-source
+      state: latest

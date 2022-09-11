@@ -112,9 +112,34 @@ Deployment Steps
 
   .. code-block:: bash
 
-    mkdir -p /srv/repos/almalinux/8/{baseos,appstream,extras,powertools}
+    mkdir -p /srv/repos/almalinux/8/{baseos,appstream,extras,ha,powertools}
 
-7. Create a Cron Job to synchronize repositories:
+7. Install Extra Packages for Enterprise Linux (EPEL) Repository:
+
+  .. code-block:: bash
+
+    dnf -y install epel-release
+    dnf -y distro-sync
+
+8. Add InfluxDB Repository for Telegraf updates:
+
+  .. note::
+
+    Skip this step if Telegraf was previously deployed on this node.
+
+  .. code-block:: bash
+
+    # influxdb.key GPG Fingerprint: 05CE15085FC09D18E99EFB22684A14CF2582E0C5
+    cat > /etc/yum.repos.d/influxdb.repo <<EOF
+    [influxdb]
+    name = InfluxDB Repository - RHEL \$releasever
+    baseurl = https://repos.influxdata.com/rhel/\$releasever/\$basearch/stable
+    enabled = 1
+    gpgcheck = 1
+    gpgkey = https://repos.influxdata.com/influxdb.key
+    EOF
+
+9. Create a Cron Job to synchronize repositories:
 
   .. important::
 
@@ -125,21 +150,25 @@ Deployment Steps
     cat > /etc/cron.daily/update-localrepos <<EOF
     #!/bin/bash
 
-    /bin/dnf reposync --repoid=baseos     -g --delete --newest-only --download-metadata -p /srv/repos/almalinux/8/
-    /bin/dnf reposync --repoid=appstream  -g --delete --newest-only --download-metadata -p /srv/repos/almalinux/8/
-    /bin/dnf reposync --repoid=extras     -g --delete --newest-only --download-metadata -p /srv/repos/almalinux/8/
-    /bin/dnf reposync --repoid=powertools -g --delete --newest-only --download-metadata -p /srv/repos/almalinux/8/
+    /bin/dnf reposync --repoid=baseos        -g --delete --newest-only --download-metadata -p /srv/repos/almalinux/8/
+    /bin/dnf reposync --repoid=appstream     -g --delete --newest-only --download-metadata -p /srv/repos/almalinux/8/
+    /bin/dnf reposync --repoid=extras        -g --delete --newest-only --download-metadata -p /srv/repos/almalinux/8/
+    /bin/dnf reposync --repoid=powertools    -g --delete --newest-only --download-metadata -p /srv/repos/almalinux/8/
+    /bin/dnf reposync --repoid=ha            -g --delete --newest-only --download-metadata -p /srv/repos/almalinux/8/
+    /bin/dnf reposync --repoid=influxdb      -g --delete --newest-only --download-metadata -p /srv/repos/influxdb/rhel/8/
+    /bin/dnf reposync --repoid=epel          -g --delete --newest-only --download-metadata -p /srv/repos/epel/8/
+    /bin/dnf reposync --repoid=epel-modular  -g --delete --newest-only --download-metadata -p /srv/repos/epel/8/
     EOF
 
     chmod 755 /etc/cron.daily/update-localrepos
 
-8. Synchronize repositories:
+10. Synchronize repositories:
 
   .. code-block:: bash
 
     /etc/cron.daily/update-localrepos
 
-9. Configure Nginx to server the repository over http:
+11. Configure Nginx to server the repository over http:
 
   .. important::
 
@@ -159,7 +188,7 @@ Deployment Steps
     }
     EOF
 
-10. Set SELinux context and httpd boolean:
+12. Set SELinux context and httpd boolean:
 
   .. code-block:: bash
 
@@ -169,14 +198,14 @@ Deployment Steps
     # Set SELinux boolen to allow httpd to use nfs
     setsebool -P httpd_use_nfs=1
 
-11. Enable Nginx service:
+13. Enable Nginx service:
 
   .. code-block:: bash
 
     systemctl enable --now nginx
     systemctl status nginx
 
-12. Configure firewall rules:
+14. Configure firewall rules:
 
   .. important::
 

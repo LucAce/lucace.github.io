@@ -1,0 +1,10 @@
+---
+- name: Upgrade all nodes
+  hosts: all
+  become: yes
+  remote_user: ansible
+  tasks:
+  - name: Upgrade all packages
+    dnf:
+      name: "*"
+      state: latest

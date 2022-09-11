@@ -51,75 +51,142 @@ Deployment Steps
 
   Instructions assume execution using the ``root`` account.
 
-1. Create repository configuration file:
+1. Install Extra Packages for Enterprise Linux (EPEL) Repository:
+
+  .. code-block:: bash
+
+    dnf -y install epel-release
+    dnf -y distro-sync
+
+2. Create repository configuration file:
 
   .. important::
 
-    Replace ``AlmaLinux`` with the ``Rocky`` if using Rocky Linux.
+    Replace ``AlmaLinux`` with the ``Rocky`` and
+    ``RPM-GPG-KEY-AlmaLinux`` with ``RPM-GPG-KEY-rockyofficial``
+    if using Rocky Linux.
 
   .. code-block:: bash
 
-    cat > /etc/yum.repos.d/localmirror.repo <<EOF
-    [localrepo-baseos]
-    name=Local AlmaLinux 8 - BaseOS
-    baseurl=http://mirror.engwsc.example.com/almalinux/8/baseos
+    cat > /etc/yum.repos.d/local.repo <<EOF
+    [local-baseos]
+    name=Local AlmaLinux \$releasever Repository - BaseOS
+    baseurl=http://mirror.engwsc.example.com/almalinux/\$releasever/baseos
     gpgcheck=1
     enabled=1
     countme=0
     gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-AlmaLinux
 
-    [localrepo-appstream]
-    name=Local AlmaLinux 8 - AppStream
-    baseurl=http://mirror.engwsc.example.com/almalinux/8/appstream
+    [local-appstream]
+    name=Local AlmaLinux \$releasever Repository - AppStream
+    baseurl=http://mirror.engwsc.example.com/almalinux/\$releasever/appstream
     gpgcheck=1
     enabled=1
     countme=0
     gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-AlmaLinux
 
-    [localrepo-extras]
-    name=Local AlmaLinux 8 - Extras
-    baseurl=http://mirror.engwsc.example.com/almalinux/8/extras
+    [local-extras]
+    name=Local AlmaLinux \$releasever Repository - Extras
+    baseurl=http://mirror.engwsc.example.com/almalinux/\$releasever/extras
     gpgcheck=1
     enabled=1
     countme=0
     gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-AlmaLinux
 
-    [localrepo-powertools]
-    name=Local AlmaLinux 8 - PowerTools
-    baseurl=http://mirror.engwsc.example.com/almalinux/8/powertools
+    [local-powertools]
+    name=Local AlmaLinux \$releasever Repository - PowerTools
+    baseurl=http://mirror.engwsc.example.com/almalinux/\$releasever/powertools
     gpgcheck=1
     enabled=1
     countme=0
     gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-AlmaLinux
 
+    [local-ha]
+    name=Local AlmaLinux \$releasever Repository - High Availability
+    baseurl=http://mirror.engwsc.example.com/almalinux/\$releasever/ha
+    gpgcheck=1
+    enabled=0
+    countme=0
+    gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-AlmaLinux
+
+    [local-influxdb]
+    name=Local InfluxDB Repository - RHEL \$releasever
+    baseurl=http://mirror.engwsc.example.com/influxdb/rhel/\$releasever/influxdb
+    gpgcheck=1
+    enabled=0
+    countme=0
+    gpgkey=https://repos.influxdata.com/influxdb.key
+
+    [local-epel-modular]
+    name=Local EPEL Modular Repository - RHEL \$releasever
+    baseurl=http://mirror.engwsc.example.com/epel/\$releasever/epel
+    gpgcheck=1
+    enabled=0
+    countme=0
+    gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL-\$releasever
+
+    [local-epel]
+    name=Local EPEL Repository - RHEL \$releasever
+    baseurl=http://mirror.engwsc.example.com/epel/\$releasever/epel
+    gpgcheck=1
+    enabled=0
+    countme=0
+    gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL-\$releasever
     EOF
 
-2. Disable Primary repositories:
+3. Disable remote repositories:
 
-  AlmaLinux
+  .. note::
 
-  .. code-block:: bash
-
-    sed -i "s|enabled=1|enabled=0|g" /etc/yum.repos.d/almalinux.repo
-
-  Rocky Linux
+    influxdb and epel are only present if they have been previously deployed.
 
   .. code-block:: bash
 
-    sed -i "s|enabled=1|enabled=0|g" /etc/yum.repos.d/Rocky-AppStream.repo
-    sed -i "s|enabled=1|enabled=0|g" /etc/yum.repos.d/Rocky-BaseOS.repo
-    sed -i "s|enabled=1|enabled=0|g" /etc/yum.repos.d/Rocky-Extras.repo
-    sed -i "s|enabled=1|enabled=0|g" /etc/yum.repos.d/Rocky-PowerTools.repo
+    yum-config-manager --disable baseos
+    yum-config-manager --disable appstream
+    yum-config-manager --disable extras
+    yum-config-manager --disable powertools
+    yum-config-manager --disable ha
 
+4. Enable local repositories:
 
-3. Clean the DNF cache:
+  .. note::
+
+    local-influxdb, local-epel, and local-epel-modular are optional.
+
+  .. code-block:: bash
+
+    yum-config-manager --enable local-baseos
+    yum-config-manager --enable local-appstream
+    yum-config-manager --enable local-extras
+    yum-config-manager --enable local-powertools
+    yum-config-manager --enable local-ha
+
+5. **Optional** EPEL and InfluxDB/Telegraf repositories:
+
+  .. note::
+
+    Enable EPEL and InfluxDB repositories if they node is using Telegraf or EPEL.
+
+  .. code-block:: bash
+
+    yum-config-manager --disable influxdb
+    yum-config-manager --disable epel-modular
+    yum-config-manager --disable epel
+
+    yum-config-manager --enable local-influxdb
+    yum-config-manager --enable local-epel-modular
+    yum-config-manager --enable local-epel
+
+5. Clean the DNF cache:
 
   .. code-block:: bash
 
     dnf clean all
 
-4. Test mirror:
+6. Test mirror:
 
   .. code-block:: bash
 
+    dnf -y distro-sync
     dnf -y upgrade
