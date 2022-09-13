@@ -13,7 +13,7 @@ Ansible Control Node Usage Guide
    :caption: Contents:
 
 The following examples show how to utilize Ansible Control Node for
-route cluster operations.
+routine cluster operations.
 
 
 *************
@@ -41,14 +41,15 @@ Deployment Steps
 
 .. note::
 
-  Instructions assume execution using the ``root`` account.
+  Instructions assume execution using the ``ansible`` account.
 
 .. important::
 
   These examples require the following: |br|
   * The system hosting ansible is a client to a IdM server. |br|
   * The user account executing the playbooks is named "ansible" |br|
-  * The "ansible" user account has SUDO access on all nodes |br|
+  * The "ansible" user defaults to group named "ansible" |br|
+  * The "ansible" user account has sudo access on all nodes through IdM |br|
   * Passwordless SSH has been configured for the "ansible" user account |br|
   * DNS entries for all target servers
 
@@ -56,11 +57,13 @@ Deployment Steps
 
   .. code-block:: bash
 
-    mkdir -p /srv/ansible/adhoc/
-    mkdir -p /srv/ansible/inventory/
-    mkdir -p /srv/ansible/playbooks/
-    mkdir -p /srv/ansible/scripts/
-    mkdir -p /srv/ansible/templates/
+    sudo mkdir -p /srv/ansible/adhoc/
+    sudo mkdir -p /srv/ansible/inventory/
+    sudo mkdir -p /srv/ansible/playbooks/
+    sudo mkdir -p /srv/ansible/scripts/
+    sudo mkdir -p /srv/ansible/templates/
+
+    sudo chown -R ansible:ansible /srv/ansible/
 
 3. Create a hosts file:
 
@@ -183,7 +186,7 @@ Deployment Steps
             mirror.engwsc.example.com:
     EOF
 
-3. Create Upgrade Nodes Playbook (Example):
+3. Create Upgrade Nodes Playbook Example:
 
   .. note::
 
@@ -205,7 +208,7 @@ Deployment Steps
           state: latest
     EOF
 
-4. Create Upgrade Nodes Helper Script (Example):
+4. Create Upgrade Nodes Helper Script Example:
 
   .. note::
 
@@ -225,3 +228,10 @@ Deployment Steps
     EOF
 
     chmod 755 /srv/ansible/scripts/upgrade-all-nodes.sh
+
+5. Execute Helper Script:
+
+  .. code-block:: bash
+
+    cd /srv/ansible/
+    /srv/ansible/scripts/upgrade-all-nodes.sh
