@@ -104,7 +104,7 @@ Deployment Steps
 
     mount /srv/repos
 
-6. Create repository paths:
+7. Create repository paths:
 
   .. important::
 
@@ -129,7 +129,7 @@ Deployment Steps
     mkdir -p /srv/repos/influxdb/rhel/8/x86_64/stable/
     mkdir -p /srv/repos/grafana/oss/rpm/
 
-7. Install Extra Packages for Enterprise Linux (EPEL) Repository:
+8. Install Extra Packages for Enterprise Linux (EPEL) Repository:
 
   .. code-block:: bash
 
@@ -137,7 +137,7 @@ Deployment Steps
     dnf -y distro-sync
     dnf -y clean all
 
-8. Add Graylog Repositories:
+9. Add Graylog Repositories:
 
   MongoDB
 
@@ -194,7 +194,7 @@ Deployment Steps
     # Disable this repository as it is not used locally
     yum-config-manager --disable graylog
 
-9. Add InfluxDB Repository:
+10. Add InfluxDB Repository:
 
   .. code-block:: bash
 
@@ -215,7 +215,7 @@ Deployment Steps
     # Enable this repository as it is used locally for telegraf
     yum-config-manager --enable influxdb
 
-10. Add Grafana Repository:
+11. Add Grafana Repository:
 
   .. code-block:: bash
 
@@ -238,7 +238,7 @@ Deployment Steps
     # Disable this repository as it is not used locally
     yum-config-manager --disable grafana
 
-11. Add Docker Repository:
+12. Add Docker Repository:
 
   .. code-block:: bash
 
@@ -252,7 +252,7 @@ Deployment Steps
     # Disable this repository as it is not used locally
     yum-config-manager --disable docker-ce-stable
 
-12. Create a Cron Job to synchronize repositories:
+13. Create a Cron Job to synchronize repositories:
 
   .. important::
 
@@ -283,7 +283,7 @@ Deployment Steps
 
     chmod 755 /etc/cron.daily/update-localrepos
 
-13. Synchronize repositories:
+14. Synchronize repositories:
 
   .. code-block:: bash
 
@@ -291,7 +291,7 @@ Deployment Steps
     dnf -y distro-sync
     /etc/cron.daily/update-localrepos
 
-14. Configure Nginx to server the repository over http:
+15. Configure Nginx to server the repository over http:
 
   .. important::
 
@@ -311,24 +311,32 @@ Deployment Steps
     }
     EOF
 
-15. Set SELinux context and httpd boolean:
+16. Set SELinux context or SELinux boolean:
+
+  If using local storage for /srv/repos/:
 
   .. code-block:: bash
 
-    # Execute the following if the repository is stored locally
-    chcon -Rt httpd_sys_content_t /srv/repos/
+    # Permanently change the SELinux context of the local storage path
+    semanage fcontext -a -t httpd_sys_content_t /srv/repos/
 
-    # Set SELinux boolen to allow httpd to use nfs
+..
+
+  If using NFS storage for /srv/repos/:
+
+  .. code-block:: bash
+
+    # Set SELinux boolen to allow httpd to use NFS
     setsebool -P httpd_use_nfs=1
 
-16. Enable Nginx service:
+17. Enable Nginx service:
 
   .. code-block:: bash
 
     systemctl enable --now nginx
     systemctl status nginx
 
-17. Configure firewall rules:
+18. Configure firewall rules:
 
   .. important::
 

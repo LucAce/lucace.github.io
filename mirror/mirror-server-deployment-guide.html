@@ -494,7 +494,7 @@ on an NFS mount.</p>
 </pre></div>
 </div>
 </div></blockquote>
-<ol class="arabic simple" start="6">
+<ol class="arabic simple" start="7">
 <li><p>Create repository paths:</p></li>
 </ol>
 <blockquote>
@@ -521,7 +521,7 @@ mkdir -p /srv/repos/grafana/oss/rpm/
 </pre></div>
 </div>
 </div></blockquote>
-<ol class="arabic simple" start="7">
+<ol class="arabic simple" start="8">
 <li><p>Install Extra Packages for Enterprise Linux (EPEL) Repository:</p></li>
 </ol>
 <blockquote>
@@ -531,7 +531,7 @@ dnf -y clean all
 </pre></div>
 </div>
 </div></blockquote>
-<ol class="arabic simple" start="8">
+<ol class="arabic simple" start="9">
 <li><p>Add Graylog Repositories:</p></li>
 </ol>
 <blockquote>
@@ -585,7 +585,7 @@ yum-config-manager --disable graylog
 </pre></div>
 </div>
 </div></blockquote>
-<ol class="arabic simple" start="9">
+<ol class="arabic simple" start="10">
 <li><p>Add InfluxDB Repository:</p></li>
 </ol>
 <blockquote>
@@ -608,7 +608,7 @@ yum-config-manager --enable influxdb
 </pre></div>
 </div>
 </div></blockquote>
-<ol class="arabic simple" start="10">
+<ol class="arabic simple" start="11">
 <li><p>Add Grafana Repository:</p></li>
 </ol>
 <blockquote>
@@ -633,7 +633,7 @@ yum-config-manager --disable grafana
 </pre></div>
 </div>
 </div></blockquote>
-<ol class="arabic simple" start="11">
+<ol class="arabic simple" start="12">
 <li><p>Add Docker Repository:</p></li>
 </ol>
 <blockquote>
@@ -649,7 +649,7 @@ yum-config-manager --disable docker-ce-stable
 </pre></div>
 </div>
 </div></blockquote>
-<ol class="arabic simple" start="12">
+<ol class="arabic simple" start="13">
 <li><p>Create a Cron Job to synchronize repositories:</p></li>
 </ol>
 <blockquote>
@@ -682,7 +682,7 @@ chmod <span class="m">755</span> /etc/cron.daily/update-localrepos
 </pre></div>
 </div>
 </div></blockquote>
-<ol class="arabic simple" start="13">
+<ol class="arabic simple" start="14">
 <li><p>Synchronize repositories:</p></li>
 </ol>
 <blockquote>
@@ -692,7 +692,7 @@ dnf -y distro-sync
 </pre></div>
 </div>
 </div></blockquote>
-<ol class="arabic simple" start="14">
+<ol class="arabic simple" start="15">
 <li><p>Configure Nginx to server the repository over http:</p></li>
 </ol>
 <blockquote>
@@ -714,19 +714,24 @@ dnf -y distro-sync
 </pre></div>
 </div>
 </div></blockquote>
-<ol class="arabic simple" start="15">
-<li><p>Set SELinux context and httpd boolean:</p></li>
+<ol class="arabic simple" start="16">
+<li><p>Set SELinux context or SELinux boolean:</p></li>
 </ol>
 <blockquote>
-<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Execute the following if the repository is stored locally</span>
-chcon -Rt httpd_sys_content_t /srv/repos/
-
-<span class="c1"># Set SELinux boolen to allow httpd to use nfs</span>
+<div><p>If using local storage for /srv/repos/:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Permanently change the SELinux context of the local storage path</span>
+semanage fcontext -a -t httpd_sys_content_t /srv/repos/
+</pre></div>
+</div>
+</div></blockquote>
+<blockquote>
+<div><p>If using NFS storage for /srv/repos/:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Set SELinux boolen to allow httpd to use NFS</span>
 setsebool -P <span class="nv">httpd_use_nfs</span><span class="o">=</span><span class="m">1</span>
 </pre></div>
 </div>
 </div></blockquote>
-<ol class="arabic simple" start="16">
+<ol class="arabic simple" start="17">
 <li><p>Enable Nginx service:</p></li>
 </ol>
 <blockquote>
@@ -735,7 +740,7 @@ systemctl status nginx
 </pre></div>
 </div>
 </div></blockquote>
-<ol class="arabic simple" start="17">
+<ol class="arabic simple" start="18">
 <li><p>Configure firewall rules:</p></li>
 </ol>
 <blockquote>
