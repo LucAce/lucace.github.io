@@ -441,130 +441,167 @@ dnf -y distro-sync
 </div>
 </div></blockquote>
 <ol class="arabic simple" start="2">
+<li><p>Disable existing repositories:</p></li>
+</ol>
+<blockquote>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mv /etc/yum.repos.d/almalinux-ha.repo               /etc/yum.repos.d/almalinux-ha.repo.disabled
+mv /etc/yum.repos.d/almalinux-nfv.repo              /etc/yum.repos.d/almalinux-nfv.repo.disabled
+mv /etc/yum.repos.d/almalinux-plus.repo             /etc/yum.repos.d/almalinux-plus.repo.disabled
+mv /etc/yum.repos.d/almalinux-powertools.repo       /etc/yum.repos.d/almalinux-powertools.repo.disabled
+mv /etc/yum.repos.d/almalinux.repo                  /etc/yum.repos.d/almalinux.repo.disabled
+mv /etc/yum.repos.d/almalinux-resilientstorage.repo /etc/yum.repos.d/almalinux-resilientstorage.repo.disabled
+mv /etc/yum.repos.d/almalinux-rt.repo               /etc/yum.repos.d/almalinux-rt.repo.disabled
+mv /etc/yum.repos.d/docker-ce.repo                  /etc/yum.repos.d/docker-ce.repo.disabled
+mv /etc/yum.repos.d/elasticsearch.repo              /etc/yum.repos.d/elasticsearch.repo.disabled
+mv /etc/yum.repos.d/epel-modular.repo               /etc/yum.repos.d/epel-modular.repo.disabled
+mv /etc/yum.repos.d/epel.repo                       /etc/yum.repos.d/epel.repo.disabled
+mv /etc/yum.repos.d/epel-testing-modular.repo       /etc/yum.repos.d/epel-testing-modular.repo.disabled
+mv /etc/yum.repos.d/epel-testing.repo               /etc/yum.repos.d/epel-testing.repo.disabled
+mv /etc/yum.repos.d/grafana.repo                    /etc/yum.repos.d/grafana.repo.disabled
+mv /etc/yum.repos.d/graylog.repo                    /etc/yum.repos.d/graylog.repo.disabled
+mv /etc/yum.repos.d/influxdb.repo                   /etc/yum.repos.d/influxdb.repo.disabled
+mv /etc/yum.repos.d/mongodb-org-6.0.repo            /etc/yum.repos.d/mongodb-org-6.0.repo.disabled
+</pre></div>
+</div>
+</div></blockquote>
+<ol class="arabic simple" start="2">
 <li><p>Create repository configuration file:</p></li>
 </ol>
 <blockquote>
 <div><div class="admonition important">
 <p class="admonition-title">Important</p>
-<p>Replace <code class="docutils literal notranslate"><span class="pre">AlmaLinux</span></code> with the <code class="docutils literal notranslate"><span class="pre">Rocky</span></code> and
-<code class="docutils literal notranslate"><span class="pre">RPM-GPG-KEY-AlmaLinux</span></code> with <code class="docutils literal notranslate"><span class="pre">RPM-GPG-KEY-rockyofficial</span></code>
-if using Rocky Linux.</p>
+<p>Replace <code class="docutils literal notranslate"><span class="pre">AlmaLinux</span></code> with the <code class="docutils literal notranslate"><span class="pre">Rocky</span></code> and <code class="docutils literal notranslate"><span class="pre">RPM-GPG-KEY-AlmaLinux</span></code>
+with <code class="docutils literal notranslate"><span class="pre">RPM-GPG-KEY-rockyofficial</span></code> if using Rocky Linux.</p>
 </div>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cat &gt; /etc/yum.repos.d/local.repo <span class="s">&lt;&lt;EOF</span>
-<span class="s">[local-baseos]</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cat &gt; /etc/yum.repos.d/local-mirror.repo <span class="s">&lt;&lt;EOF</span>
+<span class="s">[baseos]</span>
 <span class="s">name=Local AlmaLinux \$releasever Repository - BaseOS</span>
-<span class="s">baseurl=http://mirror.engwsc.example.com/almalinux/\$releasever/baseos</span>
+<span class="s">baseurl=http://mirror.engwsc.example.com/almalinux/\$releasever/BaseOS/x86_64/os/</span>
 <span class="s">gpgcheck=1</span>
 <span class="s">enabled=1</span>
 <span class="s">countme=0</span>
 <span class="s">gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-AlmaLinux</span>
 
-<span class="s">[local-appstream]</span>
+<span class="s">[appstream]</span>
 <span class="s">name=Local AlmaLinux \$releasever Repository - AppStream</span>
-<span class="s">baseurl=http://mirror.engwsc.example.com/almalinux/\$releasever/appstream</span>
+<span class="s">baseurl=http://mirror.engwsc.example.com/almalinux/\$releasever/AppStream/x86_64/os/</span>
 <span class="s">gpgcheck=1</span>
 <span class="s">enabled=1</span>
 <span class="s">countme=0</span>
 <span class="s">gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-AlmaLinux</span>
 
-<span class="s">[local-extras]</span>
+<span class="s">[extras]</span>
 <span class="s">name=Local AlmaLinux \$releasever Repository - Extras</span>
-<span class="s">baseurl=http://mirror.engwsc.example.com/almalinux/\$releasever/extras</span>
+<span class="s">baseurl=http://mirror.engwsc.example.com/almalinux/\$releasever/extras/x86_64/os/</span>
 <span class="s">gpgcheck=1</span>
 <span class="s">enabled=1</span>
 <span class="s">countme=0</span>
 <span class="s">gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-AlmaLinux</span>
 
-<span class="s">[local-powertools]</span>
+<span class="s">[powertools]</span>
 <span class="s">name=Local AlmaLinux \$releasever Repository - PowerTools</span>
-<span class="s">baseurl=http://mirror.engwsc.example.com/almalinux/\$releasever/powertools</span>
-<span class="s">gpgcheck=1</span>
-<span class="s">enabled=1</span>
-<span class="s">countme=0</span>
-<span class="s">gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-AlmaLinux</span>
-
-<span class="s">[local-ha]</span>
-<span class="s">name=Local AlmaLinux \$releasever Repository - High Availability</span>
-<span class="s">baseurl=http://mirror.engwsc.example.com/almalinux/\$releasever/ha</span>
+<span class="s">baseurl=http://mirror.engwsc.example.com/almalinux/\$releasever/PowerTools/x86_64/os/</span>
 <span class="s">gpgcheck=1</span>
 <span class="s">enabled=0</span>
 <span class="s">countme=0</span>
 <span class="s">gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-AlmaLinux</span>
 
-<span class="s">[local-influxdb]</span>
+<span class="s">[ha]</span>
+<span class="s">name=Local AlmaLinux \$releasever Repository - High Availability</span>
+<span class="s">baseurl=http://mirror.engwsc.example.com/almalinux/\$releasever/HighAvailability/x86_64/os/</span>
+<span class="s">gpgcheck=1</span>
+<span class="s">enabled=0</span>
+<span class="s">countme=0</span>
+<span class="s">gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-AlmaLinux</span>
+
+<span class="s">[epel]</span>
+<span class="s">name=Local EPEL Repository - RHEL \$releasever</span>
+<span class="s">baseurl=http://mirror.engwsc.example.com/epel/pub/epel/\$releasever/Everything/x86_64</span>
+<span class="s">gpgcheck=1</span>
+<span class="s">enabled=0</span>
+<span class="s">countme=0</span>
+<span class="s">gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL-\$releasever</span>
+
+<span class="s">[epel-modular]</span>
+<span class="s">name=Local EPEL Modular Repository - RHEL \$releasever</span>
+<span class="s">baseurl=http://mirror.engwsc.example.com/epel/pub/epel/\$releasever/Modular/x86_64</span>
+<span class="s">gpgcheck=1</span>
+<span class="s">enabled=0</span>
+<span class="s">countme=0</span>
+<span class="s">gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL-\$releasever</span>
+
+<span class="s">[mongodb-org-6.0]</span>
+<span class="s">name=MongoDB Repository</span>
+<span class="s">baseurl=http://mirror.engwsc.example.com/mongodb/yum/redhat/\$releasever/mongodb-org/6.0/x86_64/</span>
+<span class="s">gpgcheck=1</span>
+<span class="s">enabled=0</span>
+<span class="s">countme=0</span>
+<span class="s">gpgkey=http://mirror.engwsc.example.com/RPM-GPG-KEY-mongodb</span>
+
+<span class="s">[elasticsearch-7.x]</span>
+<span class="s">name=Elasticsearch repository for 7.x packages</span>
+<span class="s">baseurl=http://mirror.engwsc.example.com/elasticsearch/packages/oss-7.x/yum/</span>
+<span class="s">gpgcheck=1</span>
+<span class="s">enabled=0</span>
+<span class="s">countme=0</span>
+<span class="s">gpgkey=http://mirror.engwsc.example.com/RPM-GPG-KEY-elasticsearch</span>
+
+<span class="s">[graylog]</span>
+<span class="s">name=graylog</span>
+<span class="s">baseurl=http://mirror.engwsc.example.com/elasticsearch/packages/oss-7.x/yum/</span>
+<span class="s">gpgcheck=1</span>
+<span class="s">repo_gpgcheck=0</span>
+<span class="s">enabled=0</span>
+<span class="s">countme=0</span>
+<span class="s">gpgkey=http://mirror.engwsc.example.com/RPM-GPG-KEY-graylog</span>
+
+<span class="s">[influxdb]</span>
 <span class="s">name=Local InfluxDB Repository - RHEL \$releasever</span>
 <span class="s">baseurl=http://mirror.engwsc.example.com/influxdb/rhel/\$releasever/influxdb</span>
 <span class="s">gpgcheck=1</span>
 <span class="s">enabled=0</span>
 <span class="s">countme=0</span>
-<span class="s">gpgkey=https://repos.influxdata.com/influxdb.key</span>
+<span class="s">gpgkey=http://mirror.engwsc.example.com/RPM-GPG-KEY-influxdb</span>
 
-<span class="s">[local-epel-modular]</span>
-<span class="s">name=Local EPEL Modular Repository - RHEL \$releasever</span>
-<span class="s">baseurl=http://mirror.engwsc.example.com/epel/\$releasever/epel</span>
-<span class="s">gpgcheck=1</span>
+<span class="s">[grafana]</span>
+<span class="s">name=grafana</span>
+<span class="s">baseurl=http://mirror.engwsc.example.com/grfana/oss/rpm</span>
+<span class="s">repo_gpgcheck=1</span>
 <span class="s">enabled=0</span>
-<span class="s">countme=0</span>
-<span class="s">gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL-\$releasever</span>
+<span class="s">gpgcheck=1</span>
+<span class="s">gpgkey=http://mirror.engwsc.example.com/RPM-GPG-KEY-grafana</span>
 
-<span class="s">[local-epel]</span>
-<span class="s">name=Local EPEL Repository - RHEL \$releasever</span>
-<span class="s">baseurl=http://mirror.engwsc.example.com/epel/\$releasever/epel</span>
-<span class="s">gpgcheck=1</span>
+<span class="s">[docker-ce-stable]</span>
+<span class="s">name=Docker CE Stable - \$basearch</span>
+<span class="s">baseurl=http://mirror.engwsc.example.com/docker/linux/centos/\$releasever/\$basearch/stable</span>
 <span class="s">enabled=0</span>
-<span class="s">countme=0</span>
-<span class="s">gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL-\$releasever</span>
+<span class="s">gpgcheck=1</span>
+<span class="s">gpgkey=http://mirror.engwsc.example.com/RPM-GPG-KEY-docker</span>
 <span class="s">EOF</span>
 </pre></div>
 </div>
 </div></blockquote>
 <ol class="arabic simple" start="3">
-<li><p>Disable remote repositories:</p></li>
-</ol>
-<blockquote>
-<div><div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>influxdb and epel are only present if they have been previously deployed.</p>
-</div>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>yum-config-manager --disable baseos
-yum-config-manager --disable appstream
-yum-config-manager --disable extras
-yum-config-manager --disable powertools
-yum-config-manager --disable ha
-</pre></div>
-</div>
-</div></blockquote>
-<ol class="arabic simple" start="4">
 <li><p>Enable local repositories:</p></li>
 </ol>
 <blockquote>
 <div><div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>local-influxdb, local-epel, and local-epel-modular are optional.</p>
+<p>Enable repositories as needed on target systems.</p>
 </div>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>yum-config-manager --enable local-baseos
-yum-config-manager --enable local-appstream
-yum-config-manager --enable local-extras
-yum-config-manager --enable local-powertools
-yum-config-manager --enable local-ha
-</pre></div>
-</div>
-</div></blockquote>
-<ol class="arabic simple" start="5">
-<li><p><strong>Optional</strong> EPEL and InfluxDB/Telegraf repositories:</p></li>
-</ol>
-<blockquote>
-<div><div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>Enable EPEL and InfluxDB repositories if they node is using Telegraf or EPEL.</p>
-</div>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>yum-config-manager --disable influxdb
-yum-config-manager --disable epel-modular
-yum-config-manager --disable epel
-
-yum-config-manager --enable local-influxdb
-yum-config-manager --enable local-epel-modular
-yum-config-manager --enable local-epel
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>yum-config-manager --enable baseos
+yum-config-manager --enable appstream
+yum-config-manager --enable extras
+<span class="c1"># yum-config-manager --enable powertools</span>
+<span class="c1"># yum-config-manager --enable ha</span>
+<span class="c1"># yum-config-manager --enable epel</span>
+<span class="c1"># yum-config-manager --enable epel-modular</span>
+<span class="c1"># yum-config-manager --enable mongodb-org-6.0</span>
+<span class="c1"># yum-config-manager --enable elasticsearch-7.x</span>
+<span class="c1"># yum-config-manager --enable graylog</span>
+<span class="c1"># yum-config-manager --enable docker-ce-stable</span>
+<span class="c1"># yum-config-manager --enable influxdb</span>
+<span class="c1"># yum-config-manager --enable grafana</span>
 </pre></div>
 </div>
 </div></blockquote>

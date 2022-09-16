@@ -5,7 +5,7 @@
 #
 #   Functional Description:
 #
-#       Bash script which deploys DNF Mirror Server.
+#       Bash script which deploys a local DNF/Yum Repository Server.
 #
 #   Usage:
 #
@@ -20,7 +20,7 @@ if [ "$EUID" -ne 0 ]; then
   exit 1
 fi
 
-echo -e "\n[$(date +"%Y-%m-%d %H:%M:%S")] Deploying DNF Mirror Server...\n"
+echo -e "\n[$(date +"%Y-%m-%d %H:%M:%S")] Deploying DNF/Yum Repository Server...\n"
 
 
 ###############################################################################
@@ -55,10 +55,10 @@ then
     exit 1
 fi
 
-# Update System
+# Update system
 dnf -y upgrade
 
-# Install Dependencies
+# Install dependencies
 dnf -y install nginx yum-utils
 
 # Create local directory for the repositories
@@ -98,7 +98,13 @@ dnf -y distro-sync
 dnf -y clean all
 
 # Add Graylog Repositories
+
+# MongoDB
 #
+# Download and copy the GPG key to the repository path
+wget https://www.mongodb.org/static/pgp/server-6.0.asc \
+    -O /srv/repos/RPM-GPG-KEY-mongodb
+
 # Import GPG key
 rpm --import https://www.mongodb.org/static/pgp/server-6.0.asc
 
@@ -114,6 +120,12 @@ EOF
 
 # Disable this repository as it is not used locally
 yum-config-manager --disable mongodb-org-6.0
+
+# ElasticSearch
+#
+# Download and copy the GPG key to the repository path
+wget https://artifacts.elastic.co/GPG-KEY-elasticsearch \
+    -O /srv/repos/RPM-GPG-KEY-elasticsearch
 
 # Import GPG key
 rpm --import https://artifacts.elastic.co/GPG-KEY-elasticsearch
@@ -133,8 +145,13 @@ EOF
 # Disable this repository as it is not used locally
 yum-config-manager --disable elasticsearch-7.x
 
+# Graylog
+#
 # Install Graylog repository RPM
 rpm -Uvh https://packages.graylog2.org/repo/packages/graylog-4.3-repository_latest.rpm
+
+# Copy the GPG key to the repository path
+cp /etc/pki/rpm-gpg/RPM-GPG-KEY-graylog /srv/repos/RPM-GPG-KEY-graylog
 
 # Import GPG key
 rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY-graylog
@@ -142,8 +159,12 @@ rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY-graylog
 # Disable this repository as it is not used locally
 yum-config-manager --disable graylog
 
-# Import InfluxDB Repository
-#
+# Add InfluxDB Repository
+
+# Download and copy the GPG key to the repository path
+wget https://repos.influxdata.com/influxdb.key \
+    -O /srv/repos/RPM-GPG-KEY-influxdb
+
 # Import GPG key
 rpm --import https://repos.influxdata.com/influxdb.key
 
@@ -151,18 +172,22 @@ rpm --import https://repos.influxdata.com/influxdb.key
 # influxdb.key GPG Fingerprint: 05CE15085FC09D18E99EFB22684A14CF2582E0C5
 cat > /etc/yum.repos.d/influxdb.repo <<EOF
 [influxdb]
-name = InfluxDB Repository - RHEL \$releasever
-baseurl = https://repos.influxdata.com/rhel/\$releasever/\$basearch/stable
-enabled = 0
-gpgcheck = 1
-gpgkey = https://repos.influxdata.com/influxdb.key
+name=InfluxDB Repository - RHEL \$releasever
+baseurl=https://repos.influxdata.com/rhel/\$releasever/\$basearch/stable
+enabled=0
+gpgcheck=1
+gpgkey=https://repos.influxdata.com/influxdb.key
 EOF
 
-# Disable this repository as it is not used locally
-yum-config-manager --disable influxdb
+# Enable this repository as it is used locally for telegraf
+yum-config-manager --enable influxdb
 
-# Import Grafana Repository
-#
+# Add Grafana Repository
+
+# Download and copy the GPG key to the repository path
+wget https://packages.grafana.com/gpg.key \
+    -O /srv/repos/RPM-GPG-KEY-grafana
+
 # Import GPG key
 rpm --import https://packages.grafana.com/gpg.key
 
@@ -179,8 +204,15 @@ sslverify=1
 sslcacert=/etc/pki/tls/certs/ca-bundle.crt
 EOF
 
-# Import Docker Repository
-#
+# Disable this repository as it is not used locally
+yum-config-manager --disable grafana
+
+# Add Docker Repository
+
+# Download and copy the GPG key to the repository path
+wget https://download.docker.com/linux/centos/gpg \
+    -O /srv/repos/RPM-GPG-KEY-docker
+
 # Import GPG key
 rpm --import https://download.docker.com/linux/centos/gpg
 
@@ -215,11 +247,9 @@ EOF
 
 chmod 755 /etc/cron.daily/update-localrepos
 
-# Clear the DNF Cache
+# Synchronize repositories
 dnf clean all
 dnf -y distro-sync
-
-# Synchronize repositories:
 /etc/cron.daily/update-localrepos
 
 # Configure Nginx to server the repository over http
@@ -235,9 +265,16 @@ server {
 }
 EOF
 
-# Execute the following if the repository is stored locally
-chcon -Rt httpd_sys_content_t /srv/repos/
+# # If using local storage for /srv/repos/
+# #
+# # Permanently change the SELinux context of the local storage path
+# semanage fcontext -a -t httpd_sys_content_t "/srv/repos(/.*)?"
+#
+# # Relabel files
+# restorecon -F -R -v /srv/repos/
 
+# If using NFS storage for /srv/repos/
+#
 # Set SELinux boolen to allow httpd to use nfs
 setsebool -P httpd_use_nfs=1
 
@@ -251,5 +288,5 @@ firewall-cmd --zone=public --add-source=${ALLOWED_IPV4} --permanent
 firewall-cmd --zone=public --add-service=http --permanent
 firewall-cmd --reload
 
-echo -e "\n[$(date +"%Y-%m-%d %H:%M:%S")] Deploying DNF Mirror Server Complete\n"
+echo -e "\n[$(date +"%Y-%m-%d %H:%M:%S")] Deploying DNF/Yum Repository Server Complete\n"
 exit 0

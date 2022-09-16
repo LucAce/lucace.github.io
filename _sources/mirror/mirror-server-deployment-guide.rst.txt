@@ -139,9 +139,13 @@ Deployment Steps
 
 9. Add Graylog Repositories:
 
-  MongoDB
+MongoDB
 
   .. code-block:: bash
+
+    # Download and copy the GPG key to the repository path
+    wget https://www.mongodb.org/static/pgp/server-6.0.asc \
+        -O /srv/repos/RPM-GPG-KEY-mongodb
 
     # Import GPG key
     rpm --import https://www.mongodb.org/static/pgp/server-6.0.asc
@@ -159,9 +163,13 @@ Deployment Steps
     # Disable this repository as it is not used locally
     yum-config-manager --disable mongodb-org-6.0
 
-  ElasticSearch
+ElasticSearch
 
   .. code-block:: bash
+
+    # Download and copy the GPG key to the repository path
+    wget https://artifacts.elastic.co/GPG-KEY-elasticsearch \
+        -O /srv/repos/RPM-GPG-KEY-elasticsearch
 
     # Import GPG key
     rpm --import https://artifacts.elastic.co/GPG-KEY-elasticsearch
@@ -181,12 +189,15 @@ Deployment Steps
     # Disable this repository as it is not used locally
     yum-config-manager --disable elasticsearch-7.x
 
-  Graylog
+Graylog
 
   .. code-block:: bash
 
     # Install Graylog repository RPM
     rpm -Uvh https://packages.graylog2.org/repo/packages/graylog-4.3-repository_latest.rpm
+
+    # Copy the GPG key to the repository path
+    cp /etc/pki/rpm-gpg/RPM-GPG-KEY-graylog /srv/repos/RPM-GPG-KEY-graylog
 
     # Import GPG key
     rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY-graylog
@@ -197,6 +208,10 @@ Deployment Steps
 10. Add InfluxDB Repository:
 
   .. code-block:: bash
+
+    # Download and copy the GPG key to the repository path
+    wget https://repos.influxdata.com/influxdb.key \
+        -O /srv/repos/RPM-GPG-KEY-influxdb
 
     # Import GPG key
     rpm --import https://repos.influxdata.com/influxdb.key
@@ -218,6 +233,10 @@ Deployment Steps
 11. Add Grafana Repository:
 
   .. code-block:: bash
+
+    # Download and copy the GPG key to the repository path
+    wget https://packages.grafana.com/gpg.key \
+        -O /srv/repos/RPM-GPG-KEY-grafana
 
     # Import GPG key
     rpm --import https://packages.grafana.com/gpg.key
@@ -241,6 +260,10 @@ Deployment Steps
 12. Add Docker Repository:
 
   .. code-block:: bash
+
+    # Download and copy the GPG key to the repository path
+    wget https://download.docker.com/linux/centos/gpg \
+        -O /srv/repos/RPM-GPG-KEY-docker
 
     # Import GPG key
     rpm --import https://download.docker.com/linux/centos/gpg
@@ -313,16 +336,17 @@ Deployment Steps
 
 16. Set SELinux context or SELinux boolean:
 
-  If using local storage for /srv/repos/:
+If using local storage for ``/srv/repos/``:
 
   .. code-block:: bash
 
     # Permanently change the SELinux context of the local storage path
-    semanage fcontext -a -t httpd_sys_content_t /srv/repos/
+    semanage fcontext -a -t httpd_sys_content_t "/srv/repos(/.*)?"
 
-..
+    # Relabel files
+    restorecon -F -R -v /srv/repos/
 
-  If using NFS storage for /srv/repos/:
+If using NFS storage for ``/srv/repos/``:
 
   .. code-block:: bash
 

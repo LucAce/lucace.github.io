@@ -58,125 +58,164 @@ Deployment Steps
     dnf -y install epel-release
     dnf -y distro-sync
 
+2. Disable existing repositories:
+
+  .. code-block:: bash
+
+    mv /etc/yum.repos.d/almalinux-ha.repo               /etc/yum.repos.d/almalinux-ha.repo.disabled
+    mv /etc/yum.repos.d/almalinux-nfv.repo              /etc/yum.repos.d/almalinux-nfv.repo.disabled
+    mv /etc/yum.repos.d/almalinux-plus.repo             /etc/yum.repos.d/almalinux-plus.repo.disabled
+    mv /etc/yum.repos.d/almalinux-powertools.repo       /etc/yum.repos.d/almalinux-powertools.repo.disabled
+    mv /etc/yum.repos.d/almalinux.repo                  /etc/yum.repos.d/almalinux.repo.disabled
+    mv /etc/yum.repos.d/almalinux-resilientstorage.repo /etc/yum.repos.d/almalinux-resilientstorage.repo.disabled
+    mv /etc/yum.repos.d/almalinux-rt.repo               /etc/yum.repos.d/almalinux-rt.repo.disabled
+    mv /etc/yum.repos.d/docker-ce.repo                  /etc/yum.repos.d/docker-ce.repo.disabled
+    mv /etc/yum.repos.d/elasticsearch.repo              /etc/yum.repos.d/elasticsearch.repo.disabled
+    mv /etc/yum.repos.d/epel-modular.repo               /etc/yum.repos.d/epel-modular.repo.disabled
+    mv /etc/yum.repos.d/epel.repo                       /etc/yum.repos.d/epel.repo.disabled
+    mv /etc/yum.repos.d/epel-testing-modular.repo       /etc/yum.repos.d/epel-testing-modular.repo.disabled
+    mv /etc/yum.repos.d/epel-testing.repo               /etc/yum.repos.d/epel-testing.repo.disabled
+    mv /etc/yum.repos.d/grafana.repo                    /etc/yum.repos.d/grafana.repo.disabled
+    mv /etc/yum.repos.d/graylog.repo                    /etc/yum.repos.d/graylog.repo.disabled
+    mv /etc/yum.repos.d/influxdb.repo                   /etc/yum.repos.d/influxdb.repo.disabled
+    mv /etc/yum.repos.d/mongodb-org-6.0.repo            /etc/yum.repos.d/mongodb-org-6.0.repo.disabled
+
 2. Create repository configuration file:
 
   .. important::
 
-    Replace ``AlmaLinux`` with the ``Rocky`` and
-    ``RPM-GPG-KEY-AlmaLinux`` with ``RPM-GPG-KEY-rockyofficial``
-    if using Rocky Linux.
+    Replace ``AlmaLinux`` with the ``Rocky`` and ``RPM-GPG-KEY-AlmaLinux``
+    with ``RPM-GPG-KEY-rockyofficial`` if using Rocky Linux.
 
   .. code-block:: bash
 
-    cat > /etc/yum.repos.d/local.repo <<EOF
-    [local-baseos]
+    cat > /etc/yum.repos.d/local-mirror.repo <<EOF
+    [baseos]
     name=Local AlmaLinux \$releasever Repository - BaseOS
-    baseurl=http://mirror.engwsc.example.com/almalinux/\$releasever/baseos
+    baseurl=http://mirror.engwsc.example.com/almalinux/\$releasever/BaseOS/x86_64/os/
     gpgcheck=1
     enabled=1
     countme=0
     gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-AlmaLinux
 
-    [local-appstream]
+    [appstream]
     name=Local AlmaLinux \$releasever Repository - AppStream
-    baseurl=http://mirror.engwsc.example.com/almalinux/\$releasever/appstream
+    baseurl=http://mirror.engwsc.example.com/almalinux/\$releasever/AppStream/x86_64/os/
     gpgcheck=1
     enabled=1
     countme=0
     gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-AlmaLinux
 
-    [local-extras]
+    [extras]
     name=Local AlmaLinux \$releasever Repository - Extras
-    baseurl=http://mirror.engwsc.example.com/almalinux/\$releasever/extras
+    baseurl=http://mirror.engwsc.example.com/almalinux/\$releasever/extras/x86_64/os/
     gpgcheck=1
     enabled=1
     countme=0
     gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-AlmaLinux
 
-    [local-powertools]
+    [powertools]
     name=Local AlmaLinux \$releasever Repository - PowerTools
-    baseurl=http://mirror.engwsc.example.com/almalinux/\$releasever/powertools
-    gpgcheck=1
-    enabled=1
-    countme=0
-    gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-AlmaLinux
-
-    [local-ha]
-    name=Local AlmaLinux \$releasever Repository - High Availability
-    baseurl=http://mirror.engwsc.example.com/almalinux/\$releasever/ha
+    baseurl=http://mirror.engwsc.example.com/almalinux/\$releasever/PowerTools/x86_64/os/
     gpgcheck=1
     enabled=0
     countme=0
     gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-AlmaLinux
 
-    [local-influxdb]
+    [ha]
+    name=Local AlmaLinux \$releasever Repository - High Availability
+    baseurl=http://mirror.engwsc.example.com/almalinux/\$releasever/HighAvailability/x86_64/os/
+    gpgcheck=1
+    enabled=0
+    countme=0
+    gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-AlmaLinux
+
+    [epel]
+    name=Local EPEL Repository - RHEL \$releasever
+    baseurl=http://mirror.engwsc.example.com/epel/pub/epel/\$releasever/Everything/x86_64
+    gpgcheck=1
+    enabled=0
+    countme=0
+    gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL-\$releasever
+
+    [epel-modular]
+    name=Local EPEL Modular Repository - RHEL \$releasever
+    baseurl=http://mirror.engwsc.example.com/epel/pub/epel/\$releasever/Modular/x86_64
+    gpgcheck=1
+    enabled=0
+    countme=0
+    gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL-\$releasever
+
+    [mongodb-org-6.0]
+    name=MongoDB Repository
+    baseurl=http://mirror.engwsc.example.com/mongodb/yum/redhat/\$releasever/mongodb-org/6.0/x86_64/
+    gpgcheck=1
+    enabled=0
+    countme=0
+    gpgkey=http://mirror.engwsc.example.com/RPM-GPG-KEY-mongodb
+
+    [elasticsearch-7.x]
+    name=Elasticsearch repository for 7.x packages
+    baseurl=http://mirror.engwsc.example.com/elasticsearch/packages/oss-7.x/yum/
+    gpgcheck=1
+    enabled=0
+    countme=0
+    gpgkey=http://mirror.engwsc.example.com/RPM-GPG-KEY-elasticsearch
+
+    [graylog]
+    name=graylog
+    baseurl=http://mirror.engwsc.example.com/elasticsearch/packages/oss-7.x/yum/
+    gpgcheck=1
+    repo_gpgcheck=0
+    enabled=0
+    countme=0
+    gpgkey=http://mirror.engwsc.example.com/RPM-GPG-KEY-graylog
+
+    [influxdb]
     name=Local InfluxDB Repository - RHEL \$releasever
     baseurl=http://mirror.engwsc.example.com/influxdb/rhel/\$releasever/influxdb
     gpgcheck=1
     enabled=0
     countme=0
-    gpgkey=https://repos.influxdata.com/influxdb.key
+    gpgkey=http://mirror.engwsc.example.com/RPM-GPG-KEY-influxdb
 
-    [local-epel-modular]
-    name=Local EPEL Modular Repository - RHEL \$releasever
-    baseurl=http://mirror.engwsc.example.com/epel/\$releasever/epel
-    gpgcheck=1
+    [grafana]
+    name=grafana
+    baseurl=http://mirror.engwsc.example.com/grfana/oss/rpm
+    repo_gpgcheck=1
     enabled=0
-    countme=0
-    gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL-\$releasever
+    gpgcheck=1
+    gpgkey=http://mirror.engwsc.example.com/RPM-GPG-KEY-grafana
 
-    [local-epel]
-    name=Local EPEL Repository - RHEL \$releasever
-    baseurl=http://mirror.engwsc.example.com/epel/\$releasever/epel
-    gpgcheck=1
+    [docker-ce-stable]
+    name=Docker CE Stable - \$basearch
+    baseurl=http://mirror.engwsc.example.com/docker/linux/centos/\$releasever/\$basearch/stable
     enabled=0
-    countme=0
-    gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL-\$releasever
+    gpgcheck=1
+    gpgkey=http://mirror.engwsc.example.com/RPM-GPG-KEY-docker
     EOF
 
-3. Disable remote repositories:
+3. Enable local repositories:
 
   .. note::
 
-    influxdb and epel are only present if they have been previously deployed.
+    Enable repositories as needed on target systems.
 
   .. code-block:: bash
 
-    yum-config-manager --disable baseos
-    yum-config-manager --disable appstream
-    yum-config-manager --disable extras
-    yum-config-manager --disable powertools
-    yum-config-manager --disable ha
-
-4. Enable local repositories:
-
-  .. note::
-
-    local-influxdb, local-epel, and local-epel-modular are optional.
-
-  .. code-block:: bash
-
-    yum-config-manager --enable local-baseos
-    yum-config-manager --enable local-appstream
-    yum-config-manager --enable local-extras
-    yum-config-manager --enable local-powertools
-    yum-config-manager --enable local-ha
-
-5. **Optional** EPEL and InfluxDB/Telegraf repositories:
-
-  .. note::
-
-    Enable EPEL and InfluxDB repositories if they node is using Telegraf or EPEL.
-
-  .. code-block:: bash
-
-    yum-config-manager --disable influxdb
-    yum-config-manager --disable epel-modular
-    yum-config-manager --disable epel
-
-    yum-config-manager --enable local-influxdb
-    yum-config-manager --enable local-epel-modular
-    yum-config-manager --enable local-epel
+    yum-config-manager --enable baseos
+    yum-config-manager --enable appstream
+    yum-config-manager --enable extras
+    # yum-config-manager --enable powertools
+    # yum-config-manager --enable ha
+    # yum-config-manager --enable epel
+    # yum-config-manager --enable epel-modular
+    # yum-config-manager --enable mongodb-org-6.0
+    # yum-config-manager --enable elasticsearch-7.x
+    # yum-config-manager --enable graylog
+    # yum-config-manager --enable docker-ce-stable
+    # yum-config-manager --enable influxdb
+    # yum-config-manager --enable grafana
 
 5. Clean the DNF cache:
 

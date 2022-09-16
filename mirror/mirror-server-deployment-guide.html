@@ -534,9 +534,13 @@ dnf -y clean all
 <ol class="arabic simple" start="9">
 <li><p>Add Graylog Repositories:</p></li>
 </ol>
+<p>MongoDB</p>
 <blockquote>
-<div><p>MongoDB</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Import GPG key</span>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Download and copy the GPG key to the repository path</span>
+wget https://www.mongodb.org/static/pgp/server-6.0.asc <span class="se">\</span>
+    -O /srv/repos/RPM-GPG-KEY-mongodb
+
+<span class="c1"># Import GPG key</span>
 rpm --import https://www.mongodb.org/static/pgp/server-6.0.asc
 
 <span class="c1"># Create repository file</span>
@@ -553,8 +557,14 @@ cat &gt; /etc/yum.repos.d/mongodb-org-6.0.repo <span class="s">&lt;&lt;EOF</span
 yum-config-manager --disable mongodb-org-6.0
 </pre></div>
 </div>
+</div></blockquote>
 <p>ElasticSearch</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Import GPG key</span>
+<blockquote>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Download and copy the GPG key to the repository path</span>
+wget https://artifacts.elastic.co/GPG-KEY-elasticsearch <span class="se">\</span>
+    -O /srv/repos/RPM-GPG-KEY-elasticsearch
+
+<span class="c1"># Import GPG key</span>
 rpm --import https://artifacts.elastic.co/GPG-KEY-elasticsearch
 
 <span class="c1"># Create repository file</span>
@@ -573,9 +583,14 @@ cat &gt; /etc/yum.repos.d/elasticsearch.repo <span class="s">&lt;&lt;EOF</span>
 yum-config-manager --disable elasticsearch-7.x
 </pre></div>
 </div>
+</div></blockquote>
 <p>Graylog</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Install Graylog repository RPM</span>
+<blockquote>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Install Graylog repository RPM</span>
 rpm -Uvh https://packages.graylog2.org/repo/packages/graylog-4.3-repository_latest.rpm
+
+<span class="c1"># Copy the GPG key to the repository path</span>
+cp /etc/pki/rpm-gpg/RPM-GPG-KEY-graylog /srv/repos/RPM-GPG-KEY-graylog
 
 <span class="c1"># Import GPG key</span>
 rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY-graylog
@@ -589,7 +604,11 @@ yum-config-manager --disable graylog
 <li><p>Add InfluxDB Repository:</p></li>
 </ol>
 <blockquote>
-<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Import GPG key</span>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Download and copy the GPG key to the repository path</span>
+wget https://repos.influxdata.com/influxdb.key <span class="se">\</span>
+    -O /srv/repos/RPM-GPG-KEY-influxdb
+
+<span class="c1"># Import GPG key</span>
 rpm --import https://repos.influxdata.com/influxdb.key
 
 <span class="c1"># Create repository file</span>
@@ -612,7 +631,11 @@ yum-config-manager --enable influxdb
 <li><p>Add Grafana Repository:</p></li>
 </ol>
 <blockquote>
-<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Import GPG key</span>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Download and copy the GPG key to the repository path</span>
+wget https://packages.grafana.com/gpg.key <span class="se">\</span>
+    -O /srv/repos/RPM-GPG-KEY-grafana
+
+<span class="c1"># Import GPG key</span>
 rpm --import https://packages.grafana.com/gpg.key
 
 <span class="c1"># Create repository file</span>
@@ -637,7 +660,11 @@ yum-config-manager --disable grafana
 <li><p>Add Docker Repository:</p></li>
 </ol>
 <blockquote>
-<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Import GPG key</span>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Download and copy the GPG key to the repository path</span>
+wget https://download.docker.com/linux/centos/gpg <span class="se">\</span>
+    -O /srv/repos/RPM-GPG-KEY-docker
+
+<span class="c1"># Import GPG key</span>
 rpm --import https://download.docker.com/linux/centos/gpg
 
 <span class="c1"># Create repository file</span>
@@ -717,16 +744,19 @@ dnf -y distro-sync
 <ol class="arabic simple" start="16">
 <li><p>Set SELinux context or SELinux boolean:</p></li>
 </ol>
+<p>If using local storage for <code class="docutils literal notranslate"><span class="pre">/srv/repos/</span></code>:</p>
 <blockquote>
-<div><p>If using local storage for /srv/repos/:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Permanently change the SELinux context of the local storage path</span>
-semanage fcontext -a -t httpd_sys_content_t /srv/repos/
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Permanently change the SELinux context of the local storage path</span>
+semanage fcontext -a -t httpd_sys_content_t <span class="s2">&quot;/srv/repos(/.*)?&quot;</span>
+
+<span class="c1"># Relabel files</span>
+restorecon -F -R -v /srv/repos/
 </pre></div>
 </div>
 </div></blockquote>
+<p>If using NFS storage for <code class="docutils literal notranslate"><span class="pre">/srv/repos/</span></code>:</p>
 <blockquote>
-<div><p>If using NFS storage for /srv/repos/:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Set SELinux boolen to allow httpd to use NFS</span>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Set SELinux boolen to allow httpd to use NFS</span>
 setsebool -P <span class="nv">httpd_use_nfs</span><span class="o">=</span><span class="m">1</span>
 </pre></div>
 </div>
