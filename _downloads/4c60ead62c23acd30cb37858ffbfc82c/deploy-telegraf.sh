@@ -50,7 +50,7 @@ dnf -y upgrade
 # Add the InfluxDB yum repository
 #
 # influxdb.key GPG Fingerprint: 05CE15085FC09D18E99EFB22684A14CF2582E0C5
-cat <<EOF | sudo tee /etc/yum.repos.d/influxdb.repo
+cat > /etc/yum.repos.d/influxdb.repo <<EOF
 [influxdb]
 name = InfluxDB Repository - RHEL \$releasever
 baseurl = https://repos.influxdata.com/rhel/\$releasever/\$basearch/stable
@@ -71,8 +71,10 @@ telegraf config \
     > telegraf.conf
 
 # Add the Influx API token to the telegraf user's environment file
-touch /etc/default/telegraf
-echo INFLUX_TOKEN=${INFLUX_TOKEN} >> /etc/default/telegraf
+cat > /etc/default/telegraf <<EOF
+INFLUX_TOKEN=${INFLUX_TOKEN}
+EOF
+
 chmod 600 /etc/default/telegraf
 
 
@@ -111,9 +113,11 @@ sed -i "s/# attributes = false/attributes = true/g" telegraf.conf
 mv -f telegraf.conf /etc/telegraf/telegraf.conf
 
 # Enable SUDO access to smartctl for telegraf user
-echo "Cmnd_Alias SMARTCTL = /usr/sbin/smartctl"          >  /etc/sudoers.d/telegraf
-echo "telegraf  ALL=(ALL) NOPASSWD: SMARTCTL"            >> /etc/sudoers.d/telegraf
-echo "Defaults!SMARTCTL !logfile, !syslog, !pam_session" >> /etc/sudoers.d/telegraf
+cat > /etc/sudoers.d/telegraf <<EOF
+Cmnd_Alias SMARTCTL = /usr/sbin/smartctl
+telegraf ALL=(ALL) NOPASSWD: SMARTCTL
+Defaults!SMARTCTL !logfile, !syslog, !pam_session
+EOF
 
 # Enable telegraf service
 systemctl enable telegraf

@@ -437,7 +437,7 @@
 </ol>
 <blockquote>
 <div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># influxdb.key GPG Fingerprint: 05CE15085FC09D18E99EFB22684A14CF2582E0C5</span>
-cat <span class="s">&lt;&lt;EOF | sudo tee /etc/yum.repos.d/influxdb.repo</span>
+cat &gt; /etc/yum.repos.d/influxdb.repo <span class="s">&lt;&lt;EOF</span>
 <span class="s">[influxdb]</span>
 <span class="s">name = InfluxDB Repository - RHEL \$releasever</span>
 <span class="s">baseurl = https://repos.influxdata.com/rhel/\$releasever/\$basearch/stable</span>
@@ -477,8 +477,10 @@ dnf -y install telegraf
 <p class="admonition-title">Important</p>
 <p>Replace <code class="docutils literal notranslate"><span class="pre">INFLUX_API_TOKEN</span></code> with the InfluxDB API Token</p>
 </div>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>touch /etc/default/telegraf
-<span class="nb">echo</span> <span class="nv">INFLUX_TOKEN</span><span class="o">=</span>INFLUX_API_TOKEN &gt;&gt; /etc/default/telegraf
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cat &gt; /etc/default/telegraf <span class="s">&lt;&lt;EOF</span>
+<span class="s">INFLUX_TOKEN=INFLUX_API_TOKEN</span>
+<span class="s">EOF</span>
+
 chmod <span class="m">600</span> /etc/default/telegraf
 </pre></div>
 </div>
@@ -528,9 +530,11 @@ sed -i <span class="s2">&quot;s/# attributes = false/attributes = true/g&quot;</
 <li><p>Enable sudo access to smartctl for telegraf user:</p></li>
 </ol>
 <blockquote>
-<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">echo</span> <span class="s2">&quot;Cmnd_Alias SMARTCTL = /usr/sbin/smartctl&quot;</span>          &gt;  /etc/sudoers.d/telegraf
-<span class="nb">echo</span> <span class="s2">&quot;telegraf  ALL=(ALL) NOPASSWD: SMARTCTL&quot;</span>            &gt;&gt; /etc/sudoers.d/telegraf
-<span class="nb">echo</span> <span class="s2">&quot;Defaults!SMARTCTL !logfile, !syslog, !pam_session&quot;</span> &gt;&gt; /etc/sudoers.d/telegraf
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cat &gt; /etc/sudoers.d/telegraf <span class="s">&lt;&lt;EOF</span>
+<span class="s">Cmnd_Alias SMARTCTL = /usr/sbin/smartctl</span>
+<span class="s">telegraf ALL=(ALL) NOPASSWD: SMARTCTL</span>
+<span class="s">Defaults!SMARTCTL !logfile, !syslog, !pam_session</span>
+<span class="s">EOF</span>
 </pre></div>
 </div>
 </div></blockquote>

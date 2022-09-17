@@ -402,12 +402,15 @@
 <h1>Repository Mirror<a class="headerlink" href="#repository-mirror" title="Permalink to this heading">#</a></h1>
 <div class="toctree-wrapper compound">
 </div>
-<p>A DNF/Yum repository mirror hosts rpm packages from which the cluseter’s
-systems retrieve and installs OS updates from.  Having a local repository
-mirror has multiple benefits and faciliates scheduled patching in addition
-to reducing network traffic to the internet.</p>
+<p>A DNF/Yum repository mirror hosts rpm packages from which the cluster’s
+systems retrieve and installs OS and application updates from.  Having a local
+repository mirror has multiple benefits and faciliates scheduled patching in
+addition to reducing network traffic to the internet.  A DNF/Yum repository
+mirror can also be the only system in the cluster that needs an output bound
+internet connection.</p>
 <p>The repository mirror has been configured to mirror all of the repositories
-used in these guides.</p>
+used in these guides.  All nodes in the cluster will need to be individually
+configured based on their role.</p>
 <img alt="../_images/topology.png" src="../_images/topology.png" />
 <section id="operating-systems">
 <h2>Operating Systems<a class="headerlink" href="#operating-systems" title="Permalink to this heading">#</a></h2>
