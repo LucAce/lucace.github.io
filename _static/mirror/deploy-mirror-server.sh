@@ -84,6 +84,8 @@ mkdir -p ${REPO_PATH}/${RELEASE_NAME}/${RELEASE_VER}/HighAvailability/x86_64/os/
 mkdir -p ${REPO_PATH}/epel/pub/epel/${RELEASE_VER}/Everything/x86_64/
 mkdir -p ${REPO_PATH}/epel/pub/epel/${RELEASE_VER}/Modular/x86_64/
 
+mkdir -p ${REPO_PATH}/gitlab/gitlab-ce/el/${RELEASE_VER}/x86_64/
+
 mkdir -p ${REPO_PATH}/mongodb/yum/redhat/${RELEASE_VER}/mongodb-org/6.0/x86_64/
 mkdir -p ${REPO_PATH}/elasticsearch/packages/oss-7.x/yum/
 mkdir -p ${REPO_PATH}/graylog/repo/el/stable/4.3/x86_64/
@@ -96,6 +98,48 @@ mkdir -p ${REPO_PATH}/grafana/oss/rpm/
 dnf -y install epel-release
 dnf -y distro-sync
 dnf -y clean all
+
+# Add GitLab Repository
+
+# Download and copy the GPG keys to the repository path
+wget https://packages.gitlab.com/gitlab/gitlab-ce/gpgkey \
+    -O /srv/repos/RPM-GPG-KEY-gitlab
+
+wget https://packages.gitlab.com/gitlab/gitlab-ce/gpgkey/gitlab-gitlab-ce-3D645A26AB9FBD22.pub.gpg \
+    -O /srv/repos/RPM-GPG-KEY-gitlab-3D645A26AB9FBD22
+
+# Import GPG key
+rpm --import https://packages.gitlab.com/gitlab/gitlab-ce/gpgkey/gitlab-gitlab-ce-3D645A26AB9FBD22.pub.gpg
+
+# Create repository file
+cat > /etc/yum.repos.d/gitlab_gitlab-ce.repo <<EOF
+[gitlab_gitlab-ce]
+name=gitlab_gitlab-ce
+baseurl=https://packages.gitlab.com/gitlab/gitlab-ce/el/\$releasever/\$basearch
+repo_gpgcheck=1
+gpgcheck=1
+enabled=0
+gpgkey=https://packages.gitlab.com/gitlab/gitlab-ce/gpgkey
+       https://packages.gitlab.com/gitlab/gitlab-ce/gpgkey/gitlab-gitlab-ce-3D645A26AB9FBD22.pub.gpg
+sslverify=1
+sslcacert=/etc/pki/tls/certs/ca-bundle.crt
+metadata_expire=300
+
+[gitlab_gitlab-ce-source]
+name=gitlab_gitlab-ce-source
+baseurl=https://packages.gitlab.com/gitlab/gitlab-ce/el/\$releasever/SRPMS
+repo_gpgcheck=1
+gpgcheck=1
+enabled=0
+gpgkey=https://packages.gitlab.com/gitlab/gitlab-ce/gpgkey
+       https://packages.gitlab.com/gitlab/gitlab-ce/gpgkey/gitlab-gitlab-ce-3D645A26AB9FBD22.pub.gpg
+sslverify=1
+sslcacert=/etc/pki/tls/certs/ca-bundle.crt
+metadata_expire=300
+EOF
+
+# Disable this repository as it is not used locally
+yum-config-manager --disable gitlab_gitlab-ce,gitlab_gitlab-ce-source
 
 # Add Graylog Repositories
 
@@ -235,6 +279,8 @@ cat > /etc/cron.daily/update-localrepos <<EOF
 
 /bin/dnf -y reposync --repoid=epel              -g --delete --newest-only --norepopath --download-metadata -p ${REPO_PATH}/epel/pub/epel/${RELEASE_VER}/Everything/x86_64/
 /bin/dnf -y reposync --repoid=epel-modular      -g --delete --newest-only --norepopath --download-metadata -p ${REPO_PATH}/epel/pub/epel/${RELEASE_VER}/Modular/x86_64/
+
+/bin/dnf -y reposync --repoid=gitlab_gitlab-ce  -g --delete --newest-only --norepopath --download-metadata -p ${REPO_PATH}/gitlab/gitlab-ce/el/8/x86_64/
 
 /bin/dnf -y reposync --repoid=mongodb-org-6.0   -g --delete --newest-only --norepopath --download-metadata -p ${REPO_PATH}/mongodb/yum/redhat/${RELEASE_VER}/mongodb-org/6.0/x86_64/
 /bin/dnf -y reposync --repoid=elasticsearch-7.x -g --delete --newest-only --norepopath --download-metadata -p ${REPO_PATH}/elasticsearch/packages/oss-7.x/yum/

@@ -511,6 +511,8 @@ mkdir -p /srv/repos/almalinux/8/HighAvailability/x86_64/os/
 mkdir -p /srv/repos/epel/pub/epel/8/Everything/x86_64/
 mkdir -p /srv/repos/epel/pub/epel/8/Modular/x86_64/
 
+mkdir -p /srv/repos/gitlab/gitlab-ce/el/8/x86_64/
+
 mkdir -p /srv/repos/mongodb/yum/redhat/8/mongodb-org/6.0/x86_64/
 mkdir -p /srv/repos/elasticsearch/packages/oss-7.x/yum/
 mkdir -p /srv/repos/graylog/repo/el/stable/4.3/x86_64/
@@ -532,6 +534,52 @@ dnf -y clean all
 </div>
 </div></blockquote>
 <ol class="arabic simple" start="9">
+<li><p>Add GitLab Repository:</p></li>
+</ol>
+<blockquote>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Download and copy the GPG keys to the repository path</span>
+wget https://packages.gitlab.com/gitlab/gitlab-ce/gpgkey <span class="se">\</span>
+    -O /srv/repos/RPM-GPG-KEY-gitlab
+
+wget https://packages.gitlab.com/gitlab/gitlab-ce/gpgkey/gitlab-gitlab-ce-3D645A26AB9FBD22.pub.gpg <span class="se">\</span>
+    -O /srv/repos/RPM-GPG-KEY-gitlab-3D645A26AB9FBD22
+
+<span class="c1"># Import GPG key</span>
+rpm --import https://packages.gitlab.com/gitlab/gitlab-ce/gpgkey/gitlab-gitlab-ce-3D645A26AB9FBD22.pub.gpg
+
+<span class="c1"># Create repository file</span>
+cat &gt; /etc/yum.repos.d/gitlab_gitlab-ce.repo <span class="s">&lt;&lt;EOF</span>
+<span class="s">[gitlab_gitlab-ce]</span>
+<span class="s">name=gitlab_gitlab-ce</span>
+<span class="s">baseurl=https://packages.gitlab.com/gitlab/gitlab-ce/el/\$releasever/\$basearch</span>
+<span class="s">repo_gpgcheck=1</span>
+<span class="s">gpgcheck=1</span>
+<span class="s">enabled=0</span>
+<span class="s">gpgkey=https://packages.gitlab.com/gitlab/gitlab-ce/gpgkey</span>
+<span class="s">       https://packages.gitlab.com/gitlab/gitlab-ce/gpgkey/gitlab-gitlab-ce-3D645A26AB9FBD22.pub.gpg</span>
+<span class="s">sslverify=1</span>
+<span class="s">sslcacert=/etc/pki/tls/certs/ca-bundle.crt</span>
+<span class="s">metadata_expire=300</span>
+
+<span class="s">[gitlab_gitlab-ce-source]</span>
+<span class="s">name=gitlab_gitlab-ce-source</span>
+<span class="s">baseurl=https://packages.gitlab.com/gitlab/gitlab-ce/el/\$releasever/SRPMS</span>
+<span class="s">repo_gpgcheck=1</span>
+<span class="s">gpgcheck=1</span>
+<span class="s">enabled=0</span>
+<span class="s">gpgkey=https://packages.gitlab.com/gitlab/gitlab-ce/gpgkey</span>
+<span class="s">       https://packages.gitlab.com/gitlab/gitlab-ce/gpgkey/gitlab-gitlab-ce-3D645A26AB9FBD22.pub.gpg</span>
+<span class="s">sslverify=1</span>
+<span class="s">sslcacert=/etc/pki/tls/certs/ca-bundle.crt</span>
+<span class="s">metadata_expire=300</span>
+<span class="s">EOF</span>
+
+<span class="c1"># Disable this repository as it is not used locally</span>
+yum-config-manager --disable gitlab_gitlab-ce,gitlab_gitlab-ce-source
+</pre></div>
+</div>
+</div></blockquote>
+<ol class="arabic simple" start="10">
 <li><p>Add Graylog Repositories:</p></li>
 </ol>
 <p>MongoDB</p>
@@ -600,7 +648,7 @@ yum-config-manager --disable graylog
 </pre></div>
 </div>
 </div></blockquote>
-<ol class="arabic simple" start="10">
+<ol class="arabic simple" start="11">
 <li><p>Add InfluxDB Repository:</p></li>
 </ol>
 <blockquote>
@@ -627,7 +675,7 @@ yum-config-manager --enable influxdb
 </pre></div>
 </div>
 </div></blockquote>
-<ol class="arabic simple" start="11">
+<ol class="arabic simple" start="12">
 <li><p>Add Grafana Repository:</p></li>
 </ol>
 <blockquote>
@@ -656,7 +704,7 @@ yum-config-manager --disable grafana
 </pre></div>
 </div>
 </div></blockquote>
-<ol class="arabic simple" start="12">
+<ol class="arabic simple" start="13">
 <li><p>Add Docker Repository:</p></li>
 </ol>
 <blockquote>
@@ -676,7 +724,7 @@ yum-config-manager --disable docker-ce-stable
 </pre></div>
 </div>
 </div></blockquote>
-<ol class="arabic simple" start="13">
+<ol class="arabic simple" start="14">
 <li><p>Create a Cron Job to synchronize repositories:</p></li>
 </ol>
 <blockquote>
@@ -696,6 +744,8 @@ yum-config-manager --disable docker-ce-stable
 <span class="s">/bin/dnf -y reposync --repoid=epel              -g --delete --newest-only --norepopath --download-metadata -p /srv/repos/epel/pub/epel/8/Everything/x86_64/</span>
 <span class="s">/bin/dnf -y reposync --repoid=epel-modular      -g --delete --newest-only --norepopath --download-metadata -p /srv/repos/epel/pub/epel/8/Modular/x86_64/</span>
 
+<span class="s">/bin/dnf -y reposync --repoid=gitlab_gitlab-ce  -g --delete --newest-only --norepopath --download-metadata -p /srv/repos/gitlab/gitlab-ce/el/8/x86_64/</span>
+
 <span class="s">/bin/dnf -y reposync --repoid=mongodb-org-6.0   -g --delete --newest-only --norepopath --download-metadata -p /srv/repos/mongodb/yum/redhat/8/mongodb-org/6.0/x86_64/</span>
 <span class="s">/bin/dnf -y reposync --repoid=elasticsearch-7.x -g --delete --newest-only --norepopath --download-metadata -p /srv/repos/elasticsearch/packages/oss-7.x/yum/</span>
 <span class="s">/bin/dnf -y reposync --repoid=graylog           -g --delete --newest-only --norepopath --download-metadata -p /srv/repos/graylog/repo/el/stable/4.3/x86_64/</span>
@@ -709,7 +759,7 @@ chmod <span class="m">755</span> /etc/cron.daily/update-localrepos
 </pre></div>
 </div>
 </div></blockquote>
-<ol class="arabic simple" start="14">
+<ol class="arabic simple" start="15">
 <li><p>Synchronize repositories:</p></li>
 </ol>
 <blockquote>
@@ -719,7 +769,7 @@ dnf -y distro-sync
 </pre></div>
 </div>
 </div></blockquote>
-<ol class="arabic simple" start="15">
+<ol class="arabic simple" start="16">
 <li><p>Configure Nginx to server the repository over http:</p></li>
 </ol>
 <blockquote>
@@ -741,7 +791,7 @@ dnf -y distro-sync
 </pre></div>
 </div>
 </div></blockquote>
-<ol class="arabic simple" start="16">
+<ol class="arabic simple" start="17">
 <li><p>Set SELinux context or SELinux boolean:</p></li>
 </ol>
 <p>If using local storage for <code class="docutils literal notranslate"><span class="pre">/srv/repos/</span></code>:</p>
@@ -761,7 +811,7 @@ setsebool -P <span class="nv">httpd_use_nfs</span><span class="o">=</span><span 
 </pre></div>
 </div>
 </div></blockquote>
-<ol class="arabic simple" start="17">
+<ol class="arabic simple" start="18">
 <li><p>Enable Nginx service:</p></li>
 </ol>
 <blockquote>
@@ -770,7 +820,7 @@ systemctl status nginx
 </pre></div>
 </div>
 </div></blockquote>
-<ol class="arabic simple" start="18">
+<ol class="arabic simple" start="19">
 <li><p>Configure firewall rules:</p></li>
 </ol>
 <blockquote>

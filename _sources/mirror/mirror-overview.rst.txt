@@ -12,14 +12,13 @@ Repository Mirror
    :maxdepth: 2
    :caption: Contents:
 
-A YUM/DNF repository mirror hosts rpm packages from which the cluseter's
+A DNF/Yum repository mirror hosts rpm packages from which the cluseter's
 systems retrieve and installs OS updates from.  Having a local repository
 mirror has multiple benefits and faciliates scheduled patching in addition
 to reducing network traffic to the internet.
 
-The repository mirror can be configured to mirror any of the repositories
-used in these guides.  However, these guides only utilize the mirror for
-operating system RPM updates.
+The repository mirror has been configured to mirror all of the repositories
+used in these guides.
 
 .. image:: ../_static/topology/topology.png
 
@@ -61,6 +60,7 @@ The repository mirror is deployed on the following node:
 +==========+=============================+=======================+============+==============+
 | mirror   | mirror.engwsc.example.com   | Repository Mirror     | VM Guest   | 192.168.1.88 |
 +----------+-----------------------------+-----------------------+------------+--------------+
+
 
 Clients
 -------
@@ -108,10 +108,71 @@ The nodes utilizing the repository mirror for updates are the following:
 +----------+-----------------------------+-----------------------+------------+--------------+
 | docker   | docker.engwsc.example.com   | Docker Host           | VM Guest   | 192.168.1.87 |
 +----------+-----------------------------+-----------------------+------------+--------------+
-| mirror   | mirror.engwsc.example.com   | DNF Repository Mirror | VM Guest   | 192.168.1.88 |
-+----------+-----------------------------+-----------------------+------------+--------------+
-| vmg01    | vmg01.engwsc.example.com    | Legacy OS (Optional)  | VM Guest   | 192.168.1.89 |
-+----------+-----------------------------+-----------------------+------------+--------------+
+
+
+Each client may have a different set of repositories enabled depending on the nodes configuration.
+The following is a list of repositories that should be enabled for each node:
+
++----------+---------------------------------------------------+
+| Hostname | Repositories                                      |
++==========+===================================================+
+| nfs01    | baseos, appstream, extras, influxdb               |
+|          |                                                   |
++----------+---------------------------------------------------+
+| vmm01    | baseos, appstream, extras, influxdb               |
+|          |                                                   |
++----------+---------------------------------------------------+
+| vmm02    | baseos, appstream, extras, influxdb               |
+|          |                                                   |
++----------+---------------------------------------------------+
+| user01   | baseos, appstream, extras, epel, epel-modular,    |
+|          | powertools, influxdb                              |
++----------+---------------------------------------------------+
+| user01   | baseos, appstream, extras, epel, epel-modular,    |
+|          | powertools, influxdb                              |
++----------+---------------------------------------------------+
+| user03   | baseos, appstream, extras, epel, epel-modular,    |
+|          | powertools, influxdb                              |
++----------+---------------------------------------------------+
+| user04   | baseos, appstream, extras, epel, epel-modular,    |
+|          | powertools, influxdb                              |
++----------+---------------------------------------------------+
+| comp01   | baseos, appstream, extras, epel, epel-modular,    |
+|          | powertools, influxdb                              |
++----------+---------------------------------------------------+
+| comp02   | baseos, appstream, extras, epel, epel-modular,    |
+|          | powertools, influxdb                              |
++----------+---------------------------------------------------+
+| comp03   | baseos, appstream, extras, epel, epel-modular,    |
+|          | powertools, influxdb                              |
++----------+---------------------------------------------------+
+| comp04   | baseos, appstream, extras, epel, epel-modular,    |
+|          | powertools, influxdb                              |
++----------+---------------------------------------------------+
+| idm      | baseos, appstream, extras, influxdb               |
+|          |                                                   |
++----------+---------------------------------------------------+
+| gitlab   | baseos, appstream, extras, gitlab_gitlab-ce,      |
+|          | influxdb                                          |
++----------+---------------------------------------------------+
+| slurm    | baseos, appstream, extras, powertools, influxdb   |
+|          |                                                   |
++----------+---------------------------------------------------+
+| graylog  | baseos, appstream, extras, epel, mongodb-org-6.0, |
+|          | elasticsearch-7.x, graylog, influxdb              |
++----------+---------------------------------------------------+
+| ansible  | baseos, appstream, extras, powertools, epel,      |
+|          | epel-modular, influxdb                            |
++----------+---------------------------------------------------+
+| influxdb | baseos, appstream, extras, influxdb               |
+|          |                                                   |
++----------+---------------------------------------------------+
+| grafana  | baseos, appstream, extras, grafana, influxdb      |
+|          |                                                   |
++----------+---------------------------------------------------+
+| docker   | baseos, appstream, extras, influxdb               |
+|          |                                                   |
++----------+---------------------------------------------------+
 
 
 Guides

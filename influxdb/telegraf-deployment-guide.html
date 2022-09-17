@@ -412,11 +412,11 @@
 <section id="references">
 <h2>References<a class="headerlink" href="#references" title="Permalink to this heading">#</a></h2>
 <blockquote>
-<div><p>These instructions were written for Telegraf <code class="docutils literal notranslate"><span class="pre">v1.23.x</span></code></p>
+<div><p>These instructions were written for Telegraf <code class="docutils literal notranslate"><span class="pre">v1.24</span></code></p>
 </div></blockquote>
 <blockquote>
 <div><p>Official Telegraf installation instructions: <br />
-<a class="reference external" href="https://docs.influxdata.com/telegraf/latest/install/">https://docs.influxdata.com/telegraf/latest/install/</a></p>
+<a class="reference external" href="https://docs.influxdata.com/telegraf/1.24/install/">https://docs.influxdata.com/telegraf/1.24/install/</a></p>
 </div></blockquote>
 </section>
 <section id="deployment-scripts">
@@ -461,11 +461,11 @@ dnf -y install telegraf
 <li><p>Create telegraf configuration file:</p></li>
 </ol>
 <blockquote>
-<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>telegraf <span class="se">\</span>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>telegraf config <span class="se">\</span>
     --input-filter cpu:disk:diskio:kernel:mem:net:netstat:nfsclient:processes:smart:swap:system <span class="se">\</span>
     --output-filter influxdb_v2 <span class="se">\</span>
     --section-filter agent:inputs:outputs <span class="se">\</span>
-    config &gt; telegraf.conf
+    &gt; telegraf.conf
 </pre></div>
 </div>
 </div></blockquote>
@@ -525,7 +525,7 @@ sed -i <span class="s2">&quot;s/# attributes = false/attributes = true/g&quot;</
 </div>
 </div></blockquote>
 <ol class="arabic simple" start="7">
-<li><p>Enable SUDO access to smartctl for telegraf user:</p></li>
+<li><p>Enable sudo access to smartctl for telegraf user:</p></li>
 </ol>
 <blockquote>
 <div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">echo</span> <span class="s2">&quot;Cmnd_Alias SMARTCTL = /usr/sbin/smartctl&quot;</span>          &gt;  /etc/sudoers.d/telegraf
@@ -538,7 +538,8 @@ sed -i <span class="s2">&quot;s/# attributes = false/attributes = true/g&quot;</
 <li><p>Enable telegraf service:</p></li>
 </ol>
 <blockquote>
-<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>systemctl <span class="nb">enable</span> --now telegraf
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>systemctl <span class="nb">enable</span> telegraf
+systemctl restart telegraf
 </pre></div>
 </div>
 </div></blockquote>

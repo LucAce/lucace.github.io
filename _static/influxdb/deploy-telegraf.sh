@@ -64,11 +64,11 @@ dnf -y distro-sync
 dnf -y install telegraf
 
 # Create telegraf configuration file
-telegraf \
+telegraf config \
     --input-filter cpu:disk:diskio:kernel:mem:net:netstat:nfsclient:processes:smart:swap:system \
     --output-filter influxdb_v2 \
     --section-filter agent:inputs:outputs \
-    config > telegraf.conf
+    > telegraf.conf
 
 # Add the Influx API token to the telegraf user's environment file
 touch /etc/default/telegraf
@@ -116,7 +116,8 @@ echo "telegraf  ALL=(ALL) NOPASSWD: SMARTCTL"            >> /etc/sudoers.d/teleg
 echo "Defaults!SMARTCTL !logfile, !syslog, !pam_session" >> /etc/sudoers.d/telegraf
 
 # Enable telegraf service
-systemctl enable --now telegraf
+systemctl enable telegraf
+systemctl restart telegraf
 
 echo -e "\n[$(date +"%Y-%m-%d %H:%M:%S")] Deploying Telegraf Agent Complete\n"
 exit 0

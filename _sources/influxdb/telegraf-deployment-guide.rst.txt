@@ -28,12 +28,12 @@ References
 
 ..
 
-  These instructions were written for Telegraf ``v1.23.x``
+  These instructions were written for Telegraf ``v1.24``
 
 ..
 
   Official Telegraf installation instructions: |br|
-  https://docs.influxdata.com/telegraf/latest/install/
+  https://docs.influxdata.com/telegraf/1.24/install/
 
 
 ******************
@@ -79,11 +79,11 @@ Deployment Steps
 
   .. code-block:: bash
 
-    telegraf \
+    telegraf config \
         --input-filter cpu:disk:diskio:kernel:mem:net:netstat:nfsclient:processes:smart:swap:system \
         --output-filter influxdb_v2 \
         --section-filter agent:inputs:outputs \
-        config > telegraf.conf
+        > telegraf.conf
 
 4. Add the Influx API token to the telegraf user's environment file:
 
@@ -134,7 +134,7 @@ Deployment Steps
 
     mv -f telegraf.conf /etc/telegraf/telegraf.conf
 
-7. Enable SUDO access to smartctl for telegraf user:
+7. Enable sudo access to smartctl for telegraf user:
 
   .. code-block:: bash
 
@@ -146,4 +146,5 @@ Deployment Steps
 
   .. code-block:: bash
 
-    systemctl enable --now telegraf
+    systemctl enable telegraf
+    systemctl restart telegraf

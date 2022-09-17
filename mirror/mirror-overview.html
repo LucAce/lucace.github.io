@@ -402,13 +402,12 @@
 <h1>Repository Mirror<a class="headerlink" href="#repository-mirror" title="Permalink to this heading">#</a></h1>
 <div class="toctree-wrapper compound">
 </div>
-<p>A YUM/DNF repository mirror hosts rpm packages from which the cluseter’s
+<p>A DNF/Yum repository mirror hosts rpm packages from which the cluseter’s
 systems retrieve and installs OS updates from.  Having a local repository
 mirror has multiple benefits and faciliates scheduled patching in addition
 to reducing network traffic to the internet.</p>
-<p>The repository mirror can be configured to mirror any of the repositories
-used in these guides.  However, these guides only utilize the mirror for
-operating system RPM updates.</p>
+<p>The repository mirror has been configured to mirror all of the repositories
+used in these guides.</p>
 <img alt="../_images/topology.png" src="../_images/topology.png" />
 <section id="operating-systems">
 <h2>Operating Systems<a class="headerlink" href="#operating-systems" title="Permalink to this heading">#</a></h2>
@@ -596,17 +595,90 @@ installing a hosts file on the system itself.</p>
 <td><p>VM Guest</p></td>
 <td><p>192.168.1.87</p></td>
 </tr>
-<tr class="row-odd"><td><p>mirror</p></td>
-<td><p>mirror.engwsc.example.com</p></td>
-<td><p>DNF Repository Mirror</p></td>
-<td><p>VM Guest</p></td>
-<td><p>192.168.1.88</p></td>
+</tbody>
+</table>
+</div>
+<p>Each client may have a different set of repositories enabled depending on the nodes configuration.
+The following is a list of repositories that should be enabled for each node:</p>
+<div class="table-wrapper docutils container">
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 16%" />
+<col style="width: 84%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Hostname</p></th>
+<th class="head"><p>Repositories</p></th>
 </tr>
-<tr class="row-even"><td><p>vmg01</p></td>
-<td><p>vmg01.engwsc.example.com</p></td>
-<td><p>Legacy OS (Optional)</p></td>
-<td><p>VM Guest</p></td>
-<td><p>192.168.1.89</p></td>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>nfs01</p></td>
+<td><p>baseos, appstream, extras, influxdb</p></td>
+</tr>
+<tr class="row-odd"><td><p>vmm01</p></td>
+<td><p>baseos, appstream, extras, influxdb</p></td>
+</tr>
+<tr class="row-even"><td><p>vmm02</p></td>
+<td><p>baseos, appstream, extras, influxdb</p></td>
+</tr>
+<tr class="row-odd"><td><p>user01</p></td>
+<td><p>baseos, appstream, extras, epel, epel-modular,
+powertools, influxdb</p></td>
+</tr>
+<tr class="row-even"><td><p>user01</p></td>
+<td><p>baseos, appstream, extras, epel, epel-modular,
+powertools, influxdb</p></td>
+</tr>
+<tr class="row-odd"><td><p>user03</p></td>
+<td><p>baseos, appstream, extras, epel, epel-modular,
+powertools, influxdb</p></td>
+</tr>
+<tr class="row-even"><td><p>user04</p></td>
+<td><p>baseos, appstream, extras, epel, epel-modular,
+powertools, influxdb</p></td>
+</tr>
+<tr class="row-odd"><td><p>comp01</p></td>
+<td><p>baseos, appstream, extras, epel, epel-modular,
+powertools, influxdb</p></td>
+</tr>
+<tr class="row-even"><td><p>comp02</p></td>
+<td><p>baseos, appstream, extras, epel, epel-modular,
+powertools, influxdb</p></td>
+</tr>
+<tr class="row-odd"><td><p>comp03</p></td>
+<td><p>baseos, appstream, extras, epel, epel-modular,
+powertools, influxdb</p></td>
+</tr>
+<tr class="row-even"><td><p>comp04</p></td>
+<td><p>baseos, appstream, extras, epel, epel-modular,
+powertools, influxdb</p></td>
+</tr>
+<tr class="row-odd"><td><p>idm</p></td>
+<td><p>baseos, appstream, extras, influxdb</p></td>
+</tr>
+<tr class="row-even"><td><p>gitlab</p></td>
+<td><p>baseos, appstream, extras, gitlab_gitlab-ce,
+influxdb</p></td>
+</tr>
+<tr class="row-odd"><td><p>slurm</p></td>
+<td><p>baseos, appstream, extras, powertools, influxdb</p></td>
+</tr>
+<tr class="row-even"><td><p>graylog</p></td>
+<td><p>baseos, appstream, extras, epel, mongodb-org-6.0,
+elasticsearch-7.x, graylog, influxdb</p></td>
+</tr>
+<tr class="row-odd"><td><p>ansible</p></td>
+<td><p>baseos, appstream, extras, powertools, epel,
+epel-modular, influxdb</p></td>
+</tr>
+<tr class="row-even"><td><p>influxdb</p></td>
+<td><p>baseos, appstream, extras, influxdb</p></td>
+</tr>
+<tr class="row-odd"><td><p>grafana</p></td>
+<td><p>baseos, appstream, extras, grafana, influxdb</p></td>
+</tr>
+<tr class="row-even"><td><p>docker</p></td>
+<td><p>baseos, appstream, extras, influxdb</p></td>
 </tr>
 </tbody>
 </table>

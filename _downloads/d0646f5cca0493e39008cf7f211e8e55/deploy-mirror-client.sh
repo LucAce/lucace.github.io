@@ -45,6 +45,7 @@ mv /etc/yum.repos.d/epel-modular.repo               /etc/yum.repos.d/epel-modula
 mv /etc/yum.repos.d/epel.repo                       /etc/yum.repos.d/epel.repo.disabled
 mv /etc/yum.repos.d/epel-testing-modular.repo       /etc/yum.repos.d/epel-testing-modular.repo.disabled
 mv /etc/yum.repos.d/epel-testing.repo               /etc/yum.repos.d/epel-testing.repo.disabled
+mv /etc/yum.repos.d/gitlab_gitlab-ce.repo           /etc/yum.repos.d/gitlab_gitlab-ce.repo.disabled
 mv /etc/yum.repos.d/grafana.repo                    /etc/yum.repos.d/grafana.repo.disabled
 mv /etc/yum.repos.d/graylog.repo                    /etc/yum.repos.d/graylog.repo.disabled
 mv /etc/yum.repos.d/influxdb.repo                   /etc/yum.repos.d/influxdb.repo.disabled
@@ -108,6 +109,15 @@ enabled=0
 countme=0
 gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL-\$releasever
 
+[gitlab_gitlab-ce]
+name=gitlab_gitlab-ce
+baseurl=http://mirror.engwsc.example.com/gitlab/gitlab-ce/el/$releasever/$basearch
+gpgcheck=1
+enabled=0
+countme=0
+gpgkey=http://mirror.engwsc.example.com/RPM-GPG-KEY-gitlab
+       http://mirror.engwsc.example.com/RPM-GPG-KEY-gitlab-3D645A26AB9FBD22
+
 [mongodb-org-6.0]
 name=MongoDB Repository
 baseurl=http://mirror.engwsc.example.com/mongodb/yum/redhat/\$releasever/mongodb-org/6.0/x86_64/
@@ -167,6 +177,7 @@ yum-config-manager --enable extras
 # yum-config-manager --enable epel-modular
 # yum-config-manager --enable mongodb-org-6.0
 # yum-config-manager --enable elasticsearch-7.x
+# yum-config-manager --enable gitlab_gitlab-ce
 # yum-config-manager --enable graylog
 # yum-config-manager --enable docker-ce-stable
 # yum-config-manager --enable influxdb
