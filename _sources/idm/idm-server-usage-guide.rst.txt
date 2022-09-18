@@ -162,10 +162,10 @@ Administrator Account
   .. code-block:: bash
 
     ipa sudorule-add sudo_all \
-        --hostcat=all \
-        --runasusercat=all \
-        --runasgroupcat=all \
-        --cmdcat=all
+        --hostcat="all" \
+        --runasusercat="all" \
+        --runasgroupcat="all" \
+        --cmdcat="all"
 
     #------------------------------------
     #Added Sudo Rule "sudo_all"
@@ -249,10 +249,10 @@ Ansible Account
   .. code-block:: bash
 
     ipa sudorule-add sudo_all_nopasswd \
-        --hostcat=all \
-        --runasusercat=all \
-        --runasgroupcat=all \
-        --cmdcat=all
+        --hostcat="all" \
+        --runasusercat="all" \
+        --runasgroupcat="all" \
+        --cmdcat="all"
 
 12. Enable passwordless Sudo for the Automation Sudo rule:
 
@@ -354,7 +354,7 @@ HBAC Rules can be set to limit what nodes a user or group can access.  It is
 recommended that User accounts only be able to SSH into the Slurm, User,
 and Compute nodes.
 
-18. Create Host Group:
+18. Create ``usernodes`` Host Group:
 
   .. note::
 
@@ -366,7 +366,7 @@ and Compute nodes.
 
     ipa hostgroup-add --desc="User Accessible Nodes" usernodes
 
-19. Add nodes to Host Group:
+19. Add nodes to ``usernodes`` Host Group:
 
   .. code-block:: bash
 
@@ -396,7 +396,7 @@ and Compute nodes.
         --hostcat="all" \
         allow_sysadmins
 
-21. Add System Administrator and Ansible groups to `allow_sysadmins`` HBAC rule:
+21. Add System Administrator and Ansible groups to ``allow_sysadmins`` HBAC rule:
 
   .. code-block:: bash
 
@@ -417,19 +417,19 @@ and Compute nodes.
         --servicecat="all" \
         allow_users
 
-23. Add Users group to `allow_users`` HBAC rule:
+23. Add Users group to ``allow_users`` HBAC rule:
 
   .. code-block:: bash
 
     ipa hbacrule-add-user allow_users --group="users"
 
-24. Add ``usernodes`` Host Group to `allow_users`` HBAC rule:
+24. Add ``usernodes`` Host Group to ``allow_users`` HBAC rule:
 
   .. code-block:: bash
 
     ipa hbacrule-add-host allow_users --hostgroups="usernodes"
 
-25. Disable Default HBAC rule:
+25. Disable Default ``allow_all`` HBAC rule:
 
   .. code-block:: bash
 

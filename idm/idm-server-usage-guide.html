@@ -548,10 +548,10 @@ initial password.</p></li>
 system as any user.  More restrictive controls are available.</p>
 </div>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ipa sudorule-add sudo_all <span class="se">\</span>
-    --hostcat<span class="o">=</span>all <span class="se">\</span>
-    --runasusercat<span class="o">=</span>all <span class="se">\</span>
-    --runasgroupcat<span class="o">=</span>all <span class="se">\</span>
-    --cmdcat<span class="o">=</span>all
+    --hostcat<span class="o">=</span><span class="s2">&quot;all&quot;</span> <span class="se">\</span>
+    --runasusercat<span class="o">=</span><span class="s2">&quot;all&quot;</span> <span class="se">\</span>
+    --runasgroupcat<span class="o">=</span><span class="s2">&quot;all&quot;</span> <span class="se">\</span>
+    --cmdcat<span class="o">=</span><span class="s2">&quot;all&quot;</span>
 
 <span class="c1">#------------------------------------</span>
 <span class="c1">#Added Sudo Rule &quot;sudo_all&quot;</span>
@@ -646,10 +646,10 @@ chmod <span class="m">700</span> /home/adm0001
 </ol>
 <blockquote>
 <div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ipa sudorule-add sudo_all_nopasswd <span class="se">\</span>
-    --hostcat<span class="o">=</span>all <span class="se">\</span>
-    --runasusercat<span class="o">=</span>all <span class="se">\</span>
-    --runasgroupcat<span class="o">=</span>all <span class="se">\</span>
-    --cmdcat<span class="o">=</span>all
+    --hostcat<span class="o">=</span><span class="s2">&quot;all&quot;</span> <span class="se">\</span>
+    --runasusercat<span class="o">=</span><span class="s2">&quot;all&quot;</span> <span class="se">\</span>
+    --runasgroupcat<span class="o">=</span><span class="s2">&quot;all&quot;</span> <span class="se">\</span>
+    --cmdcat<span class="o">=</span><span class="s2">&quot;all&quot;</span>
 </pre></div>
 </div>
 </div></blockquote>
@@ -765,7 +765,7 @@ chmod <span class="m">700</span> /home/usr0001
 recommended that User accounts only be able to SSH into the Slurm, User,
 and Compute nodes.</p>
 <ol class="arabic simple" start="18">
-<li><p>Create Host Group:</p></li>
+<li><p>Create <code class="docutils literal notranslate"><span class="pre">usernodes</span></code> Host Group:</p></li>
 </ol>
 <blockquote>
 <div><div class="admonition note">
@@ -779,7 +779,7 @@ into them.</p>
 </div>
 </div></blockquote>
 <ol class="arabic simple" start="19">
-<li><p>Add nodes to Host Group:</p></li>
+<li><p>Add nodes to <code class="docutils literal notranslate"><span class="pre">usernodes</span></code> Host Group:</p></li>
 </ol>
 <blockquote>
 <div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ipa hostgroup-add-member --hosts<span class="o">=</span><span class="s2">&quot;slurm.engwsc.example.com&quot;</span>  usernodes
@@ -813,7 +813,7 @@ ipa hbacrule-add <span class="se">\</span>
 </div>
 </div></blockquote>
 <ol class="arabic simple" start="21">
-<li><p>Add System Administrator and Ansible groups to <cite>allow_sysadmins`</cite> HBAC rule:</p></li>
+<li><p>Add System Administrator and Ansible groups to <code class="docutils literal notranslate"><span class="pre">allow_sysadmins</span></code> HBAC rule:</p></li>
 </ol>
 <blockquote>
 <div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ipa hbacrule-add-user allow_sysadmins --group<span class="o">=</span><span class="s2">&quot;sysadmins&quot;</span>
@@ -838,7 +838,7 @@ compute nodes in the cluster.</p>
 </div>
 </div></blockquote>
 <ol class="arabic simple" start="23">
-<li><p>Add Users group to <cite>allow_users`</cite> HBAC rule:</p></li>
+<li><p>Add Users group to <code class="docutils literal notranslate"><span class="pre">allow_users</span></code> HBAC rule:</p></li>
 </ol>
 <blockquote>
 <div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ipa hbacrule-add-user allow_users --group<span class="o">=</span><span class="s2">&quot;users&quot;</span>
@@ -846,7 +846,7 @@ compute nodes in the cluster.</p>
 </div>
 </div></blockquote>
 <ol class="arabic simple" start="24">
-<li><p>Add <code class="docutils literal notranslate"><span class="pre">usernodes</span></code> Host Group to <cite>allow_users`</cite> HBAC rule:</p></li>
+<li><p>Add <code class="docutils literal notranslate"><span class="pre">usernodes</span></code> Host Group to <code class="docutils literal notranslate"><span class="pre">allow_users</span></code> HBAC rule:</p></li>
 </ol>
 <blockquote>
 <div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ipa hbacrule-add-host allow_users --hostgroups<span class="o">=</span><span class="s2">&quot;usernodes&quot;</span>
@@ -854,7 +854,7 @@ compute nodes in the cluster.</p>
 </div>
 </div></blockquote>
 <ol class="arabic simple" start="25">
-<li><p>Disable Default HBAC rule:</p></li>
+<li><p>Disable Default <code class="docutils literal notranslate"><span class="pre">allow_all</span></code> HBAC rule:</p></li>
 </ol>
 <blockquote>
 <div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ipa hbacrule-disable allow_all

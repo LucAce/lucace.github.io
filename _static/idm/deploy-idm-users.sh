@@ -52,10 +52,10 @@ ipa group-add-member sysadmins --users="adm0001"
 
 # Create a Sudo rule for System Adminstrators
 ipa sudorule-add sudo_all \
-    --hostcat=all \
-    --runasusercat=all \
-    --runasgroupcat=all \
-    --cmdcat=all
+    --hostcat="all" \
+    --runasusercat="all" \
+    --runasgroupcat="all" \
+    --cmdcat="all"
 
 # Add the sysadmins group to the Sudo rule sudo_all
 ipa sudorule-add-user sudo_all --group="sysadmins"
@@ -87,10 +87,10 @@ ipa group-add-member ansible --users="ansible"
 
 # Create a Sudo rule for Automation account
 ipa sudorule-add sudo_all_nopasswd \
-    --hostcat=all \
-    --runasusercat=all \
-    --runasgroupcat=all \
-    --cmdcat=all
+    --hostcat="all" \
+    --runasusercat="all" \
+    --runasgroupcat="all" \
+    --cmdcat="all"
 
 # Enable passwordless Sudo for the Automation Sudo rule
 ipa sudorule-add-option sudo_all_nopasswd --sudooption='!authenticate'
@@ -130,10 +130,10 @@ chmod 700 /home/usr0001
 # Host Group / HBAC Rules
 #
 
-# Create Host Group
+# Create usernodes Host Group
 ipa hostgroup-add        --desc="User Accessible Nodes"      usernodes
 
-# Add members to Host Group
+# Add members to usernodes Host Group
 ipa hostgroup-add-member --hosts="slurm.engwsc.example.com"  usernodes
 ipa hostgroup-add-member --hosts="user01.engwsc.example.com" usernodes
 ipa hostgroup-add-member --hosts="user02.engwsc.example.com" usernodes
@@ -144,28 +144,30 @@ ipa hostgroup-add-member --hosts="comp02.engwsc.example.com" usernodes
 ipa hostgroup-add-member --hosts="comp03.engwsc.example.com" usernodes
 ipa hostgroup-add-member --hosts="comp04.engwsc.example.com" usernodes
 
-# Create System Administrator HBAC rule
+# Create allow_sysadmins HBAC Rule
 ipa hbacrule-add \
     --desc="Allow System Administrators to access all nodes" \
     --servicecat="all" \
     --hostcat="all" \
     allow_sysadmins
 
-# Add group sysadmins to HBAC rule
+# Add System Administrator and Ansible groups to allow_sysadmins HBAC rule
 ipa hbacrule-add-user allow_sysadmins --group="sysadmins"
 ipa hbacrule-add-user allow_sysadmins --group="ansible"
 
-# Create User HBAC rule
+# Create allow_users HBAC rule
 ipa hbacrule-add \
     --desc="Allow Users to access user nodes" \
     --servicecat="all" \
     allow_users
 
-# Add group sysadmins to HBAC rule
+# Add Users group to allow_users HBAC rule
 ipa hbacrule-add-user allow_users --group="users"
+
+# Add usernodes Host Group to allow_users HBAC rule
 ipa hbacrule-add-host allow_users --hostgroups="usernodes"
 
-# Disable default HBAC rule
+# Disable Default allow_all HBAC rule
 ipa hbacrule-disable allow_all
 
 # Test Access
