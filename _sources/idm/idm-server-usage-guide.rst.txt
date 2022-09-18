@@ -1,5 +1,9 @@
 .. IdM Server Usage Guide
 
+.. |br| raw:: html
+
+   <br />
+
 ######################
 IdM Server Usage Guide
 ######################
@@ -8,4 +12,437 @@ IdM Server Usage Guide
    :maxdepth: 2
    :caption: Contents:
 
-TODO
+The following instructions are an example of how to deploy IdM accounts.  In the
+simpliest cluster there are three types of accounts.  Administrator accounts which
+manage the systems, applications and the users of the cluster.  User accounts which
+allow individuals to access resources on the clluster.  Automation accounts which
+are utilized by applications on the cluster to perform automated tasks like
+maintaince and updates.
+
+In general, every user should have their own account; Administrators that also are
+users should have a privledged and non-privledge accounts.  Sharing of accounts should
+not be permitted.
+
+In this guide three accounts, one of each type, will be created using the command line
+interface.  The equivalent of these instructions can be done using the web interface at:
+https://idm.engwsc.example.com
+
+
+*************
+Prerequisites
+*************
+
+* :doc:`idm-server-deployment-guide`
+
+
+**********
+References
+**********
+
+..
+
+  These instructions were written for FreeIPA ``4.9.8``
+
+..
+
+  Instructions are based on the following documentation: |br|
+  1. https://computingforgeeks.com/manage-users-and-groups-in-freeipa-using-cli/
+
+
+******************
+Deployment Scripts
+******************
+
+  An example bash script of the instructions has been provided: |br|
+  :download:`../_static/idm/deploy-idm-users.sh`
+
+
+****************
+Deployment Steps
+****************
+
+.. note::
+
+  Instructions assume execution using the ``root`` account on the IdM server.
+
+1. Login using Kerberos authentication protocol:
+
+  .. important::
+
+    The kinit command will prompt for a password.  This was the password created for
+    the ``admin`` account during the IdM deployment.
+
+  .. code-block:: bash
+
+    kinit admin
+
+    # Password for admin@ENGWSC.EXAMPLE.COM:
+
+
+Administrator Account
+~~~~~~~~~~~~~~~~~~~~~
+
+2. Create a System Administrator group named ``sysadmins``:
+
+  .. code-block:: bash
+
+    ipa group-add --desc="System administrators group" sysadmins
+
+    # -----------------------
+    # Added group "sysadmins"
+    # -----------------------
+    #   Group name: sysadmins
+    #   GID: 292400016
+
+3. Create a System Administrator account named ``adm0001``:
+
+  .. Important::
+
+    Record the random initial password.
+
+  .. note::
+
+    1. In this example, "adm####" is the account format for System Administrators. |br|
+    2. Command creates a System Administrator account with no private group and a random
+       initial password.
+
+  .. code-block:: bash
+
+    ipa user-add \
+        --first="John" \
+        --last="Doe" \
+        --shell="/bin/bash" \
+        --random \
+        --noprivate \
+        adm0001
+
+    #--------------------
+    #Added user "adm0001"
+    #--------------------
+    #  User login: adm0001
+    #  First name: John
+    #  Last name: Doe
+    #  Full name: John Doe
+    #  Display name: John Doe
+    #  Initials: JD
+    #  Home directory: /home/adm0001
+    #  GECOS: John Doe
+    #  Login shell: /bin/bash
+    #  Principal name: adm0001@ENGWSC.EXAMPLE.COM
+    #  Principal alias: adm0001@ENGWSC.EXAMPLE.COM
+    #  User password expiration: 20220918004649Z
+    #  Email address: adm0001@engwsc.example.com
+    #  Random password: 8Mh_g*0LHK_<9j[X}>[$/?
+    #  UID: 292400017
+    #  GID: 292400003
+    #  Password: True
+    #  Member of groups: users
+    #  Kerberos keys available: True
+
+4. Add System Administrator account ``adm0001`` to ``sysadmins`` group:
+
+  .. code-block:: bash
+
+    ipa group-add-member sysadmins --users="adm0001"
+
+    #  Group name: sysadmins
+    #  GID: 292400016
+    #  Member users: adm0001
+    #-------------------------
+    #Number of members added 1
+    #-------------------------
+
+5. Create a Sudo rule for System Adminstrators:
+
+  .. note::
+
+    The sudo rule will allow a System Administrator to run any command on any
+    system as any user.  More restrictive controls are available.
+
+  .. code-block:: bash
+
+    ipa sudorule-add sudo_all \
+        --hostcat=all \
+        --runasusercat=all \
+        --runasgroupcat=all \
+        --cmdcat=all
+
+    #------------------------------------
+    #Added Sudo Rule "sudo_all"
+    #------------------------------------
+    #  Rule name: sudo_all
+    #  Enabled: TRUE
+    #  Host category: all
+    #  Command category: all
+    #  RunAs User category: all
+    #  RunAs Group category: all
+
+6. Add the ``sysadmins`` group to the Sudo rule ``sudo_all``:
+
+  .. code-block:: bash
+
+    ipa sudorule-add-user sudo_all --group="sysadmins"
+
+    #  Rule name: sudo_all
+    #  Enabled: TRUE
+    #  Host category: all
+    #  Command category: all
+    #  RunAs User category: all
+    #  RunAs Group category: all
+    #  User Groups: sysadmins
+    #-------------------------
+    #Number of members added 1
+    #-------------------------
+
+7. Create System Adminstrators Home directory:
+
+  .. note::
+
+    Home directories are not automatically created when using IdM and NFS
+    mounted paths.  After an account has been created copying files from
+    /etc/skel and setting permisions is required.
+
+  .. code-block:: bash
+
+    cp -r /etc/skel /home/adm0001
+    chown -R adm0001:sysadmins /home/adm0001
+    chmod 700 /home/adm0001
+
+
+Ansible Account
+~~~~~~~~~~~~~~~
+
+8. Create a Automation group named ``ansible``:
+
+  .. code-block:: bash
+
+    ipa group-add --desc="Automation group" ansible
+
+9. Create an Automation account named ``ansible``:
+
+  .. Important::
+
+    Record the random initial password.
+
+  .. note::
+
+    Create an automation account with no private group and a random initial password.
+
+  .. code-block:: bash
+
+    ipa user-add \
+        --first="Ansible" \
+        --last="Automation" \
+        --shell="/bin/bash" \
+        --random \
+        --noprivate \
+        ansible
+
+10. Add Automation account ``ansible`` to ``ansible`` group:
+
+  .. code-block:: bash
+
+    ipa group-add-member ansible --users="ansible"
+
+11. Create a Sudo rule for Automation account:
+
+  .. code-block:: bash
+
+    ipa sudorule-add sudo_all_nopasswd \
+        --hostcat=all \
+        --runasusercat=all \
+        --runasgroupcat=all \
+        --cmdcat=all
+
+12. Enable passwordless Sudo for the Automation Sudo rule:
+
+  .. note::
+
+    The sudo rule will allow the ``ansible`` account to run any command
+    on any system as any user without providing a Sudo password.  Passwordless
+    Sudo is required for Ansible.
+
+  .. code-block:: bash
+
+    ipa sudorule-add-option sudo_all_nopasswd --sudooption='!authenticate'
+
+    #-------------------------------------------------------------
+    #Added option "!authenticate" to Sudo Rule "sudo_all_nopasswd"
+    #-------------------------------------------------------------
+    #  Rule name: sudo_all_nopasswd
+    #  Enabled: TRUE
+    #  Host category: all
+    #  Command category: all
+    #  RunAs User category: all
+    #  RunAs Group category: all
+    #  Sudo Option: !authenticate
+
+13. Add the ``ansible`` group to the Sudo rule ``sudo_all_nopasswd``:
+
+  .. code-block:: bash
+
+    ipa sudorule-add-user sudo_all_nopasswd --group="ansible"
+
+14. Create Ansible's Home directory:
+
+  .. note::
+
+    Home directories are not automatically created when using IdM and NFS
+    mounted paths.  After an account has been created copying files from
+    /etc/skel and setting permisions is required.
+
+  .. code-block:: bash
+
+    cp -r /etc/skel /home/ansible
+    chown -R ansible:ansible /home/ansible
+    chmod 700 /home/ansible
+
+
+User Account
+~~~~~~~~~~~~
+
+15. Create a User account named ``usr0001``:
+
+  .. Important::
+
+    Record the random initial password.
+
+  .. note::
+
+    1. In this example, "usr####" is the account format for Users. |br|
+    2. Command creates an User account with no private group and a random initial password.
+
+  .. code-block:: bash
+
+    ipa user-add \
+        --first="John" \
+        --last="Doe" \
+        --shell="/bin/bash" \
+        --random \
+        --noprivate \
+        usr0001
+
+16. Add User account ``usr0001`` to ``users`` group:
+
+  .. note::
+
+    The user should already be in the "users" group.
+
+  .. code-block:: bash
+
+    ipa group-add-member users --users="usr0001"
+
+17. Create User's Home directory:
+
+  .. note::
+
+    Home directories are not automatically created when using IdM and NFS
+    mounted paths.  After an account has been created copying files from
+    /etc/skel and setting permisions is required.
+
+  .. code-block:: bash
+
+    cp -r /etc/skel /home/usr0001
+    chown -R usr0001:users /home/usr0001
+    chmod 700 /home/usr0001
+
+
+Host Group / HBAC Rules
+~~~~~~~~~~~~~~~~~~~~~~~
+
+HBAC Rules can be set to limit what nodes a user or group can access.  It is
+recommended that User accounts only be able to SSH into the Slurm, User,
+and Compute nodes.
+
+18. Create Host Group:
+
+  .. note::
+
+    Host Group is a group of nodes.  When user/computes nodes are added to the
+    cluster they will need to be added to the Host Group before users can SSH
+    into them.
+
+  .. code-block:: bash
+
+    ipa hostgroup-add --desc="User Accessible Nodes" usernodes
+
+19. Add nodes to Host Group:
+
+  .. code-block:: bash
+
+    ipa hostgroup-add-member --hosts="slurm.engwsc.example.com"  usernodes
+    ipa hostgroup-add-member --hosts="user01.engwsc.example.com" usernodes
+    ipa hostgroup-add-member --hosts="user02.engwsc.example.com" usernodes
+    ipa hostgroup-add-member --hosts="user03.engwsc.example.com" usernodes
+    ipa hostgroup-add-member --hosts="user04.engwsc.example.com" usernodes
+    ipa hostgroup-add-member --hosts="comp01.engwsc.example.com" usernodes
+    ipa hostgroup-add-member --hosts="comp02.engwsc.example.com" usernodes
+    ipa hostgroup-add-member --hosts="comp03.engwsc.example.com" usernodes
+    ipa hostgroup-add-member --hosts="comp04.engwsc.example.com" usernodes
+
+20. Create ``allow_sysadmins`` HBAC Rule:
+
+  .. note::
+
+    The allow_sysadmins HBAC rule allows System Administrators to access
+    any node in the cluster.
+
+  .. code-block:: bash
+
+    # Create the rule
+    ipa hbacrule-add \
+        --desc="Allow System Administrators to access all nodes" \
+        --servicecat="all" \
+        --hostcat="all" \
+        allow_sysadmins
+
+21. Add System Administrator and Ansible groups to `allow_sysadmins`` HBAC rule:
+
+  .. code-block:: bash
+
+    ipa hbacrule-add-user allow_sysadmins --group="sysadmins"
+    ipa hbacrule-add-user allow_sysadmins --group="ansible"
+
+22. Create ``allow_users`` HBAC Rule:
+
+  .. note::
+
+    The allow_users HBAC rule allows Users to access the user and
+    compute nodes in the cluster.
+
+  .. code-block:: bash
+
+    ipa hbacrule-add \
+        --desc="Allow Users to access user nodes" \
+        --servicecat="all" \
+        allow_users
+
+23. Add Users group to `allow_users`` HBAC rule:
+
+  .. code-block:: bash
+
+    ipa hbacrule-add-user allow_users --group="users"
+
+24. Add ``usernodes`` Host Group to `allow_users`` HBAC rule:
+
+  .. code-block:: bash
+
+    ipa hbacrule-add-host allow_users --hostgroups="usernodes"
+
+25. Disable Default HBAC rule:
+
+  .. code-block:: bash
+
+    ipa hbacrule-disable allow_all
+
+26. Test Access Permissions:
+
+  .. code-block:: bash
+
+    ipa hbactest --host idm.engwsc.example.com --service sshd --user adm0001
+    ipa hbactest --host idm.engwsc.example.com --service sshd --user ansible
+    ipa hbactest --host idm.engwsc.example.com --service sshd --user usr0001
+
+    ipa hbactest --host user01.engwsc.example.com --service sshd --user adm0001
+    ipa hbactest --host user01.engwsc.example.com --service sshd --user ansible
+    ipa hbactest --host user01.engwsc.example.com --service sshd --user usr0001

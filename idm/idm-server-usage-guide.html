@@ -135,7 +135,7 @@
           <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
         </button>
       </div>
-      <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
         <div class="visually-hidden">Toggle table of contents sidebar</div>
         <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
       </label>
@@ -392,7 +392,7 @@
               <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
             </button>
           </div>
-          <label class="toc-overlay-icon toc-content-icon no-toc" for="__toc">
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
             <div class="visually-hidden">Toggle table of contents sidebar</div>
             <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
           </label>
@@ -402,7 +402,481 @@
 <h1>IdM Server Usage Guide<a class="headerlink" href="#idm-server-usage-guide" title="Permalink to this heading">#</a></h1>
 <div class="toctree-wrapper compound">
 </div>
-<p>TODO</p>
+<p>The following instructions are an example of how to deploy IdM accounts.  In the
+simpliest cluster there are three types of accounts.  Administrator accounts which
+manage the systems, applications and the users of the cluster.  User accounts which
+allow individuals to access resources on the clluster.  Automation accounts which
+are utilized by applications on the cluster to perform automated tasks like
+maintaince and updates.</p>
+<p>In general, every user should have their own account; Administrators that also are
+users should have a privledged and non-privledge accounts.  Sharing of accounts should
+not be permitted.</p>
+<p>In this guide three accounts, one of each type, will be created using the command line
+interface.  The equivalent of these instructions can be done using the web interface at:
+<a class="reference external" href="https://idm.engwsc.example.com">https://idm.engwsc.example.com</a></p>
+<section id="prerequisites">
+<h2>Prerequisites<a class="headerlink" href="#prerequisites" title="Permalink to this heading">#</a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="idm-server-deployment-guide.html"><span class="doc">IdM Server Deployment Guide</span></a></p></li>
+</ul>
+</section>
+<section id="references">
+<h2>References<a class="headerlink" href="#references" title="Permalink to this heading">#</a></h2>
+<blockquote>
+<div><p>These instructions were written for FreeIPA <code class="docutils literal notranslate"><span class="pre">4.9.8</span></code></p>
+</div></blockquote>
+<blockquote>
+<div><p>Instructions are based on the following documentation: <br />
+1. <a class="reference external" href="https://computingforgeeks.com/manage-users-and-groups-in-freeipa-using-cli/">https://computingforgeeks.com/manage-users-and-groups-in-freeipa-using-cli/</a></p>
+</div></blockquote>
+</section>
+<section id="deployment-scripts">
+<h2>Deployment Scripts<a class="headerlink" href="#deployment-scripts" title="Permalink to this heading">#</a></h2>
+<blockquote>
+<div><p>An example bash script of the instructions has been provided: <br />
+<a class="reference download internal" download="" href="../_downloads/9cb49003dbd44cb2bcf9d3f9b69a8433/deploy-idm-users.sh"><code class="xref download docutils literal notranslate"><span class="pre">../_static/idm/deploy-idm-users.sh</span></code></a></p>
+</div></blockquote>
+</section>
+<section id="deployment-steps">
+<h2>Deployment Steps<a class="headerlink" href="#deployment-steps" title="Permalink to this heading">#</a></h2>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Instructions assume execution using the <code class="docutils literal notranslate"><span class="pre">root</span></code> account on the IdM server.</p>
+</div>
+<ol class="arabic simple">
+<li><p>Login using Kerberos authentication protocol:</p></li>
+</ol>
+<blockquote>
+<div><div class="admonition important">
+<p class="admonition-title">Important</p>
+<p>The kinit command will prompt for a password.  This was the password created for
+the <code class="docutils literal notranslate"><span class="pre">admin</span></code> account during the IdM deployment.</p>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>kinit admin
+
+<span class="c1"># Password for admin@ENGWSC.EXAMPLE.COM:</span>
+</pre></div>
+</div>
+</div></blockquote>
+<section id="administrator-account">
+<h3>Administrator Account<a class="headerlink" href="#administrator-account" title="Permalink to this heading">#</a></h3>
+<ol class="arabic simple" start="2">
+<li><p>Create a System Administrator group named <code class="docutils literal notranslate"><span class="pre">sysadmins</span></code>:</p></li>
+</ol>
+<blockquote>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ipa group-add --desc<span class="o">=</span><span class="s2">&quot;System administrators group&quot;</span> sysadmins
+
+<span class="c1"># -----------------------</span>
+<span class="c1"># Added group &quot;sysadmins&quot;</span>
+<span class="c1"># -----------------------</span>
+<span class="c1">#   Group name: sysadmins</span>
+<span class="c1">#   GID: 292400016</span>
+</pre></div>
+</div>
+</div></blockquote>
+<ol class="arabic simple" start="3">
+<li><p>Create a System Administrator account named <code class="docutils literal notranslate"><span class="pre">adm0001</span></code>:</p></li>
+</ol>
+<blockquote>
+<div><div class="admonition important">
+<p class="admonition-title">Important</p>
+<p>Record the random initial password.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<ol class="arabic simple">
+<li><p>In this example, “adm####” is the account format for System Administrators. <br /></p></li>
+<li><p>Command creates a System Administrator account with no private group and a random
+initial password.</p></li>
+</ol>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ipa user-add <span class="se">\</span>
+    --first<span class="o">=</span><span class="s2">&quot;John&quot;</span> <span class="se">\</span>
+    --last<span class="o">=</span><span class="s2">&quot;Doe&quot;</span> <span class="se">\</span>
+    --shell<span class="o">=</span><span class="s2">&quot;/bin/bash&quot;</span> <span class="se">\</span>
+    --random <span class="se">\</span>
+    --noprivate <span class="se">\</span>
+    adm0001
+
+<span class="c1">#--------------------</span>
+<span class="c1">#Added user &quot;adm0001&quot;</span>
+<span class="c1">#--------------------</span>
+<span class="c1">#  User login: adm0001</span>
+<span class="c1">#  First name: John</span>
+<span class="c1">#  Last name: Doe</span>
+<span class="c1">#  Full name: John Doe</span>
+<span class="c1">#  Display name: John Doe</span>
+<span class="c1">#  Initials: JD</span>
+<span class="c1">#  Home directory: /home/adm0001</span>
+<span class="c1">#  GECOS: John Doe</span>
+<span class="c1">#  Login shell: /bin/bash</span>
+<span class="c1">#  Principal name: adm0001@ENGWSC.EXAMPLE.COM</span>
+<span class="c1">#  Principal alias: adm0001@ENGWSC.EXAMPLE.COM</span>
+<span class="c1">#  User password expiration: 20220918004649Z</span>
+<span class="c1">#  Email address: adm0001@engwsc.example.com</span>
+<span class="c1">#  Random password: 8Mh_g*0LHK_&lt;9j[X}&gt;[$/?</span>
+<span class="c1">#  UID: 292400017</span>
+<span class="c1">#  GID: 292400003</span>
+<span class="c1">#  Password: True</span>
+<span class="c1">#  Member of groups: users</span>
+<span class="c1">#  Kerberos keys available: True</span>
+</pre></div>
+</div>
+</div></blockquote>
+<ol class="arabic simple" start="4">
+<li><p>Add System Administrator account <code class="docutils literal notranslate"><span class="pre">adm0001</span></code> to <code class="docutils literal notranslate"><span class="pre">sysadmins</span></code> group:</p></li>
+</ol>
+<blockquote>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ipa group-add-member sysadmins --users<span class="o">=</span><span class="s2">&quot;adm0001&quot;</span>
+
+<span class="c1">#  Group name: sysadmins</span>
+<span class="c1">#  GID: 292400016</span>
+<span class="c1">#  Member users: adm0001</span>
+<span class="c1">#-------------------------</span>
+<span class="c1">#Number of members added 1</span>
+<span class="c1">#-------------------------</span>
+</pre></div>
+</div>
+</div></blockquote>
+<ol class="arabic simple" start="5">
+<li><p>Create a Sudo rule for System Adminstrators:</p></li>
+</ol>
+<blockquote>
+<div><div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The sudo rule will allow a System Administrator to run any command on any
+system as any user.  More restrictive controls are available.</p>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ipa sudorule-add sudo_all <span class="se">\</span>
+    --hostcat<span class="o">=</span>all <span class="se">\</span>
+    --runasusercat<span class="o">=</span>all <span class="se">\</span>
+    --runasgroupcat<span class="o">=</span>all <span class="se">\</span>
+    --cmdcat<span class="o">=</span>all
+
+<span class="c1">#------------------------------------</span>
+<span class="c1">#Added Sudo Rule &quot;sudo_all&quot;</span>
+<span class="c1">#------------------------------------</span>
+<span class="c1">#  Rule name: sudo_all</span>
+<span class="c1">#  Enabled: TRUE</span>
+<span class="c1">#  Host category: all</span>
+<span class="c1">#  Command category: all</span>
+<span class="c1">#  RunAs User category: all</span>
+<span class="c1">#  RunAs Group category: all</span>
+</pre></div>
+</div>
+</div></blockquote>
+<ol class="arabic simple" start="6">
+<li><p>Add the <code class="docutils literal notranslate"><span class="pre">sysadmins</span></code> group to the Sudo rule <code class="docutils literal notranslate"><span class="pre">sudo_all</span></code>:</p></li>
+</ol>
+<blockquote>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ipa sudorule-add-user sudo_all --group<span class="o">=</span><span class="s2">&quot;sysadmins&quot;</span>
+
+<span class="c1">#  Rule name: sudo_all</span>
+<span class="c1">#  Enabled: TRUE</span>
+<span class="c1">#  Host category: all</span>
+<span class="c1">#  Command category: all</span>
+<span class="c1">#  RunAs User category: all</span>
+<span class="c1">#  RunAs Group category: all</span>
+<span class="c1">#  User Groups: sysadmins</span>
+<span class="c1">#-------------------------</span>
+<span class="c1">#Number of members added 1</span>
+<span class="c1">#-------------------------</span>
+</pre></div>
+</div>
+</div></blockquote>
+<ol class="arabic simple" start="7">
+<li><p>Create System Adminstrators Home directory:</p></li>
+</ol>
+<blockquote>
+<div><div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Home directories are not automatically created when using IdM and NFS
+mounted paths.  After an account has been created copying files from
+/etc/skel and setting permisions is required.</p>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cp -r /etc/skel /home/adm0001
+chown -R adm0001:sysadmins /home/adm0001
+chmod <span class="m">700</span> /home/adm0001
+</pre></div>
+</div>
+</div></blockquote>
+</section>
+<section id="ansible-account">
+<h3>Ansible Account<a class="headerlink" href="#ansible-account" title="Permalink to this heading">#</a></h3>
+<ol class="arabic simple" start="8">
+<li><p>Create a Automation group named <code class="docutils literal notranslate"><span class="pre">ansible</span></code>:</p></li>
+</ol>
+<blockquote>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ipa group-add --desc<span class="o">=</span><span class="s2">&quot;Automation group&quot;</span> ansible
+</pre></div>
+</div>
+</div></blockquote>
+<ol class="arabic simple" start="9">
+<li><p>Create an Automation account named <code class="docutils literal notranslate"><span class="pre">ansible</span></code>:</p></li>
+</ol>
+<blockquote>
+<div><div class="admonition important">
+<p class="admonition-title">Important</p>
+<p>Record the random initial password.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Create an automation account with no private group and a random initial password.</p>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ipa user-add <span class="se">\</span>
+    --first<span class="o">=</span><span class="s2">&quot;Ansible&quot;</span> <span class="se">\</span>
+    --last<span class="o">=</span><span class="s2">&quot;Automation&quot;</span> <span class="se">\</span>
+    --shell<span class="o">=</span><span class="s2">&quot;/bin/bash&quot;</span> <span class="se">\</span>
+    --random <span class="se">\</span>
+    --noprivate <span class="se">\</span>
+    ansible
+</pre></div>
+</div>
+</div></blockquote>
+<ol class="arabic simple" start="10">
+<li><p>Add Automation account <code class="docutils literal notranslate"><span class="pre">ansible</span></code> to <code class="docutils literal notranslate"><span class="pre">ansible</span></code> group:</p></li>
+</ol>
+<blockquote>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ipa group-add-member ansible --users<span class="o">=</span><span class="s2">&quot;ansible&quot;</span>
+</pre></div>
+</div>
+</div></blockquote>
+<ol class="arabic simple" start="11">
+<li><p>Create a Sudo rule for Automation account:</p></li>
+</ol>
+<blockquote>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ipa sudorule-add sudo_all_nopasswd <span class="se">\</span>
+    --hostcat<span class="o">=</span>all <span class="se">\</span>
+    --runasusercat<span class="o">=</span>all <span class="se">\</span>
+    --runasgroupcat<span class="o">=</span>all <span class="se">\</span>
+    --cmdcat<span class="o">=</span>all
+</pre></div>
+</div>
+</div></blockquote>
+<ol class="arabic simple" start="12">
+<li><p>Enable passwordless Sudo for the Automation Sudo rule:</p></li>
+</ol>
+<blockquote>
+<div><div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The sudo rule will allow the <code class="docutils literal notranslate"><span class="pre">ansible</span></code> account to run any command
+on any system as any user without providing a Sudo password.  Passwordless
+Sudo is required for Ansible.</p>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ipa sudorule-add-option sudo_all_nopasswd --sudooption<span class="o">=</span><span class="s1">&#39;!authenticate&#39;</span>
+
+<span class="c1">#-------------------------------------------------------------</span>
+<span class="c1">#Added option &quot;!authenticate&quot; to Sudo Rule &quot;sudo_all_nopasswd&quot;</span>
+<span class="c1">#-------------------------------------------------------------</span>
+<span class="c1">#  Rule name: sudo_all_nopasswd</span>
+<span class="c1">#  Enabled: TRUE</span>
+<span class="c1">#  Host category: all</span>
+<span class="c1">#  Command category: all</span>
+<span class="c1">#  RunAs User category: all</span>
+<span class="c1">#  RunAs Group category: all</span>
+<span class="c1">#  Sudo Option: !authenticate</span>
+</pre></div>
+</div>
+</div></blockquote>
+<ol class="arabic simple" start="13">
+<li><p>Add the <code class="docutils literal notranslate"><span class="pre">ansible</span></code> group to the Sudo rule <code class="docutils literal notranslate"><span class="pre">sudo_all_nopasswd</span></code>:</p></li>
+</ol>
+<blockquote>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ipa sudorule-add-user sudo_all_nopasswd --group<span class="o">=</span><span class="s2">&quot;ansible&quot;</span>
+</pre></div>
+</div>
+</div></blockquote>
+<ol class="arabic simple" start="14">
+<li><p>Create Ansible’s Home directory:</p></li>
+</ol>
+<blockquote>
+<div><div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Home directories are not automatically created when using IdM and NFS
+mounted paths.  After an account has been created copying files from
+/etc/skel and setting permisions is required.</p>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cp -r /etc/skel /home/ansible
+chown -R ansible:ansible /home/ansible
+chmod <span class="m">700</span> /home/ansible
+</pre></div>
+</div>
+</div></blockquote>
+</section>
+<section id="user-account">
+<h3>User Account<a class="headerlink" href="#user-account" title="Permalink to this heading">#</a></h3>
+<ol class="arabic simple" start="15">
+<li><p>Create a User account named <code class="docutils literal notranslate"><span class="pre">usr0001</span></code>:</p></li>
+</ol>
+<blockquote>
+<div><div class="admonition important">
+<p class="admonition-title">Important</p>
+<p>Record the random initial password.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<ol class="arabic simple">
+<li><p>In this example, “usr####” is the account format for Users. <br /></p></li>
+<li><p>Command creates an User account with no private group and a random initial password.</p></li>
+</ol>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ipa user-add <span class="se">\</span>
+    --first<span class="o">=</span><span class="s2">&quot;John&quot;</span> <span class="se">\</span>
+    --last<span class="o">=</span><span class="s2">&quot;Doe&quot;</span> <span class="se">\</span>
+    --shell<span class="o">=</span><span class="s2">&quot;/bin/bash&quot;</span> <span class="se">\</span>
+    --random <span class="se">\</span>
+    --noprivate <span class="se">\</span>
+    usr0001
+</pre></div>
+</div>
+</div></blockquote>
+<ol class="arabic simple" start="16">
+<li><p>Add User account <code class="docutils literal notranslate"><span class="pre">usr0001</span></code> to <code class="docutils literal notranslate"><span class="pre">users</span></code> group:</p></li>
+</ol>
+<blockquote>
+<div><div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The user should already be in the “users” group.</p>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ipa group-add-member users --users<span class="o">=</span><span class="s2">&quot;usr0001&quot;</span>
+</pre></div>
+</div>
+</div></blockquote>
+<ol class="arabic simple" start="17">
+<li><p>Create User’s Home directory:</p></li>
+</ol>
+<blockquote>
+<div><div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Home directories are not automatically created when using IdM and NFS
+mounted paths.  After an account has been created copying files from
+/etc/skel and setting permisions is required.</p>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cp -r /etc/skel /home/usr0001
+chown -R usr0001:users /home/usr0001
+chmod <span class="m">700</span> /home/usr0001
+</pre></div>
+</div>
+</div></blockquote>
+</section>
+<section id="host-group-hbac-rules">
+<h3>Host Group / HBAC Rules<a class="headerlink" href="#host-group-hbac-rules" title="Permalink to this heading">#</a></h3>
+<p>HBAC Rules can be set to limit what nodes a user or group can access.  It is
+recommended that User accounts only be able to SSH into the Slurm, User,
+and Compute nodes.</p>
+<ol class="arabic simple" start="18">
+<li><p>Create Host Group:</p></li>
+</ol>
+<blockquote>
+<div><div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Host Group is a group of nodes.  When user/computes nodes are added to the
+cluster they will need to be added to the Host Group before users can SSH
+into them.</p>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ipa hostgroup-add --desc<span class="o">=</span><span class="s2">&quot;User Accessible Nodes&quot;</span> usernodes
+</pre></div>
+</div>
+</div></blockquote>
+<ol class="arabic simple" start="19">
+<li><p>Add nodes to Host Group:</p></li>
+</ol>
+<blockquote>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ipa hostgroup-add-member --hosts<span class="o">=</span><span class="s2">&quot;slurm.engwsc.example.com&quot;</span>  usernodes
+ipa hostgroup-add-member --hosts<span class="o">=</span><span class="s2">&quot;user01.engwsc.example.com&quot;</span> usernodes
+ipa hostgroup-add-member --hosts<span class="o">=</span><span class="s2">&quot;user02.engwsc.example.com&quot;</span> usernodes
+ipa hostgroup-add-member --hosts<span class="o">=</span><span class="s2">&quot;user03.engwsc.example.com&quot;</span> usernodes
+ipa hostgroup-add-member --hosts<span class="o">=</span><span class="s2">&quot;user04.engwsc.example.com&quot;</span> usernodes
+ipa hostgroup-add-member --hosts<span class="o">=</span><span class="s2">&quot;comp01.engwsc.example.com&quot;</span> usernodes
+ipa hostgroup-add-member --hosts<span class="o">=</span><span class="s2">&quot;comp02.engwsc.example.com&quot;</span> usernodes
+ipa hostgroup-add-member --hosts<span class="o">=</span><span class="s2">&quot;comp03.engwsc.example.com&quot;</span> usernodes
+ipa hostgroup-add-member --hosts<span class="o">=</span><span class="s2">&quot;comp04.engwsc.example.com&quot;</span> usernodes
+</pre></div>
+</div>
+</div></blockquote>
+<ol class="arabic simple" start="20">
+<li><p>Create <code class="docutils literal notranslate"><span class="pre">allow_sysadmins</span></code> HBAC Rule:</p></li>
+</ol>
+<blockquote>
+<div><div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The allow_sysadmins HBAC rule allows System Administrators to access
+any node in the cluster.</p>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create the rule</span>
+ipa hbacrule-add <span class="se">\</span>
+    --desc<span class="o">=</span><span class="s2">&quot;Allow System Administrators to access all nodes&quot;</span> <span class="se">\</span>
+    --servicecat<span class="o">=</span><span class="s2">&quot;all&quot;</span> <span class="se">\</span>
+    --hostcat<span class="o">=</span><span class="s2">&quot;all&quot;</span> <span class="se">\</span>
+    allow_sysadmins
+</pre></div>
+</div>
+</div></blockquote>
+<ol class="arabic simple" start="21">
+<li><p>Add System Administrator and Ansible groups to <cite>allow_sysadmins`</cite> HBAC rule:</p></li>
+</ol>
+<blockquote>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ipa hbacrule-add-user allow_sysadmins --group<span class="o">=</span><span class="s2">&quot;sysadmins&quot;</span>
+ipa hbacrule-add-user allow_sysadmins --group<span class="o">=</span><span class="s2">&quot;ansible&quot;</span>
+</pre></div>
+</div>
+</div></blockquote>
+<ol class="arabic simple" start="22">
+<li><p>Create <code class="docutils literal notranslate"><span class="pre">allow_users</span></code> HBAC Rule:</p></li>
+</ol>
+<blockquote>
+<div><div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The allow_users HBAC rule allows Users to access the user and
+compute nodes in the cluster.</p>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ipa hbacrule-add <span class="se">\</span>
+    --desc<span class="o">=</span><span class="s2">&quot;Allow Users to access user nodes&quot;</span> <span class="se">\</span>
+    --servicecat<span class="o">=</span><span class="s2">&quot;all&quot;</span> <span class="se">\</span>
+    allow_users
+</pre></div>
+</div>
+</div></blockquote>
+<ol class="arabic simple" start="23">
+<li><p>Add Users group to <cite>allow_users`</cite> HBAC rule:</p></li>
+</ol>
+<blockquote>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ipa hbacrule-add-user allow_users --group<span class="o">=</span><span class="s2">&quot;users&quot;</span>
+</pre></div>
+</div>
+</div></blockquote>
+<ol class="arabic simple" start="24">
+<li><p>Add <code class="docutils literal notranslate"><span class="pre">usernodes</span></code> Host Group to <cite>allow_users`</cite> HBAC rule:</p></li>
+</ol>
+<blockquote>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ipa hbacrule-add-host allow_users --hostgroups<span class="o">=</span><span class="s2">&quot;usernodes&quot;</span>
+</pre></div>
+</div>
+</div></blockquote>
+<ol class="arabic simple" start="25">
+<li><p>Disable Default HBAC rule:</p></li>
+</ol>
+<blockquote>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ipa hbacrule-disable allow_all
+</pre></div>
+</div>
+</div></blockquote>
+<ol class="arabic simple" start="26">
+<li><p>Test Access Permissions:</p></li>
+</ol>
+<blockquote>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ipa hbactest --host idm.engwsc.example.com --service sshd --user adm0001
+ipa hbactest --host idm.engwsc.example.com --service sshd --user ansible
+ipa hbactest --host idm.engwsc.example.com --service sshd --user usr0001
+
+ipa hbactest --host user01.engwsc.example.com --service sshd --user adm0001
+ipa hbactest --host user01.engwsc.example.com --service sshd --user ansible
+ipa hbactest --host user01.engwsc.example.com --service sshd --user usr0001
+</pre></div>
+</div>
+</div></blockquote>
+</section>
+</section>
 </section>
 
         </article>
@@ -450,8 +924,36 @@
         
       </footer>
     </div>
-    <aside class="toc-drawer no-toc">
+    <aside class="toc-drawer">
       
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            Contents
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">IdM Server Usage Guide</a><ul>
+<li><a class="reference internal" href="#prerequisites">Prerequisites</a></li>
+<li><a class="reference internal" href="#references">References</a></li>
+<li><a class="reference internal" href="#deployment-scripts">Deployment Scripts</a></li>
+<li><a class="reference internal" href="#deployment-steps">Deployment Steps</a><ul>
+<li><a class="reference internal" href="#administrator-account">Administrator Account</a></li>
+<li><a class="reference internal" href="#ansible-account">Ansible Account</a></li>
+<li><a class="reference internal" href="#user-account">User Account</a></li>
+<li><a class="reference internal" href="#host-group-hbac-rules">Host Group / HBAC Rules</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
       
       
     </aside>
