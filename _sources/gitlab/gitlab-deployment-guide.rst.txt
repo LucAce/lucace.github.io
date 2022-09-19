@@ -232,7 +232,7 @@ Deployment Steps
   .. note::
 
     The following command can be used to update GitLab when the repository is disabled by default: |br|
-    dnf -y --repo gitlab_gitlab-ce,gitlab_gitlab-ce-source update gitlab-ce
+    ``dnf -y --enablerepo=gitlab_gitlab-ce,gitlab_gitlab-ce-source update gitlab-ce``
 
   .. code-block:: bash
 

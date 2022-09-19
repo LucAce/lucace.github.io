@@ -615,7 +615,7 @@ the GitLab repository name.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>The following command can be used to update GitLab when the repository is disabled by default: <br />
-dnf -y –repo gitlab_gitlab-ce,gitlab_gitlab-ce-source update gitlab-ce</p>
+<code class="docutils literal notranslate"><span class="pre">dnf</span> <span class="pre">-y</span> <span class="pre">--enablerepo=gitlab_gitlab-ce,gitlab_gitlab-ce-source</span> <span class="pre">update</span> <span class="pre">gitlab-ce</span></code></p>
 </div>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>yum-config-manager --disable gitlab_gitlab-ce
 yum-config-manager --disable gitlab_gitlab-ce-source
