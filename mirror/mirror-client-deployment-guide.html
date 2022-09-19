@@ -432,11 +432,10 @@ repository mirror.</p>
 <p>Instructions assume execution using the <code class="docutils literal notranslate"><span class="pre">root</span></code> account.</p>
 </div>
 <ol class="arabic simple">
-<li><p>Install Extra Packages for Enterprise Linux (EPEL) Repository:</p></li>
+<li><p>Install dependencies:</p></li>
 </ol>
 <blockquote>
-<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>dnf -y install epel-release
-dnf -y distro-sync
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>dnf -y install yum-utils
 </pre></div>
 </div>
 </div></blockquote>
@@ -444,28 +443,28 @@ dnf -y distro-sync
 <li><p>Disable existing repositories:</p></li>
 </ol>
 <blockquote>
-<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mv /etc/yum.repos.d/almalinux-ha.repo               /etc/yum.repos.d/almalinux-ha.repo.disabled
-mv /etc/yum.repos.d/almalinux-nfv.repo              /etc/yum.repos.d/almalinux-nfv.repo.disabled
-mv /etc/yum.repos.d/almalinux-plus.repo             /etc/yum.repos.d/almalinux-plus.repo.disabled
-mv /etc/yum.repos.d/almalinux-powertools.repo       /etc/yum.repos.d/almalinux-powertools.repo.disabled
-mv /etc/yum.repos.d/almalinux.repo                  /etc/yum.repos.d/almalinux.repo.disabled
-mv /etc/yum.repos.d/almalinux-resilientstorage.repo /etc/yum.repos.d/almalinux-resilientstorage.repo.disabled
-mv /etc/yum.repos.d/almalinux-rt.repo               /etc/yum.repos.d/almalinux-rt.repo.disabled
-mv /etc/yum.repos.d/docker-ce.repo                  /etc/yum.repos.d/docker-ce.repo.disabled
-mv /etc/yum.repos.d/elasticsearch.repo              /etc/yum.repos.d/elasticsearch.repo.disabled
-mv /etc/yum.repos.d/epel-modular.repo               /etc/yum.repos.d/epel-modular.repo.disabled
-mv /etc/yum.repos.d/epel.repo                       /etc/yum.repos.d/epel.repo.disabled
-mv /etc/yum.repos.d/epel-testing-modular.repo       /etc/yum.repos.d/epel-testing-modular.repo.disabled
-mv /etc/yum.repos.d/epel-testing.repo               /etc/yum.repos.d/epel-testing.repo.disabled
-mv /etc/yum.repos.d/gitlab_gitlab-ce.repo           /etc/yum.repos.d/gitlab_gitlab-ce.repo.disabled
-mv /etc/yum.repos.d/grafana.repo                    /etc/yum.repos.d/grafana.repo.disabled
-mv /etc/yum.repos.d/graylog.repo                    /etc/yum.repos.d/graylog.repo.disabled
-mv /etc/yum.repos.d/influxdb.repo                   /etc/yum.repos.d/influxdb.repo.disabled
-mv /etc/yum.repos.d/mongodb-org-6.0.repo            /etc/yum.repos.d/mongodb-org-6.0.repo.disabled
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="o">[</span> -f /etc/yum.repos.d/almalinux-ha.repo               <span class="o">]</span> <span class="o">&amp;&amp;</span> mv /etc/yum.repos.d/almalinux-ha.repo               /etc/yum.repos.d/almalinux-ha.repo.disabled
+<span class="o">[</span> -f /etc/yum.repos.d/almalinux-nfv.repo              <span class="o">]</span> <span class="o">&amp;&amp;</span> mv /etc/yum.repos.d/almalinux-nfv.repo              /etc/yum.repos.d/almalinux-nfv.repo.disabled
+<span class="o">[</span> -f /etc/yum.repos.d/almalinux-plus.repo             <span class="o">]</span> <span class="o">&amp;&amp;</span> mv /etc/yum.repos.d/almalinux-plus.repo             /etc/yum.repos.d/almalinux-plus.repo.disabled
+<span class="o">[</span> -f /etc/yum.repos.d/almalinux-powertools.repo       <span class="o">]</span> <span class="o">&amp;&amp;</span> mv /etc/yum.repos.d/almalinux-powertools.repo       /etc/yum.repos.d/almalinux-powertools.repo.disabled
+<span class="o">[</span> -f /etc/yum.repos.d/almalinux.repo                  <span class="o">]</span> <span class="o">&amp;&amp;</span> mv /etc/yum.repos.d/almalinux.repo                  /etc/yum.repos.d/almalinux.repo.disabled
+<span class="o">[</span> -f /etc/yum.repos.d/almalinux-resilientstorage.repo <span class="o">]</span> <span class="o">&amp;&amp;</span> mv /etc/yum.repos.d/almalinux-resilientstorage.repo /etc/yum.repos.d/almalinux-resilientstorage.repo.disabled
+<span class="o">[</span> -f /etc/yum.repos.d/almalinux-rt.repo               <span class="o">]</span> <span class="o">&amp;&amp;</span> mv /etc/yum.repos.d/almalinux-rt.repo               /etc/yum.repos.d/almalinux-rt.repo.disabled
+<span class="o">[</span> -f /etc/yum.repos.d/docker-ce.repo                  <span class="o">]</span> <span class="o">&amp;&amp;</span> mv /etc/yum.repos.d/docker-ce.repo                  /etc/yum.repos.d/docker-ce.repo.disabled
+<span class="o">[</span> -f /etc/yum.repos.d/elasticsearch.repo              <span class="o">]</span> <span class="o">&amp;&amp;</span> mv /etc/yum.repos.d/elasticsearch.repo              /etc/yum.repos.d/elasticsearch.repo.disabled
+<span class="o">[</span> -f /etc/yum.repos.d/epel-modular.repo               <span class="o">]</span> <span class="o">&amp;&amp;</span> mv /etc/yum.repos.d/epel-modular.repo               /etc/yum.repos.d/epel-modular.repo.disabled
+<span class="o">[</span> -f /etc/yum.repos.d/epel.repo                       <span class="o">]</span> <span class="o">&amp;&amp;</span> mv /etc/yum.repos.d/epel.repo                       /etc/yum.repos.d/epel.repo.disabled
+<span class="o">[</span> -f /etc/yum.repos.d/epel-testing-modular.repo       <span class="o">]</span> <span class="o">&amp;&amp;</span> mv /etc/yum.repos.d/epel-testing-modular.repo       /etc/yum.repos.d/epel-testing-modular.repo.disabled
+<span class="o">[</span> -f /etc/yum.repos.d/epel-testing.repo               <span class="o">]</span> <span class="o">&amp;&amp;</span> mv /etc/yum.repos.d/epel-testing.repo               /etc/yum.repos.d/epel-testing.repo.disabled
+<span class="o">[</span> -f /etc/yum.repos.d/gitlab_gitlab-ce.repo           <span class="o">]</span> <span class="o">&amp;&amp;</span> mv /etc/yum.repos.d/gitlab_gitlab-ce.repo           /etc/yum.repos.d/gitlab_gitlab-ce.repo.disabled
+<span class="o">[</span> -f /etc/yum.repos.d/grafana.repo                    <span class="o">]</span> <span class="o">&amp;&amp;</span> mv /etc/yum.repos.d/grafana.repo                    /etc/yum.repos.d/grafana.repo.disabled
+<span class="o">[</span> -f /etc/yum.repos.d/graylog.repo                    <span class="o">]</span> <span class="o">&amp;&amp;</span> mv /etc/yum.repos.d/graylog.repo                    /etc/yum.repos.d/graylog.repo.disabled
+<span class="o">[</span> -f /etc/yum.repos.d/influxdb.repo                   <span class="o">]</span> <span class="o">&amp;&amp;</span> mv /etc/yum.repos.d/influxdb.repo                   /etc/yum.repos.d/influxdb.repo.disabled
+<span class="o">[</span> -f /etc/yum.repos.d/mongodb-org-6.0.repo            <span class="o">]</span> <span class="o">&amp;&amp;</span> mv /etc/yum.repos.d/mongodb-org-6.0.repo            /etc/yum.repos.d/mongodb-org-6.0.repo.disabled
 </pre></div>
 </div>
 </div></blockquote>
-<ol class="arabic simple" start="2">
+<ol class="arabic simple" start="3">
 <li><p>Create repository configuration file:</p></li>
 </ol>
 <blockquote>
@@ -591,13 +590,13 @@ with <code class="docutils literal notranslate"><span class="pre">RPM-GPG-KEY-ro
 </pre></div>
 </div>
 </div></blockquote>
-<ol class="arabic simple" start="3">
+<ol class="arabic simple" start="4">
 <li><p>Enable local repositories:</p></li>
 </ol>
 <blockquote>
 <div><div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>Enable repositories as needed on target systems.</p>
+<p>Enable repositories as needed on client system.</p>
 </div>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>yum-config-manager --enable baseos
 yum-config-manager --enable appstream

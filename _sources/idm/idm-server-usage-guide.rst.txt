@@ -79,10 +79,28 @@ Deployment Steps
     # Password for admin@ENGWSC.EXAMPLE.COM:
 
 
+Defaults
+~~~~~~~~
+
+2. Create a default user group
+
+  .. code-block:: bash
+
+    ipa group-add --desc="Default Linux Users group" users
+
+3. Configure default shell and group
+
+  .. code-block:: bash
+
+    ipa config-mod \
+        --defaultshell="/bin/bash"  \
+        --defaultgroup="users"
+
+
 Administrator Account
 ~~~~~~~~~~~~~~~~~~~~~
 
-2. Create a System Administrator group named ``sysadmins``:
+4. Create a System Administrator group named ``sysadmins``:
 
   .. code-block:: bash
 
@@ -94,7 +112,7 @@ Administrator Account
     #   Group name: sysadmins
     #   GID: 292400016
 
-3. Create a System Administrator account named ``adm0001``:
+5. Create a System Administrator account named ``adm0001``:
 
   .. Important::
 
@@ -139,7 +157,7 @@ Administrator Account
     #  Member of groups: users
     #  Kerberos keys available: True
 
-4. Add System Administrator account ``adm0001`` to ``sysadmins`` group:
+6. Add System Administrator account ``adm0001`` to ``sysadmins`` group:
 
   .. code-block:: bash
 
@@ -152,7 +170,7 @@ Administrator Account
     #Number of members added 1
     #-------------------------
 
-5. Create a Sudo rule for System Adminstrators:
+7. Create a Sudo rule for System Adminstrators:
 
   .. note::
 
@@ -177,7 +195,7 @@ Administrator Account
     #  RunAs User category: all
     #  RunAs Group category: all
 
-6. Add the ``sysadmins`` group to the Sudo rule ``sudo_all``:
+8. Add the ``sysadmins`` group to the Sudo rule ``sudo_all``:
 
   .. code-block:: bash
 
@@ -194,7 +212,7 @@ Administrator Account
     #Number of members added 1
     #-------------------------
 
-7. Create System Adminstrators Home directory:
+9. Create System Adminstrators Home directory:
 
   .. note::
 
@@ -212,13 +230,13 @@ Administrator Account
 Ansible Account
 ~~~~~~~~~~~~~~~
 
-8. Create a Automation group named ``ansible``:
+10. Create a Automation group named ``ansible``:
 
   .. code-block:: bash
 
     ipa group-add --desc="Automation group" ansible
 
-9. Create an Automation account named ``ansible``:
+11. Create an Automation account named ``ansible``:
 
   .. Important::
 
@@ -238,13 +256,13 @@ Ansible Account
         --noprivate \
         ansible
 
-10. Add Automation account ``ansible`` to ``ansible`` group:
+12. Add Automation account ``ansible`` to ``ansible`` group:
 
   .. code-block:: bash
 
     ipa group-add-member ansible --users="ansible"
 
-11. Create a Sudo rule for Automation account:
+13. Create a Sudo rule for Automation account:
 
   .. code-block:: bash
 
@@ -254,7 +272,7 @@ Ansible Account
         --runasgroupcat="all" \
         --cmdcat="all"
 
-12. Enable passwordless Sudo for the Automation Sudo rule:
+14. Enable passwordless Sudo for the Automation Sudo rule:
 
   .. note::
 
@@ -277,13 +295,13 @@ Ansible Account
     #  RunAs Group category: all
     #  Sudo Option: !authenticate
 
-13. Add the ``ansible`` group to the Sudo rule ``sudo_all_nopasswd``:
+15. Add the ``ansible`` group to the Sudo rule ``sudo_all_nopasswd``:
 
   .. code-block:: bash
 
     ipa sudorule-add-user sudo_all_nopasswd --group="ansible"
 
-14. Create Ansible's Home directory:
+16. Create Ansible's Home directory:
 
   .. note::
 
@@ -301,7 +319,7 @@ Ansible Account
 User Account
 ~~~~~~~~~~~~
 
-15. Create a User account named ``usr0001``:
+17. Create a User account named ``usr0001``:
 
   .. Important::
 
@@ -322,7 +340,7 @@ User Account
         --noprivate \
         usr0001
 
-16. Add User account ``usr0001`` to ``users`` group:
+18. Add User account ``usr0001`` to ``users`` group:
 
   .. note::
 
@@ -332,7 +350,7 @@ User Account
 
     ipa group-add-member users --users="usr0001"
 
-17. Create User's Home directory:
+19. Create User's Home directory:
 
   .. note::
 
@@ -354,7 +372,7 @@ HBAC Rules can be set to limit what nodes a user or group can access.  It is
 recommended that User accounts only be able to SSH into the Slurm, User,
 and Compute nodes.
 
-18. Create ``usernodes`` Host Group:
+20. Create ``usernodes`` Host Group:
 
   .. note::
 
@@ -366,7 +384,7 @@ and Compute nodes.
 
     ipa hostgroup-add --desc="User Accessible Nodes" usernodes
 
-19. Add nodes to ``usernodes`` Host Group:
+21. Add nodes to ``usernodes`` Host Group:
 
   .. code-block:: bash
 
@@ -380,7 +398,7 @@ and Compute nodes.
     ipa hostgroup-add-member --hosts="comp03.engwsc.example.com" usernodes
     ipa hostgroup-add-member --hosts="comp04.engwsc.example.com" usernodes
 
-20. Create ``allow_sysadmins`` HBAC Rule:
+22. Create ``allow_sysadmins`` HBAC Rule:
 
   .. note::
 
@@ -396,14 +414,14 @@ and Compute nodes.
         --hostcat="all" \
         allow_sysadmins
 
-21. Add System Administrator and Ansible groups to ``allow_sysadmins`` HBAC rule:
+23. Add System Administrator and Ansible groups to ``allow_sysadmins`` HBAC rule:
 
   .. code-block:: bash
 
     ipa hbacrule-add-user allow_sysadmins --group="sysadmins"
     ipa hbacrule-add-user allow_sysadmins --group="ansible"
 
-22. Create ``allow_users`` HBAC Rule:
+24. Create ``allow_users`` HBAC Rule:
 
   .. note::
 
@@ -417,25 +435,25 @@ and Compute nodes.
         --servicecat="all" \
         allow_users
 
-23. Add Users group to ``allow_users`` HBAC rule:
+25. Add Users group to ``allow_users`` HBAC rule:
 
   .. code-block:: bash
 
     ipa hbacrule-add-user allow_users --group="users"
 
-24. Add ``usernodes`` Host Group to ``allow_users`` HBAC rule:
+26. Add ``usernodes`` Host Group to ``allow_users`` HBAC rule:
 
   .. code-block:: bash
 
     ipa hbacrule-add-host allow_users --hostgroups="usernodes"
 
-25. Disable Default ``allow_all`` HBAC rule:
+27. Disable Default ``allow_all`` HBAC rule:
 
   .. code-block:: bash
 
     ipa hbacrule-disable allow_all
 
-26. Test Access Permissions:
+28. Test Access Permissions:
 
   .. code-block:: bash
 

@@ -28,28 +28,30 @@ echo -e "\n[$(date +"%Y-%m-%d %H:%M:%S")] Deploying DNF/Yum Repository Client...
 ###############################################################################
 
 # Update System
-dnf -y distro-sync
 dnf -y upgrade
 
+# Install dependencies
+dnf -y install yum-utils
+
 # Disable existing repositories
-mv /etc/yum.repos.d/almalinux-ha.repo               /etc/yum.repos.d/almalinux-ha.repo.disabled
-mv /etc/yum.repos.d/almalinux-nfv.repo              /etc/yum.repos.d/almalinux-nfv.repo.disabled
-mv /etc/yum.repos.d/almalinux-plus.repo             /etc/yum.repos.d/almalinux-plus.repo.disabled
-mv /etc/yum.repos.d/almalinux-powertools.repo       /etc/yum.repos.d/almalinux-powertools.repo.disabled
-mv /etc/yum.repos.d/almalinux.repo                  /etc/yum.repos.d/almalinux.repo.disabled
-mv /etc/yum.repos.d/almalinux-resilientstorage.repo /etc/yum.repos.d/almalinux-resilientstorage.repo.disabled
-mv /etc/yum.repos.d/almalinux-rt.repo               /etc/yum.repos.d/almalinux-rt.repo.disabled
-mv /etc/yum.repos.d/docker-ce.repo                  /etc/yum.repos.d/docker-ce.repo.disabled
-mv /etc/yum.repos.d/elasticsearch.repo              /etc/yum.repos.d/elasticsearch.repo.disabled
-mv /etc/yum.repos.d/epel-modular.repo               /etc/yum.repos.d/epel-modular.repo.disabled
-mv /etc/yum.repos.d/epel.repo                       /etc/yum.repos.d/epel.repo.disabled
-mv /etc/yum.repos.d/epel-testing-modular.repo       /etc/yum.repos.d/epel-testing-modular.repo.disabled
-mv /etc/yum.repos.d/epel-testing.repo               /etc/yum.repos.d/epel-testing.repo.disabled
-mv /etc/yum.repos.d/gitlab_gitlab-ce.repo           /etc/yum.repos.d/gitlab_gitlab-ce.repo.disabled
-mv /etc/yum.repos.d/grafana.repo                    /etc/yum.repos.d/grafana.repo.disabled
-mv /etc/yum.repos.d/graylog.repo                    /etc/yum.repos.d/graylog.repo.disabled
-mv /etc/yum.repos.d/influxdb.repo                   /etc/yum.repos.d/influxdb.repo.disabled
-mv /etc/yum.repos.d/mongodb-org-6.0.repo            /etc/yum.repos.d/mongodb-org-6.0.repo.disabled
+[ -f /etc/yum.repos.d/almalinux-ha.repo               ] && mv /etc/yum.repos.d/almalinux-ha.repo               /etc/yum.repos.d/almalinux-ha.repo.disabled
+[ -f /etc/yum.repos.d/almalinux-nfv.repo              ] && mv /etc/yum.repos.d/almalinux-nfv.repo              /etc/yum.repos.d/almalinux-nfv.repo.disabled
+[ -f /etc/yum.repos.d/almalinux-plus.repo             ] && mv /etc/yum.repos.d/almalinux-plus.repo             /etc/yum.repos.d/almalinux-plus.repo.disabled
+[ -f /etc/yum.repos.d/almalinux-powertools.repo       ] && mv /etc/yum.repos.d/almalinux-powertools.repo       /etc/yum.repos.d/almalinux-powertools.repo.disabled
+[ -f /etc/yum.repos.d/almalinux.repo                  ] && mv /etc/yum.repos.d/almalinux.repo                  /etc/yum.repos.d/almalinux.repo.disabled
+[ -f /etc/yum.repos.d/almalinux-resilientstorage.repo ] && mv /etc/yum.repos.d/almalinux-resilientstorage.repo /etc/yum.repos.d/almalinux-resilientstorage.repo.disabled
+[ -f /etc/yum.repos.d/almalinux-rt.repo               ] && mv /etc/yum.repos.d/almalinux-rt.repo               /etc/yum.repos.d/almalinux-rt.repo.disabled
+[ -f /etc/yum.repos.d/docker-ce.repo                  ] && mv /etc/yum.repos.d/docker-ce.repo                  /etc/yum.repos.d/docker-ce.repo.disabled
+[ -f /etc/yum.repos.d/elasticsearch.repo              ] && mv /etc/yum.repos.d/elasticsearch.repo              /etc/yum.repos.d/elasticsearch.repo.disabled
+[ -f /etc/yum.repos.d/epel-modular.repo               ] && mv /etc/yum.repos.d/epel-modular.repo               /etc/yum.repos.d/epel-modular.repo.disabled
+[ -f /etc/yum.repos.d/epel.repo                       ] && mv /etc/yum.repos.d/epel.repo                       /etc/yum.repos.d/epel.repo.disabled
+[ -f /etc/yum.repos.d/epel-testing-modular.repo       ] && mv /etc/yum.repos.d/epel-testing-modular.repo       /etc/yum.repos.d/epel-testing-modular.repo.disabled
+[ -f /etc/yum.repos.d/epel-testing.repo               ] && mv /etc/yum.repos.d/epel-testing.repo               /etc/yum.repos.d/epel-testing.repo.disabled
+[ -f /etc/yum.repos.d/gitlab_gitlab-ce.repo           ] && mv /etc/yum.repos.d/gitlab_gitlab-ce.repo           /etc/yum.repos.d/gitlab_gitlab-ce.repo.disabled
+[ -f /etc/yum.repos.d/grafana.repo                    ] && mv /etc/yum.repos.d/grafana.repo                    /etc/yum.repos.d/grafana.repo.disabled
+[ -f /etc/yum.repos.d/graylog.repo                    ] && mv /etc/yum.repos.d/graylog.repo                    /etc/yum.repos.d/graylog.repo.disabled
+[ -f /etc/yum.repos.d/influxdb.repo                   ] && mv /etc/yum.repos.d/influxdb.repo                   /etc/yum.repos.d/influxdb.repo.disabled
+[ -f /etc/yum.repos.d/mongodb-org-6.0.repo            ] && mv /etc/yum.repos.d/mongodb-org-6.0.repo            /etc/yum.repos.d/mongodb-org-6.0.repo.disabled
 
 # Create repository configuration file
 cat > /etc/yum.repos.d/local-mirror.repo <<EOF
@@ -168,6 +170,7 @@ gpgkey=http://mirror.engwsc.example.com/RPM-GPG-KEY-docker
 EOF
 
 # Enable local repositories:
+# Enable repositories as needed on client system.
 yum-config-manager --enable baseos
 yum-config-manager --enable appstream
 yum-config-manager --enable extras

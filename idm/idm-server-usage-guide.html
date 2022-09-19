@@ -458,9 +458,30 @@ the <code class="docutils literal notranslate"><span class="pre">admin</span></c
 </pre></div>
 </div>
 </div></blockquote>
+<section id="defaults">
+<h3>Defaults<a class="headerlink" href="#defaults" title="Permalink to this heading">#</a></h3>
+<ol class="arabic simple" start="2">
+<li><p>Create a default user group</p></li>
+</ol>
+<blockquote>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ipa group-add --desc<span class="o">=</span><span class="s2">&quot;Default Linux Users group&quot;</span> users
+</pre></div>
+</div>
+</div></blockquote>
+<ol class="arabic simple" start="3">
+<li><p>Configure default shell and group</p></li>
+</ol>
+<blockquote>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ipa config-mod <span class="se">\</span>
+    --defaultshell<span class="o">=</span><span class="s2">&quot;/bin/bash&quot;</span>  <span class="se">\</span>
+    --defaultgroup<span class="o">=</span><span class="s2">&quot;users&quot;</span>
+</pre></div>
+</div>
+</div></blockquote>
+</section>
 <section id="administrator-account">
 <h3>Administrator Account<a class="headerlink" href="#administrator-account" title="Permalink to this heading">#</a></h3>
-<ol class="arabic simple" start="2">
+<ol class="arabic simple" start="4">
 <li><p>Create a System Administrator group named <code class="docutils literal notranslate"><span class="pre">sysadmins</span></code>:</p></li>
 </ol>
 <blockquote>
@@ -474,7 +495,7 @@ the <code class="docutils literal notranslate"><span class="pre">admin</span></c
 </pre></div>
 </div>
 </div></blockquote>
-<ol class="arabic simple" start="3">
+<ol class="arabic simple" start="5">
 <li><p>Create a System Administrator account named <code class="docutils literal notranslate"><span class="pre">adm0001</span></code>:</p></li>
 </ol>
 <blockquote>
@@ -523,7 +544,7 @@ initial password.</p></li>
 </pre></div>
 </div>
 </div></blockquote>
-<ol class="arabic simple" start="4">
+<ol class="arabic simple" start="6">
 <li><p>Add System Administrator account <code class="docutils literal notranslate"><span class="pre">adm0001</span></code> to <code class="docutils literal notranslate"><span class="pre">sysadmins</span></code> group:</p></li>
 </ol>
 <blockquote>
@@ -538,7 +559,7 @@ initial password.</p></li>
 </pre></div>
 </div>
 </div></blockquote>
-<ol class="arabic simple" start="5">
+<ol class="arabic simple" start="7">
 <li><p>Create a Sudo rule for System Adminstrators:</p></li>
 </ol>
 <blockquote>
@@ -565,7 +586,7 @@ system as any user.  More restrictive controls are available.</p>
 </pre></div>
 </div>
 </div></blockquote>
-<ol class="arabic simple" start="6">
+<ol class="arabic simple" start="8">
 <li><p>Add the <code class="docutils literal notranslate"><span class="pre">sysadmins</span></code> group to the Sudo rule <code class="docutils literal notranslate"><span class="pre">sudo_all</span></code>:</p></li>
 </ol>
 <blockquote>
@@ -584,7 +605,7 @@ system as any user.  More restrictive controls are available.</p>
 </pre></div>
 </div>
 </div></blockquote>
-<ol class="arabic simple" start="7">
+<ol class="arabic simple" start="9">
 <li><p>Create System Adminstrators Home directory:</p></li>
 </ol>
 <blockquote>
@@ -603,7 +624,7 @@ chmod <span class="m">700</span> /home/adm0001
 </section>
 <section id="ansible-account">
 <h3>Ansible Account<a class="headerlink" href="#ansible-account" title="Permalink to this heading">#</a></h3>
-<ol class="arabic simple" start="8">
+<ol class="arabic simple" start="10">
 <li><p>Create a Automation group named <code class="docutils literal notranslate"><span class="pre">ansible</span></code>:</p></li>
 </ol>
 <blockquote>
@@ -611,7 +632,7 @@ chmod <span class="m">700</span> /home/adm0001
 </pre></div>
 </div>
 </div></blockquote>
-<ol class="arabic simple" start="9">
+<ol class="arabic simple" start="11">
 <li><p>Create an Automation account named <code class="docutils literal notranslate"><span class="pre">ansible</span></code>:</p></li>
 </ol>
 <blockquote>
@@ -633,7 +654,7 @@ chmod <span class="m">700</span> /home/adm0001
 </pre></div>
 </div>
 </div></blockquote>
-<ol class="arabic simple" start="10">
+<ol class="arabic simple" start="12">
 <li><p>Add Automation account <code class="docutils literal notranslate"><span class="pre">ansible</span></code> to <code class="docutils literal notranslate"><span class="pre">ansible</span></code> group:</p></li>
 </ol>
 <blockquote>
@@ -641,7 +662,7 @@ chmod <span class="m">700</span> /home/adm0001
 </pre></div>
 </div>
 </div></blockquote>
-<ol class="arabic simple" start="11">
+<ol class="arabic simple" start="13">
 <li><p>Create a Sudo rule for Automation account:</p></li>
 </ol>
 <blockquote>
@@ -653,7 +674,7 @@ chmod <span class="m">700</span> /home/adm0001
 </pre></div>
 </div>
 </div></blockquote>
-<ol class="arabic simple" start="12">
+<ol class="arabic simple" start="14">
 <li><p>Enable passwordless Sudo for the Automation Sudo rule:</p></li>
 </ol>
 <blockquote>
@@ -678,7 +699,7 @@ Sudo is required for Ansible.</p>
 </pre></div>
 </div>
 </div></blockquote>
-<ol class="arabic simple" start="13">
+<ol class="arabic simple" start="15">
 <li><p>Add the <code class="docutils literal notranslate"><span class="pre">ansible</span></code> group to the Sudo rule <code class="docutils literal notranslate"><span class="pre">sudo_all_nopasswd</span></code>:</p></li>
 </ol>
 <blockquote>
@@ -686,7 +707,7 @@ Sudo is required for Ansible.</p>
 </pre></div>
 </div>
 </div></blockquote>
-<ol class="arabic simple" start="14">
+<ol class="arabic simple" start="16">
 <li><p>Create Ansible’s Home directory:</p></li>
 </ol>
 <blockquote>
@@ -705,7 +726,7 @@ chmod <span class="m">700</span> /home/ansible
 </section>
 <section id="user-account">
 <h3>User Account<a class="headerlink" href="#user-account" title="Permalink to this heading">#</a></h3>
-<ol class="arabic simple" start="15">
+<ol class="arabic simple" start="17">
 <li><p>Create a User account named <code class="docutils literal notranslate"><span class="pre">usr0001</span></code>:</p></li>
 </ol>
 <blockquote>
@@ -730,7 +751,7 @@ chmod <span class="m">700</span> /home/ansible
 </pre></div>
 </div>
 </div></blockquote>
-<ol class="arabic simple" start="16">
+<ol class="arabic simple" start="18">
 <li><p>Add User account <code class="docutils literal notranslate"><span class="pre">usr0001</span></code> to <code class="docutils literal notranslate"><span class="pre">users</span></code> group:</p></li>
 </ol>
 <blockquote>
@@ -742,7 +763,7 @@ chmod <span class="m">700</span> /home/ansible
 </pre></div>
 </div>
 </div></blockquote>
-<ol class="arabic simple" start="17">
+<ol class="arabic simple" start="19">
 <li><p>Create User’s Home directory:</p></li>
 </ol>
 <blockquote>
@@ -764,7 +785,7 @@ chmod <span class="m">700</span> /home/usr0001
 <p>HBAC Rules can be set to limit what nodes a user or group can access.  It is
 recommended that User accounts only be able to SSH into the Slurm, User,
 and Compute nodes.</p>
-<ol class="arabic simple" start="18">
+<ol class="arabic simple" start="20">
 <li><p>Create <code class="docutils literal notranslate"><span class="pre">usernodes</span></code> Host Group:</p></li>
 </ol>
 <blockquote>
@@ -778,7 +799,7 @@ into them.</p>
 </pre></div>
 </div>
 </div></blockquote>
-<ol class="arabic simple" start="19">
+<ol class="arabic simple" start="21">
 <li><p>Add nodes to <code class="docutils literal notranslate"><span class="pre">usernodes</span></code> Host Group:</p></li>
 </ol>
 <blockquote>
@@ -794,7 +815,7 @@ ipa hostgroup-add-member --hosts<span class="o">=</span><span class="s2">&quot;c
 </pre></div>
 </div>
 </div></blockquote>
-<ol class="arabic simple" start="20">
+<ol class="arabic simple" start="22">
 <li><p>Create <code class="docutils literal notranslate"><span class="pre">allow_sysadmins</span></code> HBAC Rule:</p></li>
 </ol>
 <blockquote>
@@ -812,7 +833,7 @@ ipa hbacrule-add <span class="se">\</span>
 </pre></div>
 </div>
 </div></blockquote>
-<ol class="arabic simple" start="21">
+<ol class="arabic simple" start="23">
 <li><p>Add System Administrator and Ansible groups to <code class="docutils literal notranslate"><span class="pre">allow_sysadmins</span></code> HBAC rule:</p></li>
 </ol>
 <blockquote>
@@ -821,7 +842,7 @@ ipa hbacrule-add-user allow_sysadmins --group<span class="o">=</span><span class
 </pre></div>
 </div>
 </div></blockquote>
-<ol class="arabic simple" start="22">
+<ol class="arabic simple" start="24">
 <li><p>Create <code class="docutils literal notranslate"><span class="pre">allow_users</span></code> HBAC Rule:</p></li>
 </ol>
 <blockquote>
@@ -837,7 +858,7 @@ compute nodes in the cluster.</p>
 </pre></div>
 </div>
 </div></blockquote>
-<ol class="arabic simple" start="23">
+<ol class="arabic simple" start="25">
 <li><p>Add Users group to <code class="docutils literal notranslate"><span class="pre">allow_users</span></code> HBAC rule:</p></li>
 </ol>
 <blockquote>
@@ -845,7 +866,7 @@ compute nodes in the cluster.</p>
 </pre></div>
 </div>
 </div></blockquote>
-<ol class="arabic simple" start="24">
+<ol class="arabic simple" start="26">
 <li><p>Add <code class="docutils literal notranslate"><span class="pre">usernodes</span></code> Host Group to <code class="docutils literal notranslate"><span class="pre">allow_users</span></code> HBAC rule:</p></li>
 </ol>
 <blockquote>
@@ -853,7 +874,7 @@ compute nodes in the cluster.</p>
 </pre></div>
 </div>
 </div></blockquote>
-<ol class="arabic simple" start="25">
+<ol class="arabic simple" start="27">
 <li><p>Disable Default <code class="docutils literal notranslate"><span class="pre">allow_all</span></code> HBAC rule:</p></li>
 </ol>
 <blockquote>
@@ -861,7 +882,7 @@ compute nodes in the cluster.</p>
 </pre></div>
 </div>
 </div></blockquote>
-<ol class="arabic simple" start="26">
+<ol class="arabic simple" start="28">
 <li><p>Test Access Permissions:</p></li>
 </ol>
 <blockquote>
@@ -941,6 +962,7 @@ ipa hbactest --host user01.engwsc.example.com --service sshd --user usr0001
 <li><a class="reference internal" href="#references">References</a></li>
 <li><a class="reference internal" href="#deployment-scripts">Deployment Scripts</a></li>
 <li><a class="reference internal" href="#deployment-steps">Deployment Steps</a><ul>
+<li><a class="reference internal" href="#defaults">Defaults</a></li>
 <li><a class="reference internal" href="#administrator-account">Administrator Account</a></li>
 <li><a class="reference internal" href="#ansible-account">Ansible Account</a></li>
 <li><a class="reference internal" href="#user-account">User Account</a></li>

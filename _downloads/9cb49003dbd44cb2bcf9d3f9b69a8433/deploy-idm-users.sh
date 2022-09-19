@@ -14,13 +14,27 @@
 ###############################################################################
 
 
-# Ensure running as user
-if [ "$EUID" -eq 0 ]; then
-  echo -e "ERROR: Please run as a user\n"
+# Ensure running as root or sudo
+if [ "$EUID" -ne 0 ]; then
+  echo -e "ERROR: Please run as root or use sudo\n"
   exit 1
 fi
 
 echo -e "\n[$(date +"%Y-%m-%d %H:%M:%S")] Deploying IdM/FreeIPA Accounts...\n"
+
+
+###############################################################################
+# Script Configuration Options
+###############################################################################
+
+SYS_ADMIN_ACCOUNT="adm0001"
+SYS_ADMIN_GROUP="sysadmins"
+
+AUTOMATION_ACCOUNT="ansible"
+AUTOMATION_GROUP="ansible"
+
+USER_ACCOUNT="usr0001"
+USER_GROUP="users"
 
 
 ###############################################################################
@@ -31,12 +45,21 @@ echo -e "\n[$(date +"%Y-%m-%d %H:%M:%S")] Deploying IdM/FreeIPA Accounts...\n"
 # Prompt for password will occur
 kinit admin
 
+# Create a default user group
+ipa group-add --desc="Default Linux Users group" ${USER_GROUP}
+
+# Configure Default shell and group
+ipa config-mod \
+    --defaultshell="/bin/bash"  \
+    --defaultgroup="${USER_GROUP}"
+
+
 #
 # Administrator Account
 #
 
 # Create a System Administrator group named sysadmins
-ipa group-add --desc="System administrators group" sysadmins
+ipa group-add --desc="System administrators group" ${SYS_ADMIN_GROUP}
 
 # Create a System Administrator account named adm0001
 ipa user-add \
@@ -45,10 +68,10 @@ ipa user-add \
     --shell="/bin/bash" \
     --random \
     --noprivate \
-    adm0001
+    ${SYS_ADMIN_ACCOUNT}
 
 # Add System Administrator account adm0001 to sysadmins group
-ipa group-add-member sysadmins --users="adm0001"
+ipa group-add-member ${SYS_ADMIN_GROUP} --users="${SYS_ADMIN_ACCOUNT}"
 
 # Create a Sudo rule for System Adminstrators
 ipa sudorule-add sudo_all \
@@ -58,12 +81,12 @@ ipa sudorule-add sudo_all \
     --cmdcat="all"
 
 # Add the sysadmins group to the Sudo rule sudo_all
-ipa sudorule-add-user sudo_all --group="sysadmins"
+ipa sudorule-add-user sudo_all --group="${SYS_ADMIN_GROUP}"
 
 # Create System Adminstrators Home directory
-cp -r /etc/skel /home/adm0001
-chown -R adm0001:sysadmins /home/adm0001
-chmod 700 /home/adm0001
+cp -r /etc/skel /home/${SYS_ADMIN_ACCOUNT}
+chown -R ${SYS_ADMIN_ACCOUNT}:${SYS_ADMIN_GROUP} /home/${SYS_ADMIN_ACCOUNT}
+chmod 700 /home/${SYS_ADMIN_ACCOUNT}
 
 
 #
@@ -71,7 +94,7 @@ chmod 700 /home/adm0001
 #
 
 # Create a Automation group named ansible
-ipa group-add --desc="Automation group" ansible
+ipa group-add --desc="Automation group" ${AUTOMATION_GROUP}
 
 # Create a Automation account named ansible
 ipa user-add \
@@ -80,10 +103,10 @@ ipa user-add \
     --shell="/bin/bash" \
     --random \
     --noprivate \
-    ansible
+    ${AUTOMATION_ACCOUNT}
 
 # Add Automation account ansible to ansible group
-ipa group-add-member ansible --users="ansible"
+ipa group-add-member ${AUTOMATION_GROUP} --users="${AUTOMATION_ACCOUNT}"
 
 # Create a Sudo rule for Automation account
 ipa sudorule-add sudo_all_nopasswd \
@@ -96,12 +119,12 @@ ipa sudorule-add sudo_all_nopasswd \
 ipa sudorule-add-option sudo_all_nopasswd --sudooption='!authenticate'
 
 # Add the ansible group to the Sudo rule sudo_all_nopasswd
-ipa sudorule-add-user sudo_all_nopasswd --group="ansible"
+ipa sudorule-add-user sudo_all_nopasswd --group="${AUTOMATION_GROUP}"
 
 # Create Ansible's Home directory
-cp -r /etc/skel /home/ansible
-chown -R ansible:ansible /home/ansible
-chmod 700 /home/ansible
+cp -r /etc/skel /home/${AUTOMATION_ACCOUNT}
+chown -R ${AUTOMATION_ACCOUNT}:${AUTOMATION_GROUP} /home/${AUTOMATION_ACCOUNT}
+chmod 700 /home/${AUTOMATION_ACCOUNT}
 
 
 #
@@ -115,15 +138,15 @@ ipa user-add \
     --shell="/bin/bash" \
     --random \
     --noprivate \
-    usr0001
+    ${USER_ACCOUNT}
 
 # Add User account usr0001 to users group
-ipa group-add-member users --users="usr0001"
+ipa group-add-member ${USER_GROUP} --users="${USER_ACCOUNT}"
 
 # Create User's Home directory
-cp -r /etc/skel /home/usr0001
-chown -R usr0001:users /home/usr0001
-chmod 700 /home/usr0001
+cp -r /etc/skel /home/${USER_ACCOUNT}
+chown -R ${USER_ACCOUNT}:${USER_GROUP} /home/${USER_ACCOUNT}
+chmod 700 /home/${USER_ACCOUNT}
 
 
 #
@@ -152,8 +175,8 @@ ipa hbacrule-add \
     allow_sysadmins
 
 # Add System Administrator and Ansible groups to allow_sysadmins HBAC rule
-ipa hbacrule-add-user allow_sysadmins --group="sysadmins"
-ipa hbacrule-add-user allow_sysadmins --group="ansible"
+ipa hbacrule-add-user allow_sysadmins --group="${SYS_ADMIN_GROUP}"
+ipa hbacrule-add-user allow_sysadmins --group="${AUTOMATION_GROUP}"
 
 # Create allow_users HBAC rule
 ipa hbacrule-add \
@@ -162,7 +185,7 @@ ipa hbacrule-add \
     allow_users
 
 # Add Users group to allow_users HBAC rule
-ipa hbacrule-add-user allow_users --group="users"
+ipa hbacrule-add-user allow_users --group="${USER_GROUP}"
 
 # Add usernodes Host Group to allow_users HBAC rule
 ipa hbacrule-add-host allow_users --hostgroups="usernodes"
@@ -171,13 +194,13 @@ ipa hbacrule-add-host allow_users --hostgroups="usernodes"
 ipa hbacrule-disable allow_all
 
 # Test Access
-ipa hbactest --host idm.engwsc.example.com --service sshd --user adm0001
-ipa hbactest --host idm.engwsc.example.com --service sshd --user ansible
-ipa hbactest --host idm.engwsc.example.com --service sshd --user usr0001
+ipa hbactest --host idm.engwsc.example.com --service sshd --user ${SYS_ADMIN_ACCOUNT}
+ipa hbactest --host idm.engwsc.example.com --service sshd --user ${AUTOMATION_ACCOUNT}
+ipa hbactest --host idm.engwsc.example.com --service sshd --user ${USER_ACCOUNT}
 
-ipa hbactest --host user01.engwsc.example.com --service sshd --user adm0001
-ipa hbactest --host user01.engwsc.example.com --service sshd --user ansible
-ipa hbactest --host user01.engwsc.example.com --service sshd --user usr0001
+ipa hbactest --host user01.engwsc.example.com --service sshd --user ${SYS_ADMIN_ACCOUNT}
+ipa hbactest --host user01.engwsc.example.com --service sshd --user ${AUTOMATION_ACCOUNT}
+ipa hbactest --host user01.engwsc.example.com --service sshd --user ${USER_ACCOUNT}
 
 
 echo -e "\n[$(date +"%Y-%m-%d %H:%M:%S")] Deploying Deploying IdM/FreeIPA Accounts Complete\n"
