@@ -82,13 +82,13 @@ Deployment Steps
 Defaults
 ~~~~~~~~
 
-2. Create a default user group
+2. Create a default user group:
 
   .. code-block:: bash
 
     ipa group-add --desc="Default Linux Users group" users
 
-3. Configure default shell and group
+3. Configure default shell and group:
 
   .. code-block:: bash
 
@@ -385,6 +385,12 @@ and Compute nodes.
     ipa hostgroup-add --desc="User Accessible Nodes" usernodes
 
 21. Add nodes to ``usernodes`` Host Group:
+
+  .. Important::
+
+    Nodes cannot be added to the host group until they have registered with
+    IdM.  When a new user node is added to the cluster, it must be registered
+    with IdM and then it can be added to the host group.
 
   .. code-block:: bash
 

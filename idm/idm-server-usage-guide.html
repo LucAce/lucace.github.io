@@ -461,7 +461,7 @@ the <code class="docutils literal notranslate"><span class="pre">admin</span></c
 <section id="defaults">
 <h3>Defaults<a class="headerlink" href="#defaults" title="Permalink to this heading">#</a></h3>
 <ol class="arabic simple" start="2">
-<li><p>Create a default user group</p></li>
+<li><p>Create a default user group:</p></li>
 </ol>
 <blockquote>
 <div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ipa group-add --desc<span class="o">=</span><span class="s2">&quot;Default Linux Users group&quot;</span> users
@@ -469,7 +469,7 @@ the <code class="docutils literal notranslate"><span class="pre">admin</span></c
 </div>
 </div></blockquote>
 <ol class="arabic simple" start="3">
-<li><p>Configure default shell and group</p></li>
+<li><p>Configure default shell and group:</p></li>
 </ol>
 <blockquote>
 <div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ipa config-mod <span class="se">\</span>
@@ -803,7 +803,13 @@ into them.</p>
 <li><p>Add nodes to <code class="docutils literal notranslate"><span class="pre">usernodes</span></code> Host Group:</p></li>
 </ol>
 <blockquote>
-<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ipa hostgroup-add-member --hosts<span class="o">=</span><span class="s2">&quot;slurm.engwsc.example.com&quot;</span>  usernodes
+<div><div class="admonition important">
+<p class="admonition-title">Important</p>
+<p>Nodes cannot be added to the host group until they have registered with
+IdM.  When a new user node is added to the cluster, it must be registered
+with IdM and then it can be added to the host group.</p>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ipa hostgroup-add-member --hosts<span class="o">=</span><span class="s2">&quot;slurm.engwsc.example.com&quot;</span>  usernodes
 ipa hostgroup-add-member --hosts<span class="o">=</span><span class="s2">&quot;user01.engwsc.example.com&quot;</span> usernodes
 ipa hostgroup-add-member --hosts<span class="o">=</span><span class="s2">&quot;user02.engwsc.example.com&quot;</span> usernodes
 ipa hostgroup-add-member --hosts<span class="o">=</span><span class="s2">&quot;user03.engwsc.example.com&quot;</span> usernodes
