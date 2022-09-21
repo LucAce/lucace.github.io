@@ -465,6 +465,13 @@ the <code class="docutils literal notranslate"><span class="pre">admin</span></c
 </ol>
 <blockquote>
 <div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ipa group-add --desc<span class="o">=</span><span class="s2">&quot;Default Linux Users group&quot;</span> users
+
+<span class="c1"># ------------------------</span>
+<span class="c1"># Added group &quot;users&quot;</span>
+<span class="c1"># ------------------------</span>
+<span class="c1">#   Group name: users</span>
+<span class="c1">#   Description: Default Linux Users group</span>
+<span class="c1">#   GID: 292400024</span>
 </pre></div>
 </div>
 </div></blockquote>
@@ -472,9 +479,29 @@ the <code class="docutils literal notranslate"><span class="pre">admin</span></c
 <li><p>Configure default shell and group:</p></li>
 </ol>
 <blockquote>
-<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ipa config-mod <span class="se">\</span>
-    --defaultshell<span class="o">=</span><span class="s2">&quot;/bin/bash&quot;</span>  <span class="se">\</span>
-    --defaultgroup<span class="o">=</span><span class="s2">&quot;users&quot;</span>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ipa config-mod --defaultshell<span class="o">=</span><span class="s2">&quot;/bin/bash&quot;</span> --defaultgroup<span class="o">=</span><span class="s2">&quot;users&quot;</span>
+
+<span class="c1"># Maximum username length: 32</span>
+<span class="c1"># Maximum hostname length: 64</span>
+<span class="c1"># Home directory base: /home</span>
+<span class="c1"># Default shell: /bin/bash</span>
+<span class="c1"># Default users group: users</span>
+<span class="c1"># Default e-mail domain: engwsc.example.com</span>
+<span class="c1"># Search time limit: 2</span>
+<span class="c1"># Search size limit: 100</span>
+<span class="c1"># User search fields: uid,givenname,sn,telephonenumber,ou,title</span>
+<span class="c1"># Group search fields: cn,description</span>
+<span class="c1"># Enable migration mode: FALSE</span>
+<span class="c1"># Certificate Subject base: O=ENGWSC.EXAMPLE.COM</span>
+<span class="c1"># Password Expiration Notification (days): 4</span>
+<span class="c1"># Password plugin features: AllowNThash, KDC:Disable Last Success</span>
+<span class="c1"># SELinux user map order: guest_u:s0$xguest_u:s0$user_u:s0$staff_u:s0-s0:c0.c1023$sysadm_u:s0-s0:c0.c1023$unconfined_u:s0-s0:c0.c1023</span>
+<span class="c1"># Default SELinux user: unconfined_u:s0-s0:c0.c1023</span>
+<span class="c1"># Default PAC types: MS-PAC, nfs:NONE</span>
+<span class="c1"># IPA masters: idm.engwsc.example.com</span>
+<span class="c1"># IPA master capable of PKINIT: idm.engwsc.example.com</span>
+<span class="c1"># IPA CA servers: idm.engwsc.example.com</span>
+<span class="c1"># IPA CA renewal master: idm.engwsc.example.com</span>
 </pre></div>
 </div>
 </div></blockquote>
@@ -519,28 +546,28 @@ initial password.</p></li>
     --noprivate <span class="se">\</span>
     adm0001
 
-<span class="c1">#--------------------</span>
-<span class="c1">#Added user &quot;adm0001&quot;</span>
-<span class="c1">#--------------------</span>
-<span class="c1">#  User login: adm0001</span>
-<span class="c1">#  First name: John</span>
-<span class="c1">#  Last name: Doe</span>
-<span class="c1">#  Full name: John Doe</span>
-<span class="c1">#  Display name: John Doe</span>
-<span class="c1">#  Initials: JD</span>
-<span class="c1">#  Home directory: /home/adm0001</span>
-<span class="c1">#  GECOS: John Doe</span>
-<span class="c1">#  Login shell: /bin/bash</span>
-<span class="c1">#  Principal name: adm0001@ENGWSC.EXAMPLE.COM</span>
-<span class="c1">#  Principal alias: adm0001@ENGWSC.EXAMPLE.COM</span>
-<span class="c1">#  User password expiration: 20220918004649Z</span>
-<span class="c1">#  Email address: adm0001@engwsc.example.com</span>
-<span class="c1">#  Random password: 8Mh_g*0LHK_&lt;9j[X}&gt;[$/?</span>
-<span class="c1">#  UID: 292400017</span>
-<span class="c1">#  GID: 292400003</span>
-<span class="c1">#  Password: True</span>
-<span class="c1">#  Member of groups: users</span>
-<span class="c1">#  Kerberos keys available: True</span>
+<span class="c1"># --------------------</span>
+<span class="c1"># Added user &quot;adm0001&quot;</span>
+<span class="c1"># --------------------</span>
+<span class="c1">#   User login: adm0001</span>
+<span class="c1">#   First name: John</span>
+<span class="c1">#   Last name: Doe</span>
+<span class="c1">#   Full name: John Doe</span>
+<span class="c1">#   Display name: John Doe</span>
+<span class="c1">#   Initials: JD</span>
+<span class="c1">#   Home directory: /home/adm0001</span>
+<span class="c1">#   GECOS: John Doe</span>
+<span class="c1">#   Login shell: /bin/bash</span>
+<span class="c1">#   Principal name: adm0001@ENGWSC.EXAMPLE.COM</span>
+<span class="c1">#   Principal alias: adm0001@ENGWSC.EXAMPLE.COM</span>
+<span class="c1">#   User password expiration: 20220918004649Z</span>
+<span class="c1">#   Email address: adm0001@engwsc.example.com</span>
+<span class="c1">#   Random password: 8Mh_g*0LHK_&lt;9j[X}&gt;[$/?</span>
+<span class="c1">#   UID: 292400017</span>
+<span class="c1">#   GID: 292400003</span>
+<span class="c1">#   Password: True</span>
+<span class="c1">#   Member of groups: users</span>
+<span class="c1">#   Kerberos keys available: True</span>
 </pre></div>
 </div>
 </div></blockquote>
@@ -550,12 +577,12 @@ initial password.</p></li>
 <blockquote>
 <div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ipa group-add-member sysadmins --users<span class="o">=</span><span class="s2">&quot;adm0001&quot;</span>
 
-<span class="c1">#  Group name: sysadmins</span>
-<span class="c1">#  GID: 292400016</span>
-<span class="c1">#  Member users: adm0001</span>
-<span class="c1">#-------------------------</span>
-<span class="c1">#Number of members added 1</span>
-<span class="c1">#-------------------------</span>
+<span class="c1">#   Group name: sysadmins</span>
+<span class="c1">#   GID: 292400016</span>
+<span class="c1">#   Member users: adm0001</span>
+<span class="c1"># -------------------------</span>
+<span class="c1"># Number of members added 1</span>
+<span class="c1"># -------------------------</span>
 </pre></div>
 </div>
 </div></blockquote>
@@ -566,7 +593,7 @@ initial password.</p></li>
 <div><div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>The sudo rule will allow a System Administrator to run any command on any
-system as any user.  More restrictive controls are available.</p>
+node and to log in as any user.</p>
 </div>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ipa sudorule-add sudo_all <span class="se">\</span>
     --hostcat<span class="o">=</span><span class="s2">&quot;all&quot;</span> <span class="se">\</span>
@@ -574,15 +601,15 @@ system as any user.  More restrictive controls are available.</p>
     --runasgroupcat<span class="o">=</span><span class="s2">&quot;all&quot;</span> <span class="se">\</span>
     --cmdcat<span class="o">=</span><span class="s2">&quot;all&quot;</span>
 
-<span class="c1">#------------------------------------</span>
-<span class="c1">#Added Sudo Rule &quot;sudo_all&quot;</span>
-<span class="c1">#------------------------------------</span>
-<span class="c1">#  Rule name: sudo_all</span>
-<span class="c1">#  Enabled: TRUE</span>
-<span class="c1">#  Host category: all</span>
-<span class="c1">#  Command category: all</span>
-<span class="c1">#  RunAs User category: all</span>
-<span class="c1">#  RunAs Group category: all</span>
+<span class="c1"># ------------------------------------</span>
+<span class="c1"># Added Sudo Rule &quot;sudo_all&quot;</span>
+<span class="c1"># ------------------------------------</span>
+<span class="c1">#   Rule name: sudo_all</span>
+<span class="c1">#   Enabled: TRUE</span>
+<span class="c1">#   Host category: all</span>
+<span class="c1">#   Command category: all</span>
+<span class="c1">#   RunAs User category: all</span>
+<span class="c1">#   RunAs Group category: all</span>
 </pre></div>
 </div>
 </div></blockquote>
@@ -592,16 +619,16 @@ system as any user.  More restrictive controls are available.</p>
 <blockquote>
 <div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ipa sudorule-add-user sudo_all --group<span class="o">=</span><span class="s2">&quot;sysadmins&quot;</span>
 
-<span class="c1">#  Rule name: sudo_all</span>
-<span class="c1">#  Enabled: TRUE</span>
-<span class="c1">#  Host category: all</span>
-<span class="c1">#  Command category: all</span>
-<span class="c1">#  RunAs User category: all</span>
-<span class="c1">#  RunAs Group category: all</span>
-<span class="c1">#  User Groups: sysadmins</span>
-<span class="c1">#-------------------------</span>
-<span class="c1">#Number of members added 1</span>
-<span class="c1">#-------------------------</span>
+<span class="c1">#   Rule name: sudo_all</span>
+<span class="c1">#   Enabled: TRUE</span>
+<span class="c1">#   Host category: all</span>
+<span class="c1">#   Command category: all</span>
+<span class="c1">#   RunAs User category: all</span>
+<span class="c1">#   RunAs Group category: all</span>
+<span class="c1">#   User Groups: sysadmins</span>
+<span class="c1"># -------------------------</span>
+<span class="c1"># Number of members added 1</span>
+<span class="c1"># -------------------------</span>
 </pre></div>
 </div>
 </div></blockquote>
@@ -686,16 +713,16 @@ Sudo is required for Ansible.</p>
 </div>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ipa sudorule-add-option sudo_all_nopasswd --sudooption<span class="o">=</span><span class="s1">&#39;!authenticate&#39;</span>
 
-<span class="c1">#-------------------------------------------------------------</span>
-<span class="c1">#Added option &quot;!authenticate&quot; to Sudo Rule &quot;sudo_all_nopasswd&quot;</span>
-<span class="c1">#-------------------------------------------------------------</span>
-<span class="c1">#  Rule name: sudo_all_nopasswd</span>
-<span class="c1">#  Enabled: TRUE</span>
-<span class="c1">#  Host category: all</span>
-<span class="c1">#  Command category: all</span>
-<span class="c1">#  RunAs User category: all</span>
-<span class="c1">#  RunAs Group category: all</span>
-<span class="c1">#  Sudo Option: !authenticate</span>
+<span class="c1"># -------------------------------------------------------------</span>
+<span class="c1"># Added option &quot;!authenticate&quot; to Sudo Rule &quot;sudo_all_nopasswd&quot;</span>
+<span class="c1"># -------------------------------------------------------------</span>
+<span class="c1">#   Rule name: sudo_all_nopasswd</span>
+<span class="c1">#   Enabled: TRUE</span>
+<span class="c1">#   Host category: all</span>
+<span class="c1">#   Command category: all</span>
+<span class="c1">#   RunAs User category: all</span>
+<span class="c1">#   RunAs Group category: all</span>
+<span class="c1">#   Sudo Option: !authenticate</span>
 </pre></div>
 </div>
 </div></blockquote>

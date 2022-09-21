@@ -88,13 +88,40 @@ Defaults
 
     ipa group-add --desc="Default Linux Users group" users
 
+    # ------------------------
+    # Added group "users"
+    # ------------------------
+    #   Group name: users
+    #   Description: Default Linux Users group
+    #   GID: 292400024
+
 3. Configure default shell and group:
 
   .. code-block:: bash
 
-    ipa config-mod \
-        --defaultshell="/bin/bash"  \
-        --defaultgroup="users"
+    ipa config-mod --defaultshell="/bin/bash" --defaultgroup="users"
+
+    # Maximum username length: 32
+    # Maximum hostname length: 64
+    # Home directory base: /home
+    # Default shell: /bin/bash
+    # Default users group: users
+    # Default e-mail domain: engwsc.example.com
+    # Search time limit: 2
+    # Search size limit: 100
+    # User search fields: uid,givenname,sn,telephonenumber,ou,title
+    # Group search fields: cn,description
+    # Enable migration mode: FALSE
+    # Certificate Subject base: O=ENGWSC.EXAMPLE.COM
+    # Password Expiration Notification (days): 4
+    # Password plugin features: AllowNThash, KDC:Disable Last Success
+    # SELinux user map order: guest_u:s0$xguest_u:s0$user_u:s0$staff_u:s0-s0:c0.c1023$sysadm_u:s0-s0:c0.c1023$unconfined_u:s0-s0:c0.c1023
+    # Default SELinux user: unconfined_u:s0-s0:c0.c1023
+    # Default PAC types: MS-PAC, nfs:NONE
+    # IPA masters: idm.engwsc.example.com
+    # IPA master capable of PKINIT: idm.engwsc.example.com
+    # IPA CA servers: idm.engwsc.example.com
+    # IPA CA renewal master: idm.engwsc.example.com
 
 
 Administrator Account
@@ -134,28 +161,28 @@ Administrator Account
         --noprivate \
         adm0001
 
-    #--------------------
-    #Added user "adm0001"
-    #--------------------
-    #  User login: adm0001
-    #  First name: John
-    #  Last name: Doe
-    #  Full name: John Doe
-    #  Display name: John Doe
-    #  Initials: JD
-    #  Home directory: /home/adm0001
-    #  GECOS: John Doe
-    #  Login shell: /bin/bash
-    #  Principal name: adm0001@ENGWSC.EXAMPLE.COM
-    #  Principal alias: adm0001@ENGWSC.EXAMPLE.COM
-    #  User password expiration: 20220918004649Z
-    #  Email address: adm0001@engwsc.example.com
-    #  Random password: 8Mh_g*0LHK_<9j[X}>[$/?
-    #  UID: 292400017
-    #  GID: 292400003
-    #  Password: True
-    #  Member of groups: users
-    #  Kerberos keys available: True
+    # --------------------
+    # Added user "adm0001"
+    # --------------------
+    #   User login: adm0001
+    #   First name: John
+    #   Last name: Doe
+    #   Full name: John Doe
+    #   Display name: John Doe
+    #   Initials: JD
+    #   Home directory: /home/adm0001
+    #   GECOS: John Doe
+    #   Login shell: /bin/bash
+    #   Principal name: adm0001@ENGWSC.EXAMPLE.COM
+    #   Principal alias: adm0001@ENGWSC.EXAMPLE.COM
+    #   User password expiration: 20220918004649Z
+    #   Email address: adm0001@engwsc.example.com
+    #   Random password: 8Mh_g*0LHK_<9j[X}>[$/?
+    #   UID: 292400017
+    #   GID: 292400003
+    #   Password: True
+    #   Member of groups: users
+    #   Kerberos keys available: True
 
 6. Add System Administrator account ``adm0001`` to ``sysadmins`` group:
 
@@ -163,19 +190,19 @@ Administrator Account
 
     ipa group-add-member sysadmins --users="adm0001"
 
-    #  Group name: sysadmins
-    #  GID: 292400016
-    #  Member users: adm0001
-    #-------------------------
-    #Number of members added 1
-    #-------------------------
+    #   Group name: sysadmins
+    #   GID: 292400016
+    #   Member users: adm0001
+    # -------------------------
+    # Number of members added 1
+    # -------------------------
 
 7. Create a Sudo rule for System Adminstrators:
 
   .. note::
 
     The sudo rule will allow a System Administrator to run any command on any
-    system as any user.  More restrictive controls are available.
+    node and to log in as any user.
 
   .. code-block:: bash
 
@@ -185,15 +212,15 @@ Administrator Account
         --runasgroupcat="all" \
         --cmdcat="all"
 
-    #------------------------------------
-    #Added Sudo Rule "sudo_all"
-    #------------------------------------
-    #  Rule name: sudo_all
-    #  Enabled: TRUE
-    #  Host category: all
-    #  Command category: all
-    #  RunAs User category: all
-    #  RunAs Group category: all
+    # ------------------------------------
+    # Added Sudo Rule "sudo_all"
+    # ------------------------------------
+    #   Rule name: sudo_all
+    #   Enabled: TRUE
+    #   Host category: all
+    #   Command category: all
+    #   RunAs User category: all
+    #   RunAs Group category: all
 
 8. Add the ``sysadmins`` group to the Sudo rule ``sudo_all``:
 
@@ -201,16 +228,16 @@ Administrator Account
 
     ipa sudorule-add-user sudo_all --group="sysadmins"
 
-    #  Rule name: sudo_all
-    #  Enabled: TRUE
-    #  Host category: all
-    #  Command category: all
-    #  RunAs User category: all
-    #  RunAs Group category: all
-    #  User Groups: sysadmins
-    #-------------------------
-    #Number of members added 1
-    #-------------------------
+    #   Rule name: sudo_all
+    #   Enabled: TRUE
+    #   Host category: all
+    #   Command category: all
+    #   RunAs User category: all
+    #   RunAs Group category: all
+    #   User Groups: sysadmins
+    # -------------------------
+    # Number of members added 1
+    # -------------------------
 
 9. Create System Adminstrators Home directory:
 
@@ -284,16 +311,16 @@ Ansible Account
 
     ipa sudorule-add-option sudo_all_nopasswd --sudooption='!authenticate'
 
-    #-------------------------------------------------------------
-    #Added option "!authenticate" to Sudo Rule "sudo_all_nopasswd"
-    #-------------------------------------------------------------
-    #  Rule name: sudo_all_nopasswd
-    #  Enabled: TRUE
-    #  Host category: all
-    #  Command category: all
-    #  RunAs User category: all
-    #  RunAs Group category: all
-    #  Sudo Option: !authenticate
+    # -------------------------------------------------------------
+    # Added option "!authenticate" to Sudo Rule "sudo_all_nopasswd"
+    # -------------------------------------------------------------
+    #   Rule name: sudo_all_nopasswd
+    #   Enabled: TRUE
+    #   Host category: all
+    #   Command category: all
+    #   RunAs User category: all
+    #   RunAs Group category: all
+    #   Sudo Option: !authenticate
 
 15. Add the ``ansible`` group to the Sudo rule ``sudo_all_nopasswd``:
 
