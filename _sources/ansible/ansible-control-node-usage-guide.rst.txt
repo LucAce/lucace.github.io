@@ -158,8 +158,20 @@ Deployment Steps
             graylog.engwsc.example.com:
 
         rsyslog_clients:
-          childern:
-            all:
+          hosts:
+            nfs01.engwsc.example.com:
+            vmm[01:02].engwsc.example.com:
+            user[01:04].engwsc.example.com:
+            comp[01:04].engwsc.example.com:
+            idm.engwsc.example.com:
+            gitlab.engwsc.example.com:
+            slurm.engwsc.example.com:
+            graylog.engwsc.example.com:
+            ansible.engwsc.example.com:
+            influxdb.engwsc.example.com:
+            grafana.engwsc.example.com:
+            docker.engwsc.example.com:
+            mirror.engwsc.example.com:
 
         ansible_controllers:
           hosts:
@@ -170,8 +182,20 @@ Deployment Steps
             influxdb.engwsc.example.com:
 
         telegraf_clients:
-          childern:
-            all:
+          hosts:
+            nfs01.engwsc.example.com:
+            vmm[01:02].engwsc.example.com:
+            user[01:04].engwsc.example.com:
+            comp[01:04].engwsc.example.com:
+            idm.engwsc.example.com:
+            gitlab.engwsc.example.com:
+            slurm.engwsc.example.com:
+            graylog.engwsc.example.com:
+            ansible.engwsc.example.com:
+            influxdb.engwsc.example.com:
+            grafana.engwsc.example.com:
+            docker.engwsc.example.com:
+            mirror.engwsc.example.com:
 
         grafana_servers:
           hosts:
