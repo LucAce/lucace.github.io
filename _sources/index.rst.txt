@@ -4,6 +4,11 @@
 
    <br />
 
+.. meta::
+   :description: Collection of guides on how to deploy a small cluster of Red Hat Enterprise Linux based systems
+   :keywords: IdM, FreeIPA, GitLab, Slurm, Graylog, Ansible, InfluxDB, Grafana, Docker, RHEL, AlmaLinux, Rocky Linux
+
+
 ================================================
 Engineering Workstation Cluster Deployment Guide
 ================================================
