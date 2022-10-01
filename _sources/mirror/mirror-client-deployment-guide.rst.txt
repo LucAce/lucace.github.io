@@ -182,7 +182,7 @@ Deployment Steps
 
     [influxdb]
     name=Local InfluxDB Repository - RHEL \$releasever
-    baseurl=http://mirror.engwsc.example.com/influxdb/rhel/\$releasever/influxdb
+    baseurl=http://mirror.engwsc.example.com/influxdb/rhel/\$releasever/x86_64/stable/
     gpgcheck=1
     enabled=0
     countme=0

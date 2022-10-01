@@ -46,6 +46,7 @@ References
 
   Instructions are based on the following documentation: |br|
   - https://docs.graylog.org/docs/operating-system-packages |br|
+  - https://docs.graylog.org/docs/web-interface |br|
   - https://docs.graylog.org/docs/centos |br|
   - https://docs.graylog.org/docs/https |br|
   - https://docs.graylog.org/docs/syslog
@@ -58,7 +59,7 @@ Post Deployment
 ..
 
   The Graylog can be accessed at the following URL: |br|
-  https://graylog.engwsc.example.com:9000
+  https://graylog.engwsc.example.com
 
   Username: ``admin`` |br|
   Password: ``password_secret`` (from step 16)
@@ -216,10 +217,10 @@ ElasticSearch
 
   .. code-block:: bash
 
-    tee -a /etc/elasticsearch/elasticsearch.yml > /dev/null <<EOT
+    cat > /etc/elasticsearch/elasticsearch.yml <<EOF
     cluster.name: graylog
     action.auto_create_index: false
-    EOT
+    EOF
 
 12. Start ElasticSearch:
 
@@ -241,7 +242,43 @@ Graylog
     dnf -y distro-sync
     dnf -y install graylog-server
 
-14. Create Self-Signed SSL Certificate:
+14. Set required ``password_secret`` and ``root_password_sha2``:
+
+  .. important::
+
+    Replace ``GRAYLOG_SECRET`` with a confidential strong password that will be used to access Graylog.
+
+  .. code-block:: bash
+
+    # You MUST set a secret to secure/pepper the stored
+    # user passwords here. Use at least 64 characters.
+    # Use: SECRET=`pwgen -N 1 -s 96`
+    # to generate a random secret
+    SECRET='GRAYLOG_SECRET'
+    SECRET_SHA256=`echo -n "${SECRET}" | tr -d '\n' | sha256sum | cut -d" " -f1`
+
+    sed -i "s|password_secret =.*|password_secret = ${SECRET}|g" /etc/graylog/server/server.conf
+    sed -i "s|root_password_sha2 =.*|root_password_sha2 = ${SECRET_SHA256}|g" /etc/graylog/server/server.conf
+
+15. Configure SELinux:
+
+  .. code-block:: bash
+
+    setsebool -P httpd_can_network_connect 1
+    semanage port -a -t http_port_t -p tcp 9000
+
+16. Start Graylog:
+
+  .. code-block:: bash
+
+    systemctl daemon-reload
+    systemctl enable --now graylog-server
+
+
+NGINX
+~~~~~
+
+17. Create Self-Signed SSL Certificate:
 
   .. important::
 
@@ -250,11 +287,12 @@ Graylog
   .. code-block:: bash
 
     # Create directory structure
-    mkdir -p  /etc/graylog/ssl/
-    chmod 755 /etc/graylog/ssl
+    mkdir -p  /etc/pki/nginx/
+    chmod 755 /etc/pki/nginx/
 
     # Create OpenSSL configuration file
-    cat > /etc/graylog/ssl/graylog.engwsc.example.com.cnf <<EOF
+    mkdir -p /etc/pki/nginx/
+    cat > /etc/pki/nginx/graylog.engwsc.example.com.cnf <<EOF
     [req]
     distinguished_name = req_distinguished_name
     x509_extensions = v3_req
@@ -283,63 +321,63 @@ Graylog
 
     # Create certificate
     openssl req -x509 -days 365 -nodes -newkey rsa:4096 \
-        -config /etc/graylog/ssl/graylog.engwsc.example.com.cnf \
-        -keyout /etc/graylog/ssl/graylog.engwsc.example.com.key \
-        -out    /etc/graylog/ssl/graylog.engwsc.example.com.crt
+        -config /etc/pki/nginx/graylog.engwsc.example.com.cnf \
+        -keyout /etc/pki/nginx/graylog.engwsc.example.com.key \
+        -out    /etc/pki/nginx/graylog.engwsc.example.com.crt
 
     # Set permissions
-    chown graylog:graylog /etc/graylog/ssl/graylog.engwsc.example.com.key
-    chown graylog:graylog /etc/graylog/ssl/graylog.engwsc.example.com.crt
-    chmod 600 /etc/graylog/ssl/graylog.engwsc.example.com.key
+    chown root:root /etc/pki/nginx/graylog.engwsc.example.com.key
+    chown root:root /etc/pki/nginx/graylog.engwsc.example.com.crt
+    chmod 600 /etc/pki/nginx/graylog.engwsc.example.com.key
 
-15. Import certificate into java Key Store:
-
-  .. code-block:: bash
-
-    keytool -importcert -noprompt \
-        -keystore /etc/pki/java/cacerts \
-        -storepass changeit \
-        -alias graylog-self-signed \
-        -file /etc/graylog/ssl/graylog.engwsc.example.com.crt
-
-16. Set required ``password_secret`` and ``root_password_sha2``:
+18. Configure NGINX
 
   .. important::
 
-    Replace ``GRAYLOG_SECRET`` with a confidential strong password that will be used to access Graylog.
+    Replace graylog.engwsc.example.com with the specifics of your network.
 
   .. code-block:: bash
 
-    # You MUST set a secret to secure/pepper the stored
-    # user passwords here. Use at least 64 characters.
-    # Use: SECRET=`pwgen -N 1 -s 96`
-    # to generate a random secret
-    SECRET='GRAYLOG_SECRET'
-    SECRET_SHA256=`echo -n "${SECRET}" | tr -d '\n' | sha256sum | cut -d" " -f1`
+    mkdir -p /etc/nginx/conf.d/
+    cat > /etc/nginx/conf.d/graylog.conf <<EOF
+    server {
+        listen 80;
+        server_name graylog.engwsc.example.com;
+        root /nowhere;
+        rewrite ^ https://\$server_name\$request_uri permanent;
+    }
+    server
+    {
+        listen      443 ssl http2;
+        server_name graylog.engwsc.example.com;
 
-    sed -i "s|password_secret =.*|password_secret = ${SECRET}|g" /etc/graylog/server/server.conf
-    sed -i "s|root_password_sha2 =.*|root_password_sha2 = ${SECRET_SHA256}|g" /etc/graylog/server/server.conf
-    sed -i "s|#http_bind_address =.*|http_bind_address = graylog.engwsc.example.com:9000|g" /etc/graylog/server/server.conf
+        ssl_certificate "/etc/pki/nginx/graylog.engwsc.example.com.crt";
+        ssl_certificate_key "/etc/pki/nginx/graylog.engwsc.example.com.key";
+        ssl_session_cache shared:SSL:1m;
+        ssl_session_timeout 10m;
+        ssl_ciphers PROFILE=SYSTEM;
+        ssl_prefer_server_ciphers on;
 
-    sed -i "s|#http_enable_tls =.*|http_enable_tls = true|g" /etc/graylog/server/server.conf
-    sed -i "s|#http_tls_cert_file =.*|http_tls_cert_file = /etc/graylog/ssl/graylog.engwsc.example.com.crt|g" /etc/graylog/server/server.conf
-    sed -i "s|#http_tls_key_file =.*|http_tls_key_file = /etc/graylog/ssl/graylog.engwsc.example.com.key|g" /etc/graylog/server/server.conf
+        location /
+        {
+          proxy_set_header Host \$http_host;
+          proxy_set_header X-Forwarded-Host \$host;
+          proxy_set_header X-Forwarded-Server \$host;
+          proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
+          proxy_set_header X-Graylog-Server-URL https://\$server_name/;
+          proxy_pass       http://127.0.0.1:9000;
+        }
+    }
+    EOF
 
-17. Configure SELinux:
-
-  .. code-block:: bash
-
-    setsebool -P httpd_can_network_connect 1
-    semanage port -a -t http_port_t -p tcp 9000
-
-18. Start Graylog:
+19. Enable NGINX service:
 
   .. code-block:: bash
 
     systemctl daemon-reload
-    systemctl enable --now graylog-server
+    systemctl enable --now nginx
 
-19. Set firewalld rules:
+20. Set firewalld rules:
 
   .. important::
 
@@ -348,11 +386,16 @@ Graylog
   .. code-block:: bash
 
     firewall-cmd --zone=public --add-source=192.168.1.0/24 --permanent
-    firewall-cmd --zone=public --add-port=9000/tcp --permanent
+    firewall-cmd --zone=public --add-service=http --permanent
+    firewall-cmd --zone=public --add-service=https --permanent
     firewall-cmd --zone=public --add-port=6514/tcp --permanent
     firewall-cmd --reload
 
-20. Log into Graylog:
+
+Graylog Configuration
+~~~~~~~~~~~~~~~~~~~~~
+
+21. Log into Graylog:
 
 .. important::
 
@@ -362,11 +405,11 @@ Graylog
 
   Log into Graylog using user ``admin`` and password ``password_secret``.
 
-  Graylog: https://graylog.engwsc.example.com:9000
+  Graylog: https://graylog.engwsc.example.com
 
   .. image:: ../_static/graylog/login-page.png
 
-21. Create Input:
+22. Create Input:
 
 ..
 
@@ -395,8 +438,8 @@ Graylog
   * In the "Title" box enter: RSyslog
   * In the "Port" box enter: 6514
   * In the "No. of worker threads" box enter: 4
-  * In the "TLS cert file" box enter: /etc/graylog/ssl/graylog.engwsc.example.com.crt
-  * In the "TLS private key file" box enter: /etc/graylog/ssl/graylog.engwsc.example.com.key
+  * In the "TLS cert file" box enter: /etc/pki/nginx/graylog.engwsc.example.com.crt
+  * In the "TLS private key file" box enter: /etc/pki/nginx/graylog.engwsc.example.com.key
   * Click the "Enable TLS" check box (box should be checked)
   * In the "TLS client authentication" box enter: disabled
   * Click the "TCP keepalive" check box (box should be checked)

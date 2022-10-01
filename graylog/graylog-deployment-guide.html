@@ -427,6 +427,7 @@
 <blockquote>
 <div><p>Instructions are based on the following documentation: <br />
 - <a class="reference external" href="https://docs.graylog.org/docs/operating-system-packages">https://docs.graylog.org/docs/operating-system-packages</a> <br />
+- <a class="reference external" href="https://docs.graylog.org/docs/web-interface">https://docs.graylog.org/docs/web-interface</a> <br />
 - <a class="reference external" href="https://docs.graylog.org/docs/centos">https://docs.graylog.org/docs/centos</a> <br />
 - <a class="reference external" href="https://docs.graylog.org/docs/https">https://docs.graylog.org/docs/https</a> <br />
 - <a class="reference external" href="https://docs.graylog.org/docs/syslog">https://docs.graylog.org/docs/syslog</a></p>
@@ -436,7 +437,7 @@
 <h2>Post Deployment<a class="headerlink" href="#post-deployment" title="Permalink to this heading">#</a></h2>
 <blockquote>
 <div><p>The Graylog can be accessed at the following URL: <br />
-<a class="reference external" href="https://graylog.engwsc.example.com:9000">https://graylog.engwsc.example.com:9000</a></p>
+<a class="reference external" href="https://graylog.engwsc.example.com">https://graylog.engwsc.example.com</a></p>
 <p>Username: <code class="docutils literal notranslate"><span class="pre">admin</span></code> <br />
 Password: <code class="docutils literal notranslate"><span class="pre">password_secret</span></code> (from step 16)</p>
 </div></blockquote>
@@ -607,10 +608,10 @@ dnf -y install elasticsearch-oss
 <li><p>Configure ElasticSearch for Graylog:</p></li>
 </ol>
 <blockquote>
-<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>tee -a /etc/elasticsearch/elasticsearch.yml &gt; /dev/null <span class="s">&lt;&lt;EOT</span>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cat &gt; /etc/elasticsearch/elasticsearch.yml <span class="s">&lt;&lt;EOF</span>
 <span class="s">cluster.name: graylog</span>
 <span class="s">action.auto_create_index: false</span>
-<span class="s">EOT</span>
+<span class="s">EOF</span>
 </pre></div>
 </div>
 </div></blockquote>
@@ -638,6 +639,47 @@ dnf -y install graylog-server
 </div>
 </div></blockquote>
 <ol class="arabic simple" start="14">
+<li><p>Set required <code class="docutils literal notranslate"><span class="pre">password_secret</span></code> and <code class="docutils literal notranslate"><span class="pre">root_password_sha2</span></code>:</p></li>
+</ol>
+<blockquote>
+<div><div class="admonition important">
+<p class="admonition-title">Important</p>
+<p>Replace <code class="docutils literal notranslate"><span class="pre">GRAYLOG_SECRET</span></code> with a confidential strong password that will be used to access Graylog.</p>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># You MUST set a secret to secure/pepper the stored</span>
+<span class="c1"># user passwords here. Use at least 64 characters.</span>
+<span class="c1"># Use: SECRET=`pwgen -N 1 -s 96`</span>
+<span class="c1"># to generate a random secret</span>
+<span class="nv">SECRET</span><span class="o">=</span><span class="s1">&#39;GRAYLOG_SECRET&#39;</span>
+<span class="nv">SECRET_SHA256</span><span class="o">=</span><span class="sb">`</span><span class="nb">echo</span> -n <span class="s2">&quot;</span><span class="si">${</span><span class="nv">SECRET</span><span class="si">}</span><span class="s2">&quot;</span> <span class="p">|</span> tr -d <span class="s1">&#39;\n&#39;</span> <span class="p">|</span> sha256sum <span class="p">|</span> cut -d<span class="s2">&quot; &quot;</span> -f1<span class="sb">`</span>
+
+sed -i <span class="s2">&quot;s|password_secret =.*|password_secret = </span><span class="si">${</span><span class="nv">SECRET</span><span class="si">}</span><span class="s2">|g&quot;</span> /etc/graylog/server/server.conf
+sed -i <span class="s2">&quot;s|root_password_sha2 =.*|root_password_sha2 = </span><span class="si">${</span><span class="nv">SECRET_SHA256</span><span class="si">}</span><span class="s2">|g&quot;</span> /etc/graylog/server/server.conf
+</pre></div>
+</div>
+</div></blockquote>
+<ol class="arabic simple" start="15">
+<li><p>Configure SELinux:</p></li>
+</ol>
+<blockquote>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>setsebool -P httpd_can_network_connect <span class="m">1</span>
+semanage port -a -t http_port_t -p tcp <span class="m">9000</span>
+</pre></div>
+</div>
+</div></blockquote>
+<ol class="arabic simple" start="16">
+<li><p>Start Graylog:</p></li>
+</ol>
+<blockquote>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>systemctl daemon-reload
+systemctl <span class="nb">enable</span> --now graylog-server
+</pre></div>
+</div>
+</div></blockquote>
+</section>
+<section id="nginx">
+<h3>NGINX<a class="headerlink" href="#nginx" title="Permalink to this heading">#</a></h3>
+<ol class="arabic simple" start="17">
 <li><p>Create Self-Signed SSL Certificate:</p></li>
 </ol>
 <blockquote>
@@ -646,11 +688,12 @@ dnf -y install graylog-server
 <p>Replace values with the specifics of your network.</p>
 </div>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create directory structure</span>
-mkdir -p  /etc/graylog/ssl/
-chmod <span class="m">755</span> /etc/graylog/ssl
+mkdir -p  /etc/pki/nginx/
+chmod <span class="m">755</span> /etc/pki/nginx/
 
 <span class="c1"># Create OpenSSL configuration file</span>
-cat &gt; /etc/graylog/ssl/graylog.engwsc.example.com.cnf <span class="s">&lt;&lt;EOF</span>
+mkdir -p /etc/pki/nginx/
+cat &gt; /etc/pki/nginx/graylog.engwsc.example.com.cnf <span class="s">&lt;&lt;EOF</span>
 <span class="s">[req]</span>
 <span class="s">distinguished_name = req_distinguished_name</span>
 <span class="s">x509_extensions = v3_req</span>
@@ -679,73 +722,69 @@ cat &gt; /etc/graylog/ssl/graylog.engwsc.example.com.cnf <span class="s">&lt;&lt
 
 <span class="c1"># Create certificate</span>
 openssl req -x509 -days <span class="m">365</span> -nodes -newkey rsa:4096 <span class="se">\</span>
-    -config /etc/graylog/ssl/graylog.engwsc.example.com.cnf <span class="se">\</span>
-    -keyout /etc/graylog/ssl/graylog.engwsc.example.com.key <span class="se">\</span>
-    -out    /etc/graylog/ssl/graylog.engwsc.example.com.crt
+    -config /etc/pki/nginx/graylog.engwsc.example.com.cnf <span class="se">\</span>
+    -keyout /etc/pki/nginx/graylog.engwsc.example.com.key <span class="se">\</span>
+    -out    /etc/pki/nginx/graylog.engwsc.example.com.crt
 
 <span class="c1"># Set permissions</span>
-chown graylog:graylog /etc/graylog/ssl/graylog.engwsc.example.com.key
-chown graylog:graylog /etc/graylog/ssl/graylog.engwsc.example.com.crt
-chmod <span class="m">600</span> /etc/graylog/ssl/graylog.engwsc.example.com.key
-</pre></div>
-</div>
-</div></blockquote>
-<ol class="arabic simple" start="15">
-<li><p>Import certificate into java Key Store:</p></li>
-</ol>
-<blockquote>
-<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>keytool -importcert -noprompt <span class="se">\</span>
-    -keystore /etc/pki/java/cacerts <span class="se">\</span>
-    -storepass changeit <span class="se">\</span>
-    -alias graylog-self-signed <span class="se">\</span>
-    -file /etc/graylog/ssl/graylog.engwsc.example.com.crt
-</pre></div>
-</div>
-</div></blockquote>
-<ol class="arabic simple" start="16">
-<li><p>Set required <code class="docutils literal notranslate"><span class="pre">password_secret</span></code> and <code class="docutils literal notranslate"><span class="pre">root_password_sha2</span></code>:</p></li>
-</ol>
-<blockquote>
-<div><div class="admonition important">
-<p class="admonition-title">Important</p>
-<p>Replace <code class="docutils literal notranslate"><span class="pre">GRAYLOG_SECRET</span></code> with a confidential strong password that will be used to access Graylog.</p>
-</div>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># You MUST set a secret to secure/pepper the stored</span>
-<span class="c1"># user passwords here. Use at least 64 characters.</span>
-<span class="c1"># Use: SECRET=`pwgen -N 1 -s 96`</span>
-<span class="c1"># to generate a random secret</span>
-<span class="nv">SECRET</span><span class="o">=</span><span class="s1">&#39;GRAYLOG_SECRET&#39;</span>
-<span class="nv">SECRET_SHA256</span><span class="o">=</span><span class="sb">`</span><span class="nb">echo</span> -n <span class="s2">&quot;</span><span class="si">${</span><span class="nv">SECRET</span><span class="si">}</span><span class="s2">&quot;</span> <span class="p">|</span> tr -d <span class="s1">&#39;\n&#39;</span> <span class="p">|</span> sha256sum <span class="p">|</span> cut -d<span class="s2">&quot; &quot;</span> -f1<span class="sb">`</span>
-
-sed -i <span class="s2">&quot;s|password_secret =.*|password_secret = </span><span class="si">${</span><span class="nv">SECRET</span><span class="si">}</span><span class="s2">|g&quot;</span> /etc/graylog/server/server.conf
-sed -i <span class="s2">&quot;s|root_password_sha2 =.*|root_password_sha2 = </span><span class="si">${</span><span class="nv">SECRET_SHA256</span><span class="si">}</span><span class="s2">|g&quot;</span> /etc/graylog/server/server.conf
-sed -i <span class="s2">&quot;s|#http_bind_address =.*|http_bind_address = graylog.engwsc.example.com:9000|g&quot;</span> /etc/graylog/server/server.conf
-
-sed -i <span class="s2">&quot;s|#http_enable_tls =.*|http_enable_tls = true|g&quot;</span> /etc/graylog/server/server.conf
-sed -i <span class="s2">&quot;s|#http_tls_cert_file =.*|http_tls_cert_file = /etc/graylog/ssl/graylog.engwsc.example.com.crt|g&quot;</span> /etc/graylog/server/server.conf
-sed -i <span class="s2">&quot;s|#http_tls_key_file =.*|http_tls_key_file = /etc/graylog/ssl/graylog.engwsc.example.com.key|g&quot;</span> /etc/graylog/server/server.conf
-</pre></div>
-</div>
-</div></blockquote>
-<ol class="arabic simple" start="17">
-<li><p>Configure SELinux:</p></li>
-</ol>
-<blockquote>
-<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>setsebool -P httpd_can_network_connect <span class="m">1</span>
-semanage port -a -t http_port_t -p tcp <span class="m">9000</span>
+chown root:root /etc/pki/nginx/graylog.engwsc.example.com.key
+chown root:root /etc/pki/nginx/graylog.engwsc.example.com.crt
+chmod <span class="m">600</span> /etc/pki/nginx/graylog.engwsc.example.com.key
 </pre></div>
 </div>
 </div></blockquote>
 <ol class="arabic simple" start="18">
-<li><p>Start Graylog:</p></li>
+<li><p>Configure NGINX</p></li>
 </ol>
 <blockquote>
-<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>systemctl daemon-reload
-systemctl <span class="nb">enable</span> --now graylog-server
+<div><div class="admonition important">
+<p class="admonition-title">Important</p>
+<p>Replace graylog.engwsc.example.com with the specifics of your network.</p>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mkdir -p /etc/nginx/conf.d/
+cat &gt; /etc/nginx/conf.d/graylog.conf <span class="s">&lt;&lt;EOF</span>
+<span class="s">server {</span>
+<span class="s">    listen 80;</span>
+<span class="s">    server_name graylog.engwsc.example.com;</span>
+<span class="s">    root /nowhere;</span>
+<span class="s">    rewrite ^ https://\$server_name\$request_uri permanent;</span>
+<span class="s">}</span>
+<span class="s">server</span>
+<span class="s">{</span>
+<span class="s">    listen      443 ssl http2;</span>
+<span class="s">    server_name graylog.engwsc.example.com;</span>
+
+<span class="s">    ssl_certificate &quot;/etc/pki/nginx/graylog.engwsc.example.com.crt&quot;;</span>
+<span class="s">    ssl_certificate_key &quot;/etc/pki/nginx/graylog.engwsc.example.com.key&quot;;</span>
+<span class="s">    ssl_session_cache shared:SSL:1m;</span>
+<span class="s">    ssl_session_timeout 10m;</span>
+<span class="s">    ssl_ciphers PROFILE=SYSTEM;</span>
+<span class="s">    ssl_prefer_server_ciphers on;</span>
+
+<span class="s">    location /</span>
+<span class="s">    {</span>
+<span class="s">      proxy_set_header Host \$http_host;</span>
+<span class="s">      proxy_set_header X-Forwarded-Host \$host;</span>
+<span class="s">      proxy_set_header X-Forwarded-Server \$host;</span>
+<span class="s">      proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;</span>
+<span class="s">      proxy_set_header X-Graylog-Server-URL https://\$server_name/;</span>
+<span class="s">      proxy_pass       http://127.0.0.1:9000;</span>
+<span class="s">    }</span>
+<span class="s">}</span>
+<span class="s">EOF</span>
 </pre></div>
 </div>
 </div></blockquote>
 <ol class="arabic simple" start="19">
+<li><p>Enable NGINX service:</p></li>
+</ol>
+<blockquote>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>systemctl daemon-reload
+systemctl <span class="nb">enable</span> --now nginx
+</pre></div>
+</div>
+</div></blockquote>
+<ol class="arabic simple" start="20">
 <li><p>Set firewalld rules:</p></li>
 </ol>
 <blockquote>
@@ -754,13 +793,17 @@ systemctl <span class="nb">enable</span> --now graylog-server
 <p>Replace the IPv4 Address and Subnet mask with the value of your network.</p>
 </div>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>firewall-cmd --zone<span class="o">=</span>public --add-source<span class="o">=</span><span class="m">192</span>.168.1.0/24 --permanent
-firewall-cmd --zone<span class="o">=</span>public --add-port<span class="o">=</span><span class="m">9000</span>/tcp --permanent
+firewall-cmd --zone<span class="o">=</span>public --add-service<span class="o">=</span>http --permanent
+firewall-cmd --zone<span class="o">=</span>public --add-service<span class="o">=</span>https --permanent
 firewall-cmd --zone<span class="o">=</span>public --add-port<span class="o">=</span><span class="m">6514</span>/tcp --permanent
 firewall-cmd --reload
 </pre></div>
 </div>
 </div></blockquote>
-<ol class="arabic simple" start="20">
+</section>
+<section id="graylog-configuration">
+<h3>Graylog Configuration<a class="headerlink" href="#graylog-configuration" title="Permalink to this heading">#</a></h3>
+<ol class="arabic simple" start="21">
 <li><p>Log into Graylog:</p></li>
 </ol>
 <div class="admonition important">
@@ -769,10 +812,10 @@ firewall-cmd --reload
 </div>
 <blockquote>
 <div><p>Log into Graylog using user <code class="docutils literal notranslate"><span class="pre">admin</span></code> and password <code class="docutils literal notranslate"><span class="pre">password_secret</span></code>.</p>
-<p>Graylog: <a class="reference external" href="https://graylog.engwsc.example.com:9000">https://graylog.engwsc.example.com:9000</a></p>
+<p>Graylog: <a class="reference external" href="https://graylog.engwsc.example.com">https://graylog.engwsc.example.com</a></p>
 <img alt="../_images/login-page.png" src="../_images/login-page.png" />
 </div></blockquote>
-<ol class="arabic simple" start="21">
+<ol class="arabic simple" start="22">
 <li><p>Create Input:</p></li>
 </ol>
 <blockquote>
@@ -797,8 +840,8 @@ firewall-cmd --reload
 <li><p>In the “Title” box enter: RSyslog</p></li>
 <li><p>In the “Port” box enter: 6514</p></li>
 <li><p>In the “No. of worker threads” box enter: 4</p></li>
-<li><p>In the “TLS cert file” box enter: /etc/graylog/ssl/graylog.engwsc.example.com.crt</p></li>
-<li><p>In the “TLS private key file” box enter: /etc/graylog/ssl/graylog.engwsc.example.com.key</p></li>
+<li><p>In the “TLS cert file” box enter: /etc/pki/nginx/graylog.engwsc.example.com.crt</p></li>
+<li><p>In the “TLS private key file” box enter: /etc/pki/nginx/graylog.engwsc.example.com.key</p></li>
 <li><p>Click the “Enable TLS” check box (box should be checked)</p></li>
 <li><p>In the “TLS client authentication” box enter: disabled</p></li>
 <li><p>Click the “TCP keepalive” check box (box should be checked)</p></li>
@@ -885,6 +928,8 @@ firewall-cmd --reload
 <li><a class="reference internal" href="#mongodb">MongoDB</a></li>
 <li><a class="reference internal" href="#elasticsearch">ElasticSearch</a></li>
 <li><a class="reference internal" href="#graylog">Graylog</a></li>
+<li><a class="reference internal" href="#nginx">NGINX</a></li>
+<li><a class="reference internal" href="#graylog-configuration">Graylog Configuration</a></li>
 </ul>
 </li>
 </ul>

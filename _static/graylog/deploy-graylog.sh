@@ -73,6 +73,7 @@ dnf -y upgrade
 
 # Install Dependencies
 dnf -y install epel-release
+
 dnf -y distro-sync
 dnf -y install pwgen java-1.8.0-openjdk-headless \
     checkpolicy policycoreutils selinux-policy-devel
@@ -190,12 +191,34 @@ rpm -Uvh https://packages.graylog2.org/repo/packages/graylog-4.3-repository_late
 dnf -y distro-sync
 dnf -y install graylog-server
 
+# Set Graylog Secrets
+sed -i "s|password_secret =.*|password_secret = ${GRAYLOG_SECRET}|g" /etc/graylog/server/server.conf
+sed -i "s|root_password_sha2 =.*|root_password_sha2 = ${GRAYLOG_SECRET_SHA256}|g" /etc/graylog/server/server.conf
+
+# Configure SELinux
+setsebool -P httpd_can_network_connect 1
+semanage port -a -t http_port_t -p tcp ${GRAYLOG_PORT}
+
+# Start Graylog
+systemctl daemon-reload
+systemctl enable --now graylog-server
+
+
+#
+# NGINX
+#
+
+# Install NGINX
+dnf -y distro-sync
+dnf -y install nginx
+
 # Create directory structure
-mkdir -p  /etc/graylog/ssl/
-chmod 755 /etc/graylog/ssl
+mkdir -p  /etc/pki/nginx/
+chmod 755 /etc/pki/nginx/
 
 # Create OpenSSL configuration file
-cat > /etc/graylog/ssl/graylog.engwsc.example.com.cnf <<EOF
+mkdir -p /etc/pki/nginx/
+cat > /etc/pki/nginx/graylog.engwsc.example.com.cnf <<EOF
 [req]
 distinguished_name = req_distinguished_name
 x509_extensions = v3_req
@@ -224,42 +247,56 @@ EOF
 
 # Create certificate
 openssl req -x509 -days 365 -nodes -newkey rsa:4096 \
-    -config /etc/graylog/ssl/graylog.engwsc.example.com.cnf \
-    -keyout /etc/graylog/ssl/graylog.engwsc.example.com.key \
-    -out    /etc/graylog/ssl/graylog.engwsc.example.com.crt
+    -config /etc/pki/nginx/graylog.engwsc.example.com.cnf \
+    -keyout /etc/pki/nginx/graylog.engwsc.example.com.key \
+    -out    /etc/pki/nginx/graylog.engwsc.example.com.crt
 
 # Set permissions
-chown graylog:graylog /etc/graylog/ssl/graylog.engwsc.example.com.key
-chown graylog:graylog /etc/graylog/ssl/graylog.engwsc.example.com.crt
-chmod 600 /etc/graylog/ssl/graylog.engwsc.example.com.key
+chown graylog:graylog /etc/pki/nginx/graylog.engwsc.example.com.key
+chown graylog:graylog /etc/pki/nginx/graylog.engwsc.example.com.crt
+chmod 600 /etc/pki/nginx/graylog.engwsc.example.com.key
 
-# Import certificate into java Key Store:
-keytool -importcert -noprompt \
-    -keystore /etc/pki/java/cacerts \
-    -storepass changeit \
-    -alias graylog-self-signed \
-    -file /etc/graylog/ssl/graylog.engwsc.example.com.crt
+# Configure NGINX
+mkdir -p /etc/nginx/conf.d/
+cat > /etc/nginx/conf.d/graylog.conf <<EOF
+server {
+    listen 80;
+    server_name graylog.engwsc.example.com;
+    root /nowhere;
+    rewrite ^ https://\$server_name\$request_uri permanent;
+}
+server
+{
+    listen      443 ssl http2;
+    server_name graylog.engwsc.example.com;
 
-# Set Graylog Secrets
-sed -i "s|password_secret =.*|password_secret = ${GRAYLOG_SECRET}|g" /etc/graylog/server/server.conf
-sed -i "s|root_password_sha2 =.*|root_password_sha2 = ${GRAYLOG_SECRET_SHA256}|g" /etc/graylog/server/server.conf
-sed -i "s|#http_bind_address =.*|http_bind_address = ${HOST_NAME}:${GRAYLOG_PORT}|g" /etc/graylog/server/server.conf
+    ssl_certificate "/etc/pki/nginx/graylog.engwsc.example.com.crt";
+    ssl_certificate_key "/etc/pki/nginx/graylog.engwsc.example.com.key";
+    ssl_session_cache shared:SSL:1m;
+    ssl_session_timeout 10m;
+    ssl_ciphers PROFILE=SYSTEM;
+    ssl_prefer_server_ciphers on;
 
-sed -i "s|#http_enable_tls =.*|http_enable_tls = true|g" /etc/graylog/server/server.conf
-sed -i "s|#http_tls_cert_file =.*|http_tls_cert_file = /etc/graylog/ssl/graylog.engwsc.example.com.crt|g" /etc/graylog/server/server.conf
-sed -i "s|#http_tls_key_file =.*|http_tls_key_file = /etc/graylog/ssl/graylog.engwsc.example.com.key|g" /etc/graylog/server/server.conf
+    location /
+    {
+      proxy_set_header Host \$http_host;
+      proxy_set_header X-Forwarded-Host \$host;
+      proxy_set_header X-Forwarded-Server \$host;
+      proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
+      proxy_set_header X-Graylog-Server-URL https://\$server_name/;
+      proxy_pass       http://127.0.0.1:9000;
+    }
+}
+EOF
 
-# Configure SELinux
-setsebool -P httpd_can_network_connect 1
-semanage port -a -t http_port_t -p tcp ${GRAYLOG_PORT}
-
-# Start Graylog
+# Enable NGINX service
 systemctl daemon-reload
-systemctl enable --now graylog-server
+systemctl enable --now nginx
 
 # Set firewalld rules
 firewall-cmd --zone=public --add-source=${ALLOWED_IPV4} --permanent
-firewall-cmd --zone=public --add-port=${GRAYLOG_PORT}/tcp --permanent
+firewall-cmd --zone=public --add-service=http --permanent
+firewall-cmd --zone=public --add-service=https --permanent
 firewall-cmd --zone=public --add-port=${RSYSLOG_PORT}/tcp --permanent
 firewall-cmd --reload
 
@@ -274,7 +311,7 @@ echo   "**    Graylog Administrator User: admin                                 
 printf "**    Graylog Secret: %-64s **\n" ${GRAYLOG_SECRET}                                         | tee -a .deploy-graylog-${timestamp}
 echo   "**                                                                                     **"  | tee -a .deploy-graylog-${timestamp}
 echo   "**    Graylog Dashboard:                                                               **"  | tee -a .deploy-graylog-${timestamp}
-printf "**      https://%-70s **\n" "${HOST_NAME}:${GRAYLOG_PORT}"                                  | tee -a .deploy-graylog-${timestamp}
+printf "**      https://%-70s **\n" "${HOST_NAME}"                                                  | tee -a .deploy-graylog-${timestamp}
 echo   "**                                                                                     **"  | tee -a .deploy-graylog-${timestamp}
 printf "**    Rsyslog Server Port: %-60s**\n" "${RSYSLOG_PORT}"                                     | tee -a .deploy-graylog-${timestamp}
 echo   "**                                                                                     **"  | tee -a .deploy-graylog-${timestamp}
@@ -282,7 +319,7 @@ echo   "************************************************************************
 echo   "*****************************************************************************************"  | tee -a .deploy-graylog-${timestamp}
 echo
 
-echo "REQUIRED: Create RSyslog Input in Web Interface (https://${HOST_NAME}:${GRAYLOG_PORT})"
+echo "REQUIRED: Create RSyslog Input in Web Interface (https://${HOST_NAME})"
 echo
 
 echo -e "\n[$(date +"%Y-%m-%d %H:%M:%S")] Deploying Graylog Complete\n"
