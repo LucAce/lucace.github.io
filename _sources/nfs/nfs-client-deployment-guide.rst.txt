@@ -84,14 +84,14 @@ Deployment Steps
 
   .. code-block:: bash
 
-    sh -c 'cat >> /etc/fstab <<EOL
+    cat >> /etc/fstab <<EOL
 
     # NFS Mounts
     nfs01.engwsc.example.com:/srv/nfs/app     /app     nfs4 defaults,tcp,soft,nfsvers=4 0 0
     nfs01.engwsc.example.com:/srv/nfs/home    /home    nfs4 defaults,tcp,soft,nfsvers=4 0 0
     nfs01.engwsc.example.com:/srv/nfs/scratch /scratch nfs4 defaults,tcp,soft,nfsvers=4 0 0
 
-    EOL'
+    EOL
 
 5. Mount the NFS paths:
 

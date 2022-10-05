@@ -471,14 +471,14 @@ mkdir -p /scratch
 <p class="admonition-title">Important</p>
 <p>Replace <code class="docutils literal notranslate"><span class="pre">engwsc.example.com</span></code> with the domain name of your network.</p>
 </div>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sh -c <span class="s1">&#39;cat &gt;&gt; /etc/fstab &lt;&lt;EOL</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cat &gt;&gt; /etc/fstab <span class="s">&lt;&lt;EOL</span>
 
-<span class="s1"># NFS Mounts</span>
-<span class="s1">nfs01.engwsc.example.com:/srv/nfs/app     /app     nfs4 defaults,tcp,soft,nfsvers=4 0 0</span>
-<span class="s1">nfs01.engwsc.example.com:/srv/nfs/home    /home    nfs4 defaults,tcp,soft,nfsvers=4 0 0</span>
-<span class="s1">nfs01.engwsc.example.com:/srv/nfs/scratch /scratch nfs4 defaults,tcp,soft,nfsvers=4 0 0</span>
+<span class="s"># NFS Mounts</span>
+<span class="s">nfs01.engwsc.example.com:/srv/nfs/app     /app     nfs4 defaults,tcp,soft,nfsvers=4 0 0</span>
+<span class="s">nfs01.engwsc.example.com:/srv/nfs/home    /home    nfs4 defaults,tcp,soft,nfsvers=4 0 0</span>
+<span class="s">nfs01.engwsc.example.com:/srv/nfs/scratch /scratch nfs4 defaults,tcp,soft,nfsvers=4 0 0</span>
 
-<span class="s1">EOL&#39;</span>
+<span class="s">EOL</span>
 </pre></div>
 </div>
 </div></blockquote>
@@ -529,7 +529,8 @@ mount /scratch
             Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
             
             <a href="https://github.com/pradyunsg/furo">Furo</a>
-            
+            <div class="last-updated">
+              Last updated on Oct 01, 2022</div>
           </div>
           <div class="right-details">
             <div class="icons">
