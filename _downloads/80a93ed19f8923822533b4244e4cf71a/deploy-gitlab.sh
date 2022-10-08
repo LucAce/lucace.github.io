@@ -102,10 +102,21 @@ sed -i "s/^.*letsencrypt\['enable'\].*$/letsencrypt['enable'] = false/g" /etc/gi
 # Reconfigure GitLab
 gitlab-ctl reconfigure
 
-# Show random root password (Required for initial log in)
-echo -e "\nTemporary GitLab root user password\n"
-cat /etc/gitlab/initial_root_password
-echo -e "\n"
+timestamp=$(date +"%Y-%m-%d_%H-%M-%S")
+echo
+echo   "*************************************************************************"  | tee    .deploy-gitlab-${timestamp}
+echo   "*************************************************************************"  | tee -a .deploy-gitlab-${timestamp}
+echo   "**                                                                     **"  | tee -a .deploy-gitlab-${timestamp}
+echo   "**    GitLab URL:                                                      **"  | tee -a .deploy-gitlab-${timestamp}
+printf "**      https://%-54s **\n" ${GITLAB_FQDN}                                  | tee -a .deploy-gitlab-${timestamp}
+echo   "**                                                                     **"  | tee -a .deploy-gitlab-${timestamp}
+echo   "*************************************************************************"  | tee -a .deploy-gitlab-${timestamp}
+echo   "*************************************************************************"  | tee -a .deploy-gitlab-${timestamp}
+echo                                                                                | tee -a .deploy-gitlab-${timestamp}
+
+echo -e "\nTemporary GitLab root user password:\n"                                  | tee -a .deploy-gitlab-${timestamp}
+cat /etc/gitlab/initial_root_password                                               | tee -a .deploy-gitlab-${timestamp}
+echo -e "\n"                                                                        | tee -a .deploy-gitlab-${timestamp}
 
 echo -e "\n[$(date +"%Y-%m-%d %H:%M:%S")] Deploying GitLab Complete\n"
 exit 0

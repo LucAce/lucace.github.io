@@ -30,7 +30,7 @@ Deployment Scripts
 .. note::
 
   An example bash script of the instructions has been provided: |br|
-  :download:`../_static/user/deploy-tool.sh`
+  :download:`../_static/user/deploy-apps.sh`
 
 
 ****************

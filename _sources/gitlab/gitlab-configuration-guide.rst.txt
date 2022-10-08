@@ -90,7 +90,7 @@ Configuration Steps
 
   ::
 
-    * Click on "..." drop-down associated with user "Administrator"
+    * Click on "User administration" drop-down associated with user "Administrator"
     * Click "Delete user and contributions"
     * Type in "Administrator"
     * Click "Delete user and contributions"
@@ -118,8 +118,6 @@ Configuration Steps
   ::
 
     * Expand "Visibility and access controls" section
-    * Under "Default branch protection"
-    * Select "Partially protected"
     * Under "Default project creation protection"
     * Select "Maintainers"
     * Under "Default project visibility"
@@ -180,6 +178,7 @@ Configuration Steps
     * Kroki                           (https://gitlab.engwsc.example.com/admin/application_settings/general#js-kroki-settings)
     * Mailgun                         (https://gitlab.engwsc.example.com/admin/application_settings/general#js-mailgun-settings)
     * PlantUML                        (https://gitlab.engwsc.example.com/admin/application_settings/general#js-plantuml-settings)
+    * Sourcegraph                     (https://gitlab.engwsc.example.com/admin/application_settings/general#js-sourcegraph-settings)
     * Snowplow                        (https://gitlab.engwsc.example.com/admin/application_settings/general#js-snowplow-settings)
     * Amazon EKS                      (https://gitlab.engwsc.example.com/admin/application_settings/general#js-eks-settings)
     * Federated Learning of Cohorts   (https://gitlab.engwsc.example.com/admin/application_settings/general#js-floc-settings)
@@ -245,4 +244,15 @@ Configuration Steps
 
     * Expand "What's new" section
     * Select "Disable What's new"
+    * Click "Save changes"
+
+15. Disable Help page Marketing:
+
+  Go to: https://gitlab.engwsc.example.com/admin/application_settings/preferences#js-sign-in-and-help-page
+
+
+  ::
+
+    * Expand "Sign-in and Help page" section
+    * Select "Hide marketing-related entries from the Help page"
     * Click "Save changes"
