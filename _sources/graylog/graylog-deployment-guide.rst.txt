@@ -291,7 +291,6 @@ NGINX
     chmod 755 /etc/pki/nginx/
 
     # Create OpenSSL configuration file
-    mkdir -p /etc/pki/nginx/
     cat > /etc/pki/nginx/graylog.engwsc.example.com.cnf <<EOF
     [req]
     distinguished_name = req_distinguished_name
@@ -330,7 +329,7 @@ NGINX
     chown root:root /etc/pki/nginx/graylog.engwsc.example.com.crt
     chmod 600 /etc/pki/nginx/graylog.engwsc.example.com.key
 
-18. Configure NGINX
+18. Configure NGINX:
 
   .. important::
 

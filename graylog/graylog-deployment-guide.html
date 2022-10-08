@@ -692,7 +692,6 @@ mkdir -p  /etc/pki/nginx/
 chmod <span class="m">755</span> /etc/pki/nginx/
 
 <span class="c1"># Create OpenSSL configuration file</span>
-mkdir -p /etc/pki/nginx/
 cat &gt; /etc/pki/nginx/graylog.engwsc.example.com.cnf <span class="s">&lt;&lt;EOF</span>
 <span class="s">[req]</span>
 <span class="s">distinguished_name = req_distinguished_name</span>
@@ -734,7 +733,7 @@ chmod <span class="m">600</span> /etc/pki/nginx/graylog.engwsc.example.com.key
 </div>
 </div></blockquote>
 <ol class="arabic simple" start="18">
-<li><p>Configure NGINX</p></li>
+<li><p>Configure NGINX:</p></li>
 </ol>
 <blockquote>
 <div><div class="admonition important">
@@ -896,7 +895,7 @@ firewall-cmd --reload
             
             <a href="https://github.com/pradyunsg/furo">Furo</a>
             <div class="last-updated">
-              Last updated on Oct 01, 2022</div>
+              Last updated on Oct 07, 2022</div>
           </div>
           <div class="right-details">
             <div class="icons">
