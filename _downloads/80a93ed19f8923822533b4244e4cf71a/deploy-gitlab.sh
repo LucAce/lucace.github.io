@@ -69,12 +69,14 @@ systemctl enable --now postfix
 # Add the GitLab package repository
 echo "Configuring \"${GITLAB_EDITION}\" GitLab Edition"
 
+CURRENT_PWD=${PWD}
 tmp_dir=$(mktemp -d -t gitlab-XXXXXXXXXX --tmpdir=/tmp)
 cd $tmp_dir
 curl https://packages.gitlab.com/install/repositories/gitlab/gitlab-${GITLAB_EDITION}/script.rpm.sh -o $tmp_dir/script.rpm.sh
 chmod 775 $tmp_dir/script.rpm.sh
 cat $tmp_dir/script.rpm.sh
 $tmp_dir/script.rpm.sh
+cd ${CURRENT_PWD}
 
 # Install GitLab
 EXTERNAL_URL=${GITLAB_EXTERNAL_URL} dnf install -y gitlab-${GITLAB_EDITION}
