@@ -680,6 +680,15 @@ systemctl <span class="nb">enable</span> --now graylog-server
 <section id="nginx">
 <h3>NGINX<a class="headerlink" href="#nginx" title="Permalink to this heading">#</a></h3>
 <ol class="arabic simple" start="17">
+<li><p>Install NGINX:</p></li>
+</ol>
+<blockquote>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>dnf -y distro-sync
+dnf -y install nginx
+</pre></div>
+</div>
+</div></blockquote>
+<ol class="arabic simple" start="18">
 <li><p>Create Self-Signed SSL Certificate:</p></li>
 </ol>
 <blockquote>
@@ -732,7 +741,7 @@ chmod <span class="m">600</span> /etc/pki/nginx/graylog.engwsc.example.com.key
 </pre></div>
 </div>
 </div></blockquote>
-<ol class="arabic simple" start="18">
+<ol class="arabic simple" start="19">
 <li><p>Configure NGINX:</p></li>
 </ol>
 <blockquote>
@@ -774,7 +783,7 @@ cat &gt; /etc/nginx/conf.d/graylog.conf <span class="s">&lt;&lt;EOF</span>
 </pre></div>
 </div>
 </div></blockquote>
-<ol class="arabic simple" start="19">
+<ol class="arabic simple" start="20">
 <li><p>Enable NGINX service:</p></li>
 </ol>
 <blockquote>
@@ -783,7 +792,7 @@ systemctl <span class="nb">enable</span> --now nginx
 </pre></div>
 </div>
 </div></blockquote>
-<ol class="arabic simple" start="20">
+<ol class="arabic simple" start="21">
 <li><p>Set firewalld rules:</p></li>
 </ol>
 <blockquote>
@@ -802,7 +811,7 @@ firewall-cmd --reload
 </section>
 <section id="graylog-configuration">
 <h3>Graylog Configuration<a class="headerlink" href="#graylog-configuration" title="Permalink to this heading">#</a></h3>
-<ol class="arabic simple" start="21">
+<ol class="arabic simple" start="22">
 <li><p>Log into Graylog:</p></li>
 </ol>
 <div class="admonition important">
@@ -814,7 +823,7 @@ firewall-cmd --reload
 <p>Graylog: <a class="reference external" href="https://graylog.engwsc.example.com">https://graylog.engwsc.example.com</a></p>
 <img alt="../_images/login-page.png" src="../_images/login-page.png" />
 </div></blockquote>
-<ol class="arabic simple" start="22">
+<ol class="arabic simple" start="23">
 <li><p>Create Input:</p></li>
 </ol>
 <blockquote>

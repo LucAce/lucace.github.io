@@ -422,18 +422,18 @@
 <section id="references">
 <h2>References<a class="headerlink" href="#references" title="Permalink to this heading">#</a></h2>
 <blockquote>
-<div><p>These instructions were written for InfluxDB <code class="docutils literal notranslate"><span class="pre">v2.3.0</span></code></p>
+<div><p>These instructions were written for InfluxDB <code class="docutils literal notranslate"><span class="pre">v2.4.0</span></code></p>
 </div></blockquote>
 <blockquote>
 <div><p>Official InfluxDB installation instructions: <br />
-<a class="reference external" href="https://docs.influxdata.com/influxdb/v2.3/install/?t=Linux">https://docs.influxdata.com/influxdb/v2.3/install/?t=Linux</a></p>
+<a class="reference external" href="https://docs.influxdata.com/influxdb/v2.4/install/?t=Linux">https://docs.influxdata.com/influxdb/v2.4/install/?t=Linux</a></p>
 </div></blockquote>
 </section>
 <section id="post-deployment">
 <h2>Post Deployment<a class="headerlink" href="#post-deployment" title="Permalink to this heading">#</a></h2>
 <blockquote>
 <div><p>The InfluxDB Dashboard can be accessed at the following URL:<br />
-<a class="reference external" href="https://influxdb.engwsc.example.com:8086">https://influxdb.engwsc.example.com:8086</a></p>
+<a class="reference external" href="https://influxdb.engwsc.example.com">https://influxdb.engwsc.example.com</a></p>
 <p>Username: <code class="docutils literal notranslate"><span class="pre">INFLUXDB_ADMIN_USERNAME</span></code> <br />
 Password: <code class="docutils literal notranslate"><span class="pre">INFLUXDB_ADMIN_PASSWORD</span></code> (from step 11)</p>
 </div></blockquote>
@@ -468,7 +468,8 @@ Password: <code class="docutils literal notranslate"><span class="pre">INFLUXDB_
 </ol>
 <blockquote>
 <div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># influxdb.key GPG Fingerprint: 05CE15085FC09D18E99EFB22684A14CF2582E0C5</span>
-cat <span class="s">&lt;&lt;EOF | sudo tee /etc/yum.repos.d/influxdb.repo</span>
+
+cat &gt; /etc/yum.repos.d/influxdb.repo <span class="s">&lt;&lt;EOF</span>
 <span class="s">[influxdb]</span>
 <span class="s">name = InfluxDB Repository - RHEL \$releasever</span>
 <span class="s">baseurl = https://repos.influxdata.com/rhel/\$releasever/\$basearch/stable</span>
@@ -497,70 +498,15 @@ dnf -y install influxdb2 influxdb2-cli telegraf
 </div>
 </div></blockquote>
 <ol class="arabic simple" start="6">
-<li><p>Create Self-signed SSL certificate:</p></li>
+<li><p>Start the InfluxDB service:</p></li>
 </ol>
 <blockquote>
-<div><div class="admonition important">
-<p class="admonition-title">Important</p>
-<p>Replace values with the specifics of your network.</p>
-</div>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Country Name (2 letter code) [XX]:US</span>
-<span class="c1"># State or Province Name (full name) []:New York</span>
-<span class="c1"># Locality Name (eg, city) [Default City]:New York</span>
-<span class="c1"># Organization Name (eg, company) [Default Company Ltd]:engwsc</span>
-<span class="c1"># Organizational Unit Name (eg, section) []:</span>
-<span class="c1"># Common Name (eg, your name or your server&#39;s hostname) []:influxdb.engwsc.example.com</span>
-<span class="c1"># Email Address []:</span>
-
-openssl req -x509 -nodes -newkey rsa:4096 <span class="se">\</span>
-    -keyout <span class="s2">&quot;/etc/ssl/influxdb-selfsigned.key&quot;</span> <span class="se">\</span>
-    -out <span class="s2">&quot;/etc/ssl/influxdb-selfsigned.crt&quot;</span> <span class="se">\</span>
-    -subj <span class="s2">&quot;/CN=influxdb.engwsc.example.com/C=US/ST=New York/L=New York/O=engwsc&quot;</span> <span class="se">\</span>
-    -days <span class="m">365</span>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>systemctl daemon-reload
+systemctl <span class="nb">enable</span> --now influxdb
 </pre></div>
 </div>
 </div></blockquote>
 <ol class="arabic simple" start="7">
-<li><p>Set permissions and ownership on the Self-signed certificates:</p></li>
-</ol>
-<blockquote>
-<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>chmod <span class="m">644</span> /etc/ssl/influxdb-selfsigned.crt
-chmod <span class="m">600</span> /etc/ssl/influxdb-selfsigned.key
-chown influxdb:influxdb /etc/ssl/influxdb-selfsigned.crt
-chown influxdb:influxdb /etc/ssl/influxdb-selfsigned.key
-</pre></div>
-</div>
-</div></blockquote>
-<ol class="arabic simple" start="8">
-<li><p>Add certificates to InfluxDB configuration file:</p></li>
-</ol>
-<blockquote>
-<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">echo</span> <span class="s1">&#39;tls-cert = &quot;/etc/ssl/influxdb-selfsigned.crt&quot;&#39;</span> &gt;&gt; /etc/influxdb/config.toml
-<span class="nb">echo</span> <span class="s1">&#39;tls-key = &quot;/etc/ssl/influxdb-selfsigned.key&quot;&#39;</span>  &gt;&gt; /etc/influxdb/config.toml
-</pre></div>
-</div>
-</div></blockquote>
-<ol class="arabic simple" start="9">
-<li><p>Start the InfluxDB service:</p></li>
-</ol>
-<blockquote>
-<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>systemctl <span class="nb">enable</span> --now influxdb
-</pre></div>
-</div>
-</div></blockquote>
-<ol class="arabic simple" start="10">
-<li><p>Verify TLS connection:</p></li>
-</ol>
-<blockquote>
-<div><div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>If using a self-signed certificate, use the -k flag to skip certificate verification</p>
-</div>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl -vk https://localhost:8086/api/v2/ping
-</pre></div>
-</div>
-</div></blockquote>
-<ol class="arabic simple" start="11">
 <li><p>Set up InfluxDB:</p></li>
 </ol>
 <blockquote>
@@ -573,7 +519,7 @@ Replace <code class="docutils literal notranslate"><span class="pre">INFLUXDB_AD
 will be used for InfluxDB <code class="docutils literal notranslate"><span class="pre">INFLUXDB_ADMIN_USERNAME</span></code> account.</p>
 </div>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>influx setup --force --skip-verify <span class="se">\</span>
-    --host <span class="s2">&quot;https://localhost:8086&quot;</span> <span class="se">\</span>
+    --host <span class="s2">&quot;http://localhost:8086&quot;</span> <span class="se">\</span>
     --org <span class="s2">&quot;ORGANIZATION&quot;</span> <span class="se">\</span>
     --bucket <span class="s2">&quot;INFLUXDB_DEFAULT_BUCKET&quot;</span> <span class="se">\</span>
     --username <span class="s2">&quot;INFLUXDB_ADMIN_USERNAME&quot;</span> <span class="se">\</span>
@@ -582,8 +528,108 @@ will be used for InfluxDB <code class="docutils literal notranslate"><span class
 </pre></div>
 </div>
 </div></blockquote>
+<ol class="arabic simple" start="8">
+<li><p>Install NGINX:</p></li>
+</ol>
+<blockquote>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>dnf -y distro-sync
+dnf -y install nginx
+</pre></div>
+</div>
+</div></blockquote>
+<ol class="arabic simple" start="9">
+<li><p>Create Self-Signed SSL Certificate:</p></li>
+</ol>
+<blockquote>
+<div><div class="admonition important">
+<p class="admonition-title">Important</p>
+<p>Replace values with the specifics of your network.</p>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create directory structure</span>
+mkdir -p  /etc/pki/nginx/
+chmod <span class="m">755</span> /etc/pki/nginx/
+
+<span class="c1"># Country Name (2 letter code) [XX]:US</span>
+<span class="c1"># State or Province Name (full name) []:New York</span>
+<span class="c1"># Locality Name (eg, city) [Default City]:New York</span>
+<span class="c1"># Organization Name (eg, company) [Default Company Ltd]:engwsc</span>
+<span class="c1"># Organizational Unit Name (eg, section) []:</span>
+<span class="c1"># Common Name (eg, your name or your server&#39;s hostname) []:influxdb.engwsc.example.com</span>
+<span class="c1"># Email Address []:</span>
+
+<span class="c1"># Create certificate</span>
+openssl req -x509 -nodes -newkey rsa:4096 <span class="se">\</span>
+    -keyout <span class="s2">&quot;/etc/pki/nginx/influxdb.engwsc.example.com.key&quot;</span> <span class="se">\</span>
+    -out    <span class="s2">&quot;/etc/pki/nginx/influxdb.engwsc.example.com.crt&quot;</span> <span class="se">\</span>
+    -subj   <span class="s2">&quot;/CN=influxdb.engwsc.example.com/C=US/ST=New York/L=New York/O=engwsc&quot;</span> <span class="se">\</span>
+    -days   <span class="m">365</span>
+
+<span class="c1"># Set certificate permissions</span>
+chown root:root /etc/pki/nginx/influxdb.engwsc.example.com.key
+chown root:root /etc/pki/nginx/influxdb.engwsc.example.com.crt
+chmod <span class="m">600</span>       /etc/pki/nginx/influxdb.engwsc.example.com.key
+</pre></div>
+</div>
+</div></blockquote>
+<ol class="arabic simple" start="10">
+<li><p>Configure NGINX:</p></li>
+</ol>
+<blockquote>
+<div><div class="admonition important">
+<p class="admonition-title">Important</p>
+<p>Replace example values with the specifics of your network.</p>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mkdir -p /etc/nginx/conf.d/
+cat &gt; /etc/nginx/conf.d/influxdb.conf <span class="s">&lt;&lt;EOF</span>
+<span class="s">server {</span>
+<span class="s">    listen 80;</span>
+<span class="s">    server_name influxdb.engwsc.example.com;</span>
+<span class="s">    root /nowhere;</span>
+<span class="s">    rewrite ^ https://\$server_name\$request_uri permanent;</span>
+<span class="s">}</span>
+<span class="s">server</span>
+<span class="s">{</span>
+<span class="s">    listen      443 ssl http2;</span>
+<span class="s">    server_name influxdb.engwsc.example.com;</span>
+
+<span class="s">    ssl_certificate &quot;/etc/pki/nginx/influxdb.engwsc.example.com.crt&quot;;</span>
+<span class="s">    ssl_certificate_key &quot;/etc/pki/nginx/influxdb.engwsc.example.com.key&quot;;</span>
+<span class="s">    ssl_session_cache shared:SSL:1m;</span>
+<span class="s">    ssl_session_timeout 10m;</span>
+<span class="s">    ssl_ciphers PROFILE=SYSTEM;</span>
+<span class="s">    ssl_prefer_server_ciphers on;</span>
+
+<span class="s">    location /</span>
+<span class="s">    {</span>
+<span class="s">      proxy_set_header Host \$http_host;</span>
+<span class="s">      proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;</span>
+<span class="s">      proxy_pass       http://127.0.0.1:8086;</span>
+<span class="s">    }</span>
+<span class="s">}</span>
+<span class="s">EOF</span>
+</pre></div>
+</div>
+</div></blockquote>
+<ol class="arabic simple" start="11">
+<li><p>Configure SELinux:</p></li>
+</ol>
+<blockquote>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>setsebool -P httpd_can_network_connect <span class="m">1</span>
+semanage port -a -t http_port_t -p tcp <span class="m">8086</span>
+</pre></div>
+</div>
+</div></blockquote>
 <ol class="arabic simple" start="12">
-<li><p>Configure firewalld rules:</p></li>
+<li><p>Enable NGINX service:</p></li>
+</ol>
+<blockquote>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>systemctl daemon-reload
+systemctl <span class="nb">enable</span> --now nginx
+</pre></div>
+</div>
+</div></blockquote>
+<ol class="arabic simple" start="13">
+<li><p>Set firewalld rules:</p></li>
 </ol>
 <blockquote>
 <div><div class="admonition important">
@@ -592,7 +638,8 @@ will be used for InfluxDB <code class="docutils literal notranslate"><span class
 </div>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>systemctl <span class="nb">enable</span> --now firewalld
 firewall-cmd --zone<span class="o">=</span>public --add-source<span class="o">=</span><span class="m">192</span>.168.1.0/24 --permanent
-firewall-cmd --zone<span class="o">=</span>public --add-port<span class="o">=</span><span class="m">8086</span>/tcp --permanent
+firewall-cmd --zone<span class="o">=</span>public --add-service<span class="o">=</span>http --permanent
+firewall-cmd --zone<span class="o">=</span>public --add-service<span class="o">=</span>https --permanent
 firewall-cmd --reload
 </pre></div>
 </div>

@@ -28,7 +28,7 @@ echo -e "\n[$(date +"%Y-%m-%d %H:%M:%S")] Deploying Telegraf Agent...\n"
 ###############################################################################
 
 # InfluxDB Server URL
-INFLUX_URL="https://influxdb.engwsc.example.com:8086"
+INFLUX_URL="https://influxdb.engwsc.example.com"
 
 # InfluxDB Organization
 INFLUX_ORGANIZATION="engwsc.example.com"

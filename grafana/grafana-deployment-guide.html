@@ -468,16 +468,16 @@ Password: <code class="docutils literal notranslate"><span class="pre">GRAFANA_A
 <li><p>Add the Grafana Yum Repository:</p></li>
 </ol>
 <blockquote>
-<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cat <span class="s">&lt;&lt;EOF | sudo tee /etc/yum.repos.d/grafana.repo</span>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cat &gt; /etc/yum.repos.d/grafana.repo <span class="s">&lt;&lt;EOF</span>
 <span class="s">[grafana]</span>
-<span class="s">name=grafana</span>
-<span class="s">baseurl=https://packages.grafana.com/oss/rpm</span>
-<span class="s">repo_gpgcheck=1</span>
-<span class="s">enabled=1</span>
-<span class="s">gpgcheck=1</span>
-<span class="s">gpgkey=https://packages.grafana.com/gpg.key</span>
-<span class="s">sslverify=1</span>
-<span class="s">sslcacert=/etc/pki/tls/certs/ca-bundle.crt</span>
+<span class="s">name = grafana</span>
+<span class="s">baseurl = https://packages.grafana.com/oss/rpm</span>
+<span class="s">repo_gpgcheck = 1</span>
+<span class="s">enabled = 1</span>
+<span class="s">gpgcheck = 1</span>
+<span class="s">gpgkey = https://packages.grafana.com/gpg.key</span>
+<span class="s">sslverify = 1</span>
+<span class="s">sslcacert = /etc/pki/tls/certs/ca-bundle.crt</span>
 <span class="s">EOF</span>
 </pre></div>
 </div>
@@ -500,35 +500,6 @@ dnf -y install initscripts urw-fonts wget
 </div>
 </div></blockquote>
 <ol class="arabic simple" start="6">
-<li><p>Create Self-signed SSL certificate:</p></li>
-</ol>
-<blockquote>
-<div><div class="admonition important">
-<p class="admonition-title">Important</p>
-<p>Replace values with the specifics of your network.</p>
-</div>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Country Name (2 letter code) [XX]:US</span>
-<span class="c1"># State or Province Name (full name) []:New York</span>
-<span class="c1"># Locality Name (eg, city) [Default City]:New York</span>
-<span class="c1"># Organization Name (eg, company) [Default Company Ltd]:engwsc</span>
-<span class="c1"># Organizational Unit Name (eg, section) []:</span>
-<span class="c1"># Common Name (eg, your name or your server&#39;s hostname) []:grafana.engwsc.example.com</span>
-<span class="c1"># Email Address []:</span>
-
-openssl req -x509 -nodes -newkey rsa:4096 <span class="se">\</span>
-    -keyout <span class="s2">&quot;/etc/ssl/grafana-selfsigned.key&quot;</span> <span class="se">\</span>
-    -out <span class="s2">&quot;/etc/ssl/grafana-selfsigned.crt&quot;</span> <span class="se">\</span>
-    -subj <span class="s2">&quot;/CN=grafana.engwsc.example.com/C=US/ST=New York/L=New York/O=engwsc&quot;</span> <span class="se">\</span>
-    -days <span class="m">365</span>
-
-chgrp grafana /etc/ssl/grafana-selfsigned.key
-chgrp grafana /etc/ssl/grafana-selfsigned.crt
-chmod <span class="m">440</span> /etc/ssl/grafana-selfsigned.key
-chmod <span class="m">440</span> /etc/ssl/grafana-selfsigned.key
-</pre></div>
-</div>
-</div></blockquote>
-<ol class="arabic simple" start="7">
 <li><p>Set up Grafana:</p></li>
 </ol>
 <blockquote>
@@ -538,10 +509,7 @@ chmod <span class="m">440</span> /etc/ssl/grafana-selfsigned.key
 Replace <code class="docutils literal notranslate"><span class="pre">GRAFANA_ADMIN_PASSWORD</span></code> with a confidential secure password that
 will be used for Grafana <code class="docutils literal notranslate"><span class="pre">GRAFANA_ADMIN_USERNAME</span></code> account.</p>
 </div>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sed -i <span class="s1">&#39;s/^;protocol =.*/protocol = https/g&#39;</span> /etc/grafana/grafana.ini
-sed -i <span class="s2">&quot;s/^;domain =.*/domain = </span><span class="si">${</span><span class="nv">DOMAIN_NAME</span><span class="si">}</span><span class="s2">/g&quot;</span> /etc/grafana/grafana.ini
-sed -i <span class="s1">&#39;s|^;cert_file =.*|cert_file = /etc/ssl/grafana-selfsigned.crt|g&#39;</span> /etc/grafana/grafana.ini
-sed -i <span class="s1">&#39;s|^;cert_key =.*|cert_key = /etc/ssl/grafana-selfsigned.key|g&#39;</span> /etc/grafana/grafana.ini
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sed -i <span class="s2">&quot;s/^;domain =.*/domain = engwsc.example.com/g&quot;</span> /etc/grafana/grafana.ini
 sed -i <span class="s1">&#39;s|^;reporting_enabled =.*|reporting_enabled = false|g&#39;</span> /etc/grafana/grafana.ini
 sed -i <span class="s1">&#39;s|^;disable_gravatar =.*|disable_gravatar = true|g&#39;</span> /etc/grafana/grafana.ini
 
@@ -550,7 +518,7 @@ sed -i <span class="s1">&#39;s|^;admin_password =.*|admin_password = GRAFANA_ADM
 </pre></div>
 </div>
 </div></blockquote>
-<ol class="arabic simple" start="8">
+<ol class="arabic simple" start="7">
 <li><p>Start the Grafana service:</p></li>
 </ol>
 <blockquote>
@@ -559,12 +527,118 @@ systemctl <span class="nb">enable</span> --now grafana-server
 </pre></div>
 </div>
 </div></blockquote>
-<ol class="arabic simple" start="9">
-<li><p>Configure firewalld rules:</p></li>
+<ol class="arabic simple" start="8">
+<li><p>Install NGINX</p></li>
 </ol>
 <blockquote>
-<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>systemctl <span class="nb">enable</span> --now firewalld
-firewall-cmd --zone<span class="o">=</span>public --add-port<span class="o">=</span><span class="m">3000</span>/tcp --permanent
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>dnf -y distro-sync
+dnf -y install nginx
+</pre></div>
+</div>
+</div></blockquote>
+<ol class="arabic simple" start="9">
+<li><p>Create Self-Signed SSL Certificate:</p></li>
+</ol>
+<blockquote>
+<div><div class="admonition important">
+<p class="admonition-title">Important</p>
+<p>Replace values with the specifics of your network.</p>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create directory structure</span>
+mkdir -p  /etc/pki/nginx/
+chmod <span class="m">755</span> /etc/pki/nginx/
+
+<span class="c1"># Country Name (2 letter code) [XX]:US</span>
+<span class="c1"># State or Province Name (full name) []:New York</span>
+<span class="c1"># Locality Name (eg, city) [Default City]:New York</span>
+<span class="c1"># Organization Name (eg, company) [Default Company Ltd]:engwsc</span>
+<span class="c1"># Organizational Unit Name (eg, section) []:</span>
+<span class="c1"># Common Name (eg, your name or your server&#39;s hostname) []:grafana.engwsc.example.com</span>
+<span class="c1"># Email Address []:</span>
+
+<span class="c1"># Create certificate</span>
+openssl req -x509 -nodes -newkey rsa:4096 <span class="se">\</span>
+    -keyout <span class="s2">&quot;/etc/pki/nginx/grafana.engwsc.example.com.key&quot;</span> <span class="se">\</span>
+    -out    <span class="s2">&quot;/etc/pki/nginx/grafana.engwsc.example.com.crt&quot;</span> <span class="se">\</span>
+    -subj   <span class="s2">&quot;/CN=grafana.engwsc.example.com/C=US/ST=New York/L=New York/O=engwsc&quot;</span> <span class="se">\</span>
+    -days   <span class="m">365</span>
+
+<span class="c1"># Set certificate permissions</span>
+chown root:root /etc/pki/nginx/grafana.engwsc.example.com.key
+chown root:root /etc/pki/nginx/grafana.engwsc.example.com.crt
+chmod <span class="m">600</span>       /etc/pki/nginx/grafana.engwsc.example.com.key
+</pre></div>
+</div>
+</div></blockquote>
+<ol class="arabic simple" start="10">
+<li><p>Configure NGINX:</p></li>
+</ol>
+<blockquote>
+<div><div class="admonition important">
+<p class="admonition-title">Important</p>
+<p>Replace example values with the specifics of your network.</p>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mkdir -p /etc/nginx/conf.d/
+cat &gt; /etc/nginx/conf.d/grafana.conf <span class="s">&lt;&lt;EOF</span>
+<span class="s">server {</span>
+<span class="s">    listen 80;</span>
+<span class="s">    server_name grafana.engwsc.example.com;</span>
+<span class="s">    root /nowhere;</span>
+<span class="s">    rewrite ^ https://\$server_name\$request_uri permanent;</span>
+<span class="s">}</span>
+<span class="s">server</span>
+<span class="s">{</span>
+<span class="s">    listen      443 ssl http2;</span>
+<span class="s">    server_name grafana.engwsc.example.com;</span>
+
+<span class="s">    ssl_certificate &quot;/etc/pki/nginx/grafana.engwsc.example.com.crt&quot;;</span>
+<span class="s">    ssl_certificate_key &quot;/etc/pki/nginx/grafana.engwsc.example.com.key&quot;;</span>
+<span class="s">    ssl_session_cache shared:SSL:1m;</span>
+<span class="s">    ssl_session_timeout 10m;</span>
+<span class="s">    ssl_ciphers PROFILE=SYSTEM;</span>
+<span class="s">    ssl_prefer_server_ciphers on;</span>
+
+<span class="s">    location /</span>
+<span class="s">    {</span>
+<span class="s">      proxy_set_header Host \$http_host;</span>
+<span class="s">      proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;</span>
+<span class="s">      proxy_pass       http://127.0.0.1:3000;</span>
+<span class="s">    }</span>
+<span class="s">}</span>
+<span class="s">EOF</span>
+</pre></div>
+</div>
+</div></blockquote>
+<ol class="arabic simple" start="11">
+<li><p>Configure SELinux:</p></li>
+</ol>
+<blockquote>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>setsebool -P httpd_can_network_connect <span class="m">1</span>
+semanage port -a -t http_port_t -p tcp <span class="m">3000</span>
+</pre></div>
+</div>
+</div></blockquote>
+<ol class="arabic simple" start="12">
+<li><p>Enable NGINX service:</p></li>
+</ol>
+<blockquote>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>systemctl daemon-reload
+systemctl <span class="nb">enable</span> --now nginx
+</pre></div>
+</div>
+</div></blockquote>
+<ol class="arabic simple" start="13">
+<li><p>Set firewalld rules:</p></li>
+</ol>
+<blockquote>
+<div><div class="admonition important">
+<p class="admonition-title">Important</p>
+<p>Replace the IPv4 Address and Subnet mask with the value of your network.</p>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>systemctl <span class="nb">enable</span> --now firewalld
+firewall-cmd --zone<span class="o">=</span>public --add-source<span class="o">=</span><span class="m">192</span>.168.1.0/24 --permanent
+firewall-cmd --zone<span class="o">=</span>public --add-service<span class="o">=</span>http --permanent
+firewall-cmd --zone<span class="o">=</span>public --add-service<span class="o">=</span>https --permanent
 firewall-cmd --reload
 </pre></div>
 </div>

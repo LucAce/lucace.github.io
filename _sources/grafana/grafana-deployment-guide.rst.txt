@@ -91,16 +91,16 @@ Deployment Steps
 
   .. code-block:: bash
 
-    cat <<EOF | sudo tee /etc/yum.repos.d/grafana.repo
+    cat > /etc/yum.repos.d/grafana.repo <<EOF
     [grafana]
-    name=grafana
-    baseurl=https://packages.grafana.com/oss/rpm
-    repo_gpgcheck=1
-    enabled=1
-    gpgcheck=1
-    gpgkey=https://packages.grafana.com/gpg.key
-    sslverify=1
-    sslcacert=/etc/pki/tls/certs/ca-bundle.crt
+    name = grafana
+    baseurl = https://packages.grafana.com/oss/rpm
+    repo_gpgcheck = 1
+    enabled = 1
+    gpgcheck = 1
+    gpgkey = https://packages.grafana.com/gpg.key
+    sslverify = 1
+    sslcacert = /etc/pki/tls/certs/ca-bundle.crt
     EOF
 
 4. Install Dependencies:
@@ -116,34 +116,7 @@ Deployment Steps
 
     dnf -y install grafana
 
-6. Create Self-signed SSL certificate:
-
-  .. important::
-
-    Replace values with the specifics of your network.
-
-  .. code-block:: bash
-
-    # Country Name (2 letter code) [XX]:US
-    # State or Province Name (full name) []:New York
-    # Locality Name (eg, city) [Default City]:New York
-    # Organization Name (eg, company) [Default Company Ltd]:engwsc
-    # Organizational Unit Name (eg, section) []:
-    # Common Name (eg, your name or your server's hostname) []:grafana.engwsc.example.com
-    # Email Address []:
-
-    openssl req -x509 -nodes -newkey rsa:4096 \
-        -keyout "/etc/ssl/grafana-selfsigned.key" \
-        -out "/etc/ssl/grafana-selfsigned.crt" \
-        -subj "/CN=grafana.engwsc.example.com/C=US/ST=New York/L=New York/O=engwsc" \
-        -days 365
-
-    chgrp grafana /etc/ssl/grafana-selfsigned.key
-    chgrp grafana /etc/ssl/grafana-selfsigned.crt
-    chmod 440 /etc/ssl/grafana-selfsigned.key
-    chmod 440 /etc/ssl/grafana-selfsigned.key
-
-7. Set up Grafana:
+6. Set up Grafana:
 
   .. important::
 
@@ -153,27 +126,120 @@ Deployment Steps
 
   .. code-block:: bash
 
-    sed -i 's/^;protocol =.*/protocol = https/g' /etc/grafana/grafana.ini
-    sed -i "s/^;domain =.*/domain = ${DOMAIN_NAME}/g" /etc/grafana/grafana.ini
-    sed -i 's|^;cert_file =.*|cert_file = /etc/ssl/grafana-selfsigned.crt|g' /etc/grafana/grafana.ini
-    sed -i 's|^;cert_key =.*|cert_key = /etc/ssl/grafana-selfsigned.key|g' /etc/grafana/grafana.ini
+    sed -i "s/^;domain =.*/domain = engwsc.example.com/g" /etc/grafana/grafana.ini
     sed -i 's|^;reporting_enabled =.*|reporting_enabled = false|g' /etc/grafana/grafana.ini
     sed -i 's|^;disable_gravatar =.*|disable_gravatar = true|g' /etc/grafana/grafana.ini
 
     sed -i 's|^;admin_user =.*|admin_user = GRAFANA_ADMIN_USERNAME|g' /etc/grafana/grafana.ini
     sed -i 's|^;admin_password =.*|admin_password = GRAFANA_ADMIN_PASSWORD|g' /etc/grafana/grafana.ini
 
-8. Start the Grafana service:
+7. Start the Grafana service:
 
   .. code-block:: bash
 
     systemctl daemon-reload
     systemctl enable --now grafana-server
 
-9. Configure firewalld rules:
+8. Install NGINX
+
+  .. code-block:: bash
+
+    dnf -y distro-sync
+    dnf -y install nginx
+
+9. Create Self-Signed SSL Certificate:
+
+  .. important::
+
+    Replace values with the specifics of your network.
+
+  .. code-block:: bash
+
+    # Create directory structure
+    mkdir -p  /etc/pki/nginx/
+    chmod 755 /etc/pki/nginx/
+
+    # Country Name (2 letter code) [XX]:US
+    # State or Province Name (full name) []:New York
+    # Locality Name (eg, city) [Default City]:New York
+    # Organization Name (eg, company) [Default Company Ltd]:engwsc
+    # Organizational Unit Name (eg, section) []:
+    # Common Name (eg, your name or your server's hostname) []:grafana.engwsc.example.com
+    # Email Address []:
+
+    # Create certificate
+    openssl req -x509 -nodes -newkey rsa:4096 \
+        -keyout "/etc/pki/nginx/grafana.engwsc.example.com.key" \
+        -out    "/etc/pki/nginx/grafana.engwsc.example.com.crt" \
+        -subj   "/CN=grafana.engwsc.example.com/C=US/ST=New York/L=New York/O=engwsc" \
+        -days   365
+
+    # Set certificate permissions
+    chown root:root /etc/pki/nginx/grafana.engwsc.example.com.key
+    chown root:root /etc/pki/nginx/grafana.engwsc.example.com.crt
+    chmod 600       /etc/pki/nginx/grafana.engwsc.example.com.key
+
+10. Configure NGINX:
+
+  .. important::
+
+    Replace example values with the specifics of your network.
+
+  .. code-block:: bash
+
+    mkdir -p /etc/nginx/conf.d/
+    cat > /etc/nginx/conf.d/grafana.conf <<EOF
+    server {
+        listen 80;
+        server_name grafana.engwsc.example.com;
+        root /nowhere;
+        rewrite ^ https://\$server_name\$request_uri permanent;
+    }
+    server
+    {
+        listen      443 ssl http2;
+        server_name grafana.engwsc.example.com;
+
+        ssl_certificate "/etc/pki/nginx/grafana.engwsc.example.com.crt";
+        ssl_certificate_key "/etc/pki/nginx/grafana.engwsc.example.com.key";
+        ssl_session_cache shared:SSL:1m;
+        ssl_session_timeout 10m;
+        ssl_ciphers PROFILE=SYSTEM;
+        ssl_prefer_server_ciphers on;
+
+        location /
+        {
+          proxy_set_header Host \$http_host;
+          proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
+          proxy_pass       http://127.0.0.1:3000;
+        }
+    }
+    EOF
+
+11. Configure SELinux:
+
+  .. code-block:: bash
+
+    setsebool -P httpd_can_network_connect 1
+    semanage port -a -t http_port_t -p tcp 3000
+
+12. Enable NGINX service:
+
+  .. code-block:: bash
+
+    systemctl daemon-reload
+    systemctl enable --now nginx
+
+13. Set firewalld rules:
+
+  .. important::
+
+    Replace the IPv4 Address and Subnet mask with the value of your network.
 
   .. code-block:: bash
 
     systemctl enable --now firewalld
-    firewall-cmd --zone=public --add-port=3000/tcp --permanent
+    firewall-cmd --zone=public --add-source=192.168.1.0/24 --permanent
+    firewall-cmd --zone=public --add-service=http --permanent
+    firewall-cmd --zone=public --add-service=https --permanent
     firewall-cmd --reload

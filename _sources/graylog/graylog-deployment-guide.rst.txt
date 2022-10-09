@@ -278,7 +278,14 @@ Graylog
 NGINX
 ~~~~~
 
-17. Create Self-Signed SSL Certificate:
+17. Install NGINX:
+
+  .. code-block:: bash
+
+    dnf -y distro-sync
+    dnf -y install nginx
+
+18. Create Self-Signed SSL Certificate:
 
   .. important::
 
@@ -329,7 +336,7 @@ NGINX
     chown root:root /etc/pki/nginx/graylog.engwsc.example.com.crt
     chmod 600 /etc/pki/nginx/graylog.engwsc.example.com.key
 
-18. Configure NGINX:
+19. Configure NGINX:
 
   .. important::
 
@@ -369,14 +376,14 @@ NGINX
     }
     EOF
 
-19. Enable NGINX service:
+20. Enable NGINX service:
 
   .. code-block:: bash
 
     systemctl daemon-reload
     systemctl enable --now nginx
 
-20. Set firewalld rules:
+21. Set firewalld rules:
 
   .. important::
 
@@ -394,7 +401,7 @@ NGINX
 Graylog Configuration
 ~~~~~~~~~~~~~~~~~~~~~
 
-21. Log into Graylog:
+22. Log into Graylog:
 
 .. important::
 
@@ -408,7 +415,7 @@ Graylog Configuration
 
   .. image:: ../_static/graylog/login-page.png
 
-22. Create Input:
+23. Create Input:
 
 ..
 
