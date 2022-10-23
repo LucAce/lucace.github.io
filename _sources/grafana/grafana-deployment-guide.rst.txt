@@ -40,7 +40,7 @@ References
 
 ..
 
-  These instructions were written for Grafana ``9.1.1``
+  These instructions were written for Grafana ``9.2.x``
 
 ..
 
@@ -55,10 +55,10 @@ Post Deployment
 ..
 
   The Grafana can be accessed at the following URL: |br|
-  https://grafana.engwsc.example.com:3000
+  https://grafana.engwsc.example.com
 
   Username: ``GRAFANA_ADMIN_USERNAME`` |br|
-  Password: ``GRAFANA_ADMIN_PASSWORD`` (from step 7)
+  Password: ``GRAFANA_ADMIN_PASSWORD`` (from step 6)
 
 
 ******************
