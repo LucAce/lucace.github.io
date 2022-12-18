@@ -9,7 +9,7 @@ IdM Server OS Installation Guide
    :caption: Contents:
 
 The following instructions are for the installation of the operating
-system which will host the IdM Server.
+system which will host the IdM server.
 
 
 *************

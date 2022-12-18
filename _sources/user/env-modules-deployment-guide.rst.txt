@@ -12,9 +12,9 @@ Environment Modules Deployment Guide
    :maxdepth: 2
    :caption: Contents:
 
-The following instructions are for deploying of Environment
-Modules on the Slurm, User, and Compute nodes.  Environment Modules
-is a TCL based application for configuring and setting environment
+The following instructions are for deploying Environment Modules
+on the Slurm, User, and Compute nodes.  Environment Modules
+are TCL based application for configuring and setting environment
 variables for applications that users will execute during their
 sessions.
 

@@ -40,14 +40,14 @@ The following are warnings that apply to the cluster and/or all guides.
 
   3. **Implement a Backup Strategy**
 
-  These guides do not cover backing up of the cluster.  Backups and restoration
+  These guides do not cover backing up the cluster.  Backups and restoration
   strageties is a required element to a cluster.  RAID is not a backup.
 
 ..
 
   4. **Implement a Redundancy/Resilancy Strategy**
 
-  These guides only provide techniquies for improving fault tolernace such as
+  These guides only provide techniquies for improving fault tolerance such as
   providing RAID on systems.  Redundancy strageties is a required element to
   a cluster.
 
@@ -55,7 +55,7 @@ The following are warnings that apply to the cluster and/or all guides.
 Assumptions
 ~~~~~~~~~~~
 
-The guides make a couple fundamental assumptions which have guided how things were
+The guides make a couple fundamental assumptions which have guided how things are
 implemented.  Anyone implementing these systems will need to evaluate their specific
 requirements and tailor them for their specific usage scenarios.
 
@@ -64,8 +64,7 @@ requirements and tailor them for their specific usage scenarios.
   1. The hosted applications are run on separate virtual machines and do not utilize Docker.
   While Docker is one of the provided applications, its usage is intended for internally
   developed and deployed images only.  This limitation is in place to eliminate the
-  need for third-party image hosting.  Source code and RPMs for applications should be
-  accessed directly from the developer.
+  need for third-party image hosting.
 
 ..
 
@@ -73,7 +72,8 @@ requirements and tailor them for their specific usage scenarios.
   updates yum repositories provided by the application authors have been utilized.
   Only in cases where repositories are not available (e.g. Slurm) are they not
   used.  While updates require coordination with users, utilizing the vendor repositories
-  and yum/dnf commands to execute updates reduces the amount of work required.
+  and yum/dnf commands to execute updates reduces the amount of work required.  Source
+  code and RPMs for applications should be accessed directly from the developer.
 
 ..
 

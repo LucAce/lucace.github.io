@@ -14,13 +14,13 @@ IdM Server Usage Guide
 
 The following instructions are an example of how to deploy IdM accounts.  In the
 simpliest cluster there are three types of accounts.  Administrator accounts which
-manage the systems, applications and the users of the cluster.  User accounts which
+manage the systems, applications, and the users of the cluster.  User accounts which
 allow individuals to access resources on the clluster.  Automation accounts which
 are utilized by applications on the cluster to perform automated tasks like
 maintaince and updates.
 
 In general, every user should have their own account; Administrators that also are
-users should have a privledged and non-privledge accounts.  Sharing of accounts should
+users should have privledged and non-privledge accounts.  Sharing of accounts should
 not be permitted.
 
 In this guide three accounts, one of each type, will be created using the command line

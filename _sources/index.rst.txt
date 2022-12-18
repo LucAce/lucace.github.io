@@ -13,7 +13,7 @@
 Engineering Workstation Cluster Deployment Guide
 ================================================
 
-This site is a collection of guides on how to deploy a small cluster of Red Hat
+This site is a collection of guides on deploying a small cluster of Red Hat
 Enterprise Linux based systems.  The cluster's design is intended to meet the
 needs of a wide group of use cases but generally tailored towards engineering
 workloads.  These guides started out as just a means to document how a cluster
@@ -33,7 +33,7 @@ Guiding assumptions and overall warnings are listed in the assumptions section.
 Feedback
 ********
 
-These guides are very much a work in progress.  Report bugs and provide
+These guides are a work in progress.  Report bugs and provide
 feedback on my GitHub repository: |br|
 https://github.com/LucAce/lucace.github.io
 
@@ -44,7 +44,9 @@ Work In Progress
 
 Some of the guides still need to be written:
 
-- (All) Usage/User Guides
+- Slurm Compute Node Usage Guide
+- InfluxDB Usage Guide
+- Grafana Usage Guide
 
 
 ********

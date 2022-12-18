@@ -21,7 +21,7 @@ based management.
 To ensure maximum compatibility, performance, and to improve availability the virtual
 machine guests should be run from local storage that utilizes redundant storage volumes.
 Since the physical amount and arrangement of storage can vary widely, some aspects of a
-systems deployment are left up to the deploying system administrator.
+system's deployment are left up to the deploying system administrator.
 
 .. image:: ../_static/topology/topology.png
 

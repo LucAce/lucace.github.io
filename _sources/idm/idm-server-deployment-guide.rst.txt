@@ -79,17 +79,17 @@ Deployment Scripts
 Deployment Steps
 ****************
 
-The IdM Server can either be deployed as a standalone VM or on the NFS server.
+The IdM server can either be deployed as a standalone VM or on the NFS server.
 IdM and NFS are both required for users to log in and deploying both on the same
 server reduces the number of required systems to be online before users can log in.
 
-This Guide is writen for a standalone VM instance.
+This guide is writen for a standalone VM instance.
 
 .. note::
 
   Instructions assume execution using the ``root`` account.
 
-1. Connect the system to the NFS Server:
+1. Connect the system to the NFS server:
 
   See Guide: :doc:`../nfs/nfs-client-deployment-guide`
 

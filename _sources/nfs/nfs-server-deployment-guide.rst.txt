@@ -12,7 +12,7 @@ NFS Server Deployment Guide
    :maxdepth: 2
    :caption: Contents:
 
-The following instructions are for deploying the NFS Server.
+The following instructions are for deploying the NFS server.
 
 
 *************

@@ -13,14 +13,13 @@ Network File System
    :caption: Contents:
 
 
-The Network File System (NFS) Server node is bare-metal system that hosts the
-shared data resources and paths across the cluster.  The NFS Server node is
+The Network File System (NFS) server node is bare-metal system that hosts the
+shared data resources and paths across the cluster.  The NFS server node is
 deployed with a minimal OS installation and utilizes the Cockpit Management
 Console for web based management.
 
-The Network File System (NFS) client is deployed on all systems that require
-common network shares and provides various mounts to the system depending on
-the role of that system.
+The NFS client is deployed on all systems that require common network shares
+and provides various mounts to the system depending on the role of that system.
 
 There are many different storage solutions and configurations available in
 the market and some aspects of a system's deployment are left up to the
@@ -41,8 +40,8 @@ and are compatible with AlmaLinux 8 and Rocky Linux 8.
 Access Controls
 ~~~~~~~~~~~~~~~
 
-The NFS Server should only be accessed directly using SSH by system administrators.
-Standard cluster user accounts should not be able to SSH into the NFS Server node.
+The NFS server should only be accessed directly using SSH by system administrators.
+Standard cluster user accounts should not be able to SSH into the NFS server node.
 
 
 Hostnames
@@ -60,7 +59,7 @@ system itself.
 Server
 ------
 
-The NFS Server is deployed on the following node:
+The NFS server is deployed on the following node:
 
 +----------+-----------------------------+-----------------------+------------+--------------+
 | Hostname | FQDN                        | Function              | Type       | IPv4 Address |
@@ -72,7 +71,7 @@ The NFS Server is deployed on the following node:
 Clients
 -------
 
-The NFS Client is deployed on the following nodes which will utilize the mounts
+The NFS client is deployed on the following nodes which will utilize the mounts
 hosted by the NFS Server:
 
 +----------+-----------------------------+-----------------------+------------+--------------+
@@ -123,13 +122,13 @@ Guides
 
 ..
 
-  The following guides are required to deploy the NFS Server:
+  The following guides are required to deploy the NFS server:
 
   #. :doc:`nfs-server-os-installation-guide`
   #. :doc:`nfs-server-deployment-guide`
 
 ..
 
-  The following guides are required to deploy the NFS Client:
+  The following guides are required to deploy the NFS client:
 
   #. :doc:`nfs-client-deployment-guide`

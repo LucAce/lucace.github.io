@@ -402,13 +402,12 @@
 <h1>Network File System<a class="headerlink" href="#network-file-system" title="Permalink to this heading">#</a></h1>
 <div class="toctree-wrapper compound">
 </div>
-<p>The Network File System (NFS) Server node is bare-metal system that hosts the
-shared data resources and paths across the cluster.  The NFS Server node is
+<p>The Network File System (NFS) server node is bare-metal system that hosts the
+shared data resources and paths across the cluster.  The NFS server node is
 deployed with a minimal OS installation and utilizes the Cockpit Management
 Console for web based management.</p>
-<p>The Network File System (NFS) client is deployed on all systems that require
-common network shares and provides various mounts to the system depending on
-the role of that system.</p>
+<p>The NFS client is deployed on all systems that require common network shares
+and provides various mounts to the system depending on the role of that system.</p>
 <p>There are many different storage solutions and configurations available in
 the market and some aspects of a system’s deployment are left up to the
 deploying system administrator.  The following instructions are but one
@@ -422,8 +421,8 @@ and are compatible with AlmaLinux 8 and Rocky Linux 8.</p>
 </section>
 <section id="access-controls">
 <h2>Access Controls<a class="headerlink" href="#access-controls" title="Permalink to this heading">#</a></h2>
-<p>The NFS Server should only be accessed directly using SSH by system administrators.
-Standard cluster user accounts should not be able to SSH into the NFS Server node.</p>
+<p>The NFS server should only be accessed directly using SSH by system administrators.
+Standard cluster user accounts should not be able to SSH into the NFS server node.</p>
 </section>
 <section id="hostnames">
 <h2>Hostnames<a class="headerlink" href="#hostnames" title="Permalink to this heading">#</a></h2>
@@ -436,7 +435,7 @@ system itself.</p>
 </div>
 <section id="server">
 <h3>Server<a class="headerlink" href="#server" title="Permalink to this heading">#</a></h3>
-<p>The NFS Server is deployed on the following node:</p>
+<p>The NFS server is deployed on the following node:</p>
 <div class="table-wrapper docutils container">
 <table class="docutils align-default">
 <colgroup>
@@ -467,7 +466,7 @@ system itself.</p>
 </section>
 <section id="clients">
 <h3>Clients<a class="headerlink" href="#clients" title="Permalink to this heading">#</a></h3>
-<p>The NFS Client is deployed on the following nodes which will utilize the mounts
+<p>The NFS client is deployed on the following nodes which will utilize the mounts
 hosted by the NFS Server:</p>
 <div class="table-wrapper docutils container">
 <table class="docutils align-default">
@@ -609,14 +608,14 @@ hosted by the NFS Server:</p>
 <section id="guides">
 <h2>Guides<a class="headerlink" href="#guides" title="Permalink to this heading">#</a></h2>
 <blockquote>
-<div><p>The following guides are required to deploy the NFS Server:</p>
+<div><p>The following guides are required to deploy the NFS server:</p>
 <ol class="arabic simple">
 <li><p><a class="reference internal" href="nfs-server-os-installation-guide.html"><span class="doc">NFS Server OS Installation Guide</span></a></p></li>
 <li><p><a class="reference internal" href="nfs-server-deployment-guide.html"><span class="doc">NFS Server Deployment Guide</span></a></p></li>
 </ol>
 </div></blockquote>
 <blockquote>
-<div><p>The following guides are required to deploy the NFS Client:</p>
+<div><p>The following guides are required to deploy the NFS client:</p>
 <ol class="arabic simple">
 <li><p><a class="reference internal" href="nfs-client-deployment-guide.html"><span class="doc">NFS Client Deployment Guide</span></a></p></li>
 </ol>
@@ -659,7 +658,7 @@ hosted by the NFS Server:</p>
             
             <a href="https://github.com/pradyunsg/furo">Furo</a>
             <div class="last-updated">
-              Last updated on Oct 08, 2022</div>
+              Last updated on Dec 17, 2022</div>
           </div>
           <div class="right-details">
             <div class="icons">

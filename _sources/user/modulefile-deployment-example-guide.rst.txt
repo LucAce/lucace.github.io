@@ -14,7 +14,7 @@ Modulefile Deployment Example Guide
 
 The following instructions are an example of how to deploy an
 Environment Modules Modulefile to configure an application.  This
-example uses htop as representative application which users might
+example uses htop as a representative application which users might
 utilize across all user and compute nodes.
 
 This can be executed on any user or compute node.  The modulefile

@@ -14,8 +14,8 @@ Identity Management
 
 
 Identity Management (IdM) is an LDAP compliant server that centralizes user
-identity and management in a cluster environment.  IdM is based on FreeIPA
-and can be used to integrate other corporate identity management solutions.
+identity and management in a clustered environment.  IdM is based on FreeIPA
+and can integrate into other corporate identity management solutions.
 
 https://www.freeipa.org
 
