@@ -301,6 +301,11 @@ Slurm
 
 18. Install the configuration files:
 
+  .. warning::
+
+    File /etc/slurm/slurm.conf is hashed by the controller and must be *exactly* the
+    same on all systems or the controller service (slurmctld) will not start.
+
   .. code-block:: bash
 
     mkdir -p /etc/slurm/

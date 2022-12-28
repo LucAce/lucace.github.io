@@ -702,7 +702,12 @@ sha256sum -b slurm-22.05.3.rpm.tar.gz &gt; slurm-22.05.3.rpm.tar.gz.sha256
 <li><p>Install the configuration files:</p></li>
 </ol>
 <blockquote>
-<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mkdir -p /etc/slurm/
+<div><div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>File /etc/slurm/slurm.conf is hashed by the controller and must be <em>exactly</em> the
+same on all systems or the controller service (slurmctld) will not start.</p>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mkdir -p /etc/slurm/
 
 cp cgroup.conf   /etc/slurm/
 cp slurm.conf    /etc/slurm/
