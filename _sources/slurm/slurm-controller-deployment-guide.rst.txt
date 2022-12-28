@@ -40,7 +40,7 @@ References
 
 ..
 
-  These instructions were written for Slurm ``22.05.3``. |br|
+  These instructions were written for Slurm ``22.05.6``. |br|
 
 ..
 
@@ -75,8 +75,8 @@ Deployment Scripts
 ..
 
   The required source files have been provided: |br|
-  :download:`../_static/slurm/slurm-22.05.3.tar.bz2` |br|
-  SHA1: 55e9a1a1d2ddb67b119c2900982c908ba2846c1e
+  :download:`../_static/slurm/slurm-22.05.6.tar.bz2` |br|
+  SHA1: eb282954911b807b365d35298bddff459eb7383a
 
 ..
 
@@ -143,14 +143,25 @@ Build Setup
         rrdtool-perl mailx lz4 lz4-libs lz4-devel libcurl \
         libcurl-devel infiniband-diags-devel ibacm
 
-5. Create the build directory and go to it:
+5. Exclude DNF/Yum Slurm packages:
+
+  .. code-block:: bash
+
+    cat >> /etc/dnf/dnf.conf <<EOL
+
+    # Exclude slurm Packages
+    excludepkgs=slurm*
+
+    EOL
+
+6. Create the build directory and go to it:
 
   .. code-block:: bash
 
     mkdir -p /root/tmp/
     cd /root/tmp/
 
-6. Upload files:
+7. Upload files:
 
   .. note::
 
@@ -163,7 +174,7 @@ Build Setup
     scp slurm.conf            root@slurm.engwsc.example.com:/root/tmp/
     scp slurmdbd.conf         root@slurm.engwsc.example.com:/root/tmp/
 
-7. Set a database password for Slurm Accounting:
+8. Set a database password for Slurm Accounting:
 
   .. important::
 
@@ -174,7 +185,7 @@ Build Setup
 
     sed -i 's/StoragePass=.*/StoragePass=MARIADB_SLURM_USER_PASSWD/g' /root/tmp/slurmdbd.conf
 
-8. Set a ClusterName, SlurmctldHost, and AccountingStorageHost:
+9. Set a ClusterName, SlurmctldHost, and AccountingStorageHost:
 
   .. important::
 
@@ -183,10 +194,10 @@ Build Setup
   .. code-block:: bash
 
     sed -i 's/ClusterName=.*/ClusterName=engwsc/g' /root/tmp/slurm.conf
-    sed -i 's/SlurmctldHost=.*/SlurmctldHost=slurm.engwsc.example.com/g' /root/tmp/slurm.conf
+    sed -i 's/SlurmctldHost=.*/SlurmctldHost=slurm/g' /root/tmp/slurm.conf
     sed -i 's/AccountingStorageHost=.*/AccountingStorageHost=slurm.engwsc.example.com/g' /root/tmp/slurm.conf
 
-9. Modify ``/root/tmp/slurm.conf`` with the configuration of the cluster:
+10. Modify ``/root/tmp/slurm.conf`` with the configuration of the cluster:
 
   .. important::
 
@@ -204,13 +215,13 @@ Build Setup
     NodeName=comp02.engwsc.example.com CPUs=32 RealMemory=524288 Sockets=1 CoresPerSocket=32 ThreadsPerCore=1 State=UNKNOWN
     NodeName=comp03.engwsc.example.com CPUs=32 RealMemory=524288 Sockets=1 CoresPerSocket=32 ThreadsPerCore=1 State=UNKNOWN
     NodeName=comp04.engwsc.example.com CPUs=32 RealMemory=524288 Sockets=1 CoresPerSocket=32 ThreadsPerCore=1 State=UNKNOWN
-    PartitionName=default Nodes=ALL Default=YES MaxTime=1440 State=UP
+    PartitionName=common Nodes=ALL Default=YES MaxTime=1440 State=UP
 
 
 Munge
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-10. Create a Munge authentication key:
+11. Create a Munge authentication key:
 
   .. important::
 
@@ -225,7 +236,7 @@ Munge
     /usr/sbin/create-munge-key -f
     chmod 600 /etc/munge/munge.key
 
-11. Enable Munge service:
+12. Enable Munge service:
 
   .. code-block:: bash
 
@@ -235,33 +246,33 @@ Munge
 Slurm
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-12. Create local Slurm user account and group:
+13. Create local Slurm user account and group:
 
   .. code-block:: bash
 
     groupadd -g 64030 slurm
     useradd -m -c "SLURM workload manager" -d /var/lib/slurm -u 64030 -g slurm -s /bin/bash slurm
 
-13. Build Slurm RPM:
+14. Build Slurm RPM:
 
   .. code-block:: bash
 
     rpmbuild -ta slurm-22.05.3.tar.bz2
 
-14. Install Slurm Controller RPMs:
+15. Install Slurm Controller RPMs:
 
   .. code-block:: bash
 
     rpm -ivh \
-        /root/rpmbuild/RPMS/x86_64/slurm-22.05.3.el8.x86_64.rpm \
-        /root/rpmbuild/RPMS/x86_64/slurm-example-configs-22.05.3.el8.x86_64.rpm \
-        /root/rpmbuild/RPMS/x86_64/slurm-perlapi-22.05.3.el8.x86_64.rpm \
-        /root/rpmbuild/RPMS/x86_64/slurm-slurmctld-22.05.3.el8.x86_64.rpm \
-        /root/rpmbuild/RPMS/x86_64/slurm-slurmd-22.05.3.el8.x86_64.rpm \
-        /root/rpmbuild/RPMS/x86_64/slurm-slurmdbd-22.05.3.el8.x86_64.rpm \
-        /root/rpmbuild/RPMS/x86_64/slurm-torque-22.05.3.el8.x86_64.rpm
+        /root/rpmbuild/RPMS/x86_64/slurm-22.05.3-1.el8.x86_64.rpm \
+        /root/rpmbuild/RPMS/x86_64/slurm-example-configs-22.05.3-1.el8.x86_64.rpm \
+        /root/rpmbuild/RPMS/x86_64/slurm-perlapi-22.05.3-1.el8.x86_64.rpm \
+        /root/rpmbuild/RPMS/x86_64/slurm-slurmctld-22.05.3-1.el8.x86_64.rpm \
+        /root/rpmbuild/RPMS/x86_64/slurm-slurmd-22.05.3-1.el8.x86_64.rpm \
+        /root/rpmbuild/RPMS/x86_64/slurm-slurmdbd-22.05.3-1.el8.x86_64.rpm \
+        /root/rpmbuild/RPMS/x86_64/slurm-torque-22.05.3-1.el8.x86_64.rpm
 
-15. Copy configuration files to Slurm RPMs path for inclusion in the tar file:
+16. Copy configuration files to Slurm RPMs path for inclusion in the tar file:
 
   .. note::
 
@@ -275,7 +286,7 @@ Slurm
     cp /root/tmp/slurm.conf    /root/rpmbuild/RPMS/x86_64/
     cp /root/tmp/slurmdbd.conf /root/rpmbuild/RPMS/x86_64/
 
-16. TAR RPMs for use by Compute/Client systems:
+17. TAR RPMs for use by Compute/Client systems:
 
   .. code-block:: bash
 
@@ -288,7 +299,7 @@ Slurm
     gzip -9 slurm-22.05.3.rpm.tar
     sha256sum -b slurm-22.05.3.rpm.tar.gz > slurm-22.05.3.rpm.tar.gz.sha256
 
-17. Install the configuration files:
+18. Install the configuration files:
 
   .. code-block:: bash
 
@@ -305,7 +316,7 @@ Slurm
 
     chown -R slurm:slurm /etc/slurm/
 
-18. Create log files:
+19. Create log files:
 
   .. code-block:: bash
 
@@ -320,7 +331,7 @@ Slurm
 
     chown -R slurm:slurm /var/log/slurm
 
-19. Create spool files:
+20. Create spool files:
 
   .. code-block:: bash
 
@@ -333,7 +344,7 @@ Slurm
     chown -R slurm:slurm /var/spool/slurmctld
     chown -R slurm:slurm /var/spool/slurmdbd
 
-20. Setup log rotation:
+21. Setup log rotation:
 
   .. code-block:: bash
 
@@ -357,13 +368,13 @@ Slurm
 MariaDB
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-21.  Enable MariaDB service:
+22.  Enable MariaDB service:
 
   .. code-block:: bash
 
     systemctl enable --now mariadb
 
-22. Secure databases:
+23. Secure databases:
 
   .. important::
 
@@ -383,7 +394,7 @@ MariaDB
 
     mysql_secure_installation
 
-23. Modify the innodb configuration:
+24. Modify the innodb configuration:
 
   .. code-block:: bash
 
@@ -396,7 +407,7 @@ MariaDB
 
     EOL
 
-24. Delete MariaDB logs and restart service:
+25. Delete MariaDB logs and restart service:
 
   .. code-block:: bash
 
@@ -404,7 +415,7 @@ MariaDB
     rm -f /var/lib/mysql/ib_logfile?
     systemctl start mariadb
 
-25. Create accounting database for Slurm:
+26. Create accounting database for Slurm:
 
   .. important::
 
@@ -420,7 +431,7 @@ MariaDB
 Firewall
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-26. Configure firewalld rules:
+27. Configure firewalld rules:
 
   .. important::
 
@@ -433,14 +444,14 @@ Firewall
     firewall-cmd --remove-port=3306/udp --permanent 2> /dev/null
 
     firewall-cmd --zone=public --add-source=192.168.1.0/24 --permanent
-    firewall-cmd --zone=public --add-port={6817/tcp, 6818/tcp, 6819/tcp} --permanent
+    firewall-cmd --zone=public --add-port={6817/tcp,6818/tcp,6819/tcp} --permanent
     firewall-cmd --reload
 
 
 Slurm Controller Services
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-27. Enable Slurm Controller services:
+28. Enable Slurm Controller services:
 
   .. code-block:: bash
 

@@ -40,7 +40,7 @@ echo -e "\n[$(date +"%Y-%m-%d %H:%M:%S")] Deploying Slurm Compute Node...\n"
 CLUSTER_SUBNET_MASK="192.168.1.0/24"
 
 # Slurm Version
-SLURM_VERSION="22.05.3"
+SLURM_VERSION="22.05.6"
 
 # Slurm User UID, GID
 SLURMUSERID=64030
@@ -57,11 +57,20 @@ if [ ! -f slurm-${SLURM_VERSION}.rpm.tar.gz ]; then
     exit 1
 fi
 
-echo -e "\nInstalling dependencies..."
 
 # Install dependencies
+echo -e "\nInstalling dependencies..."
 dnf install -y munge munge-libs hwloc hwloc-libs ncurses curl rrdtool mariadb \
     mariadb-devel ibacm infiniband-diags
+
+# Exclude DNF/Yum Slurm packages
+echo -e "\nExcluding Slurm Packages..."
+cat >> /etc/dnf/dnf.conf <<EOL
+
+# Exclude slurm Packages
+excludepkgs=slurm*
+
+EOL
 
 # Extract TAR
 tar -xvf slurm-${SLURM_VERSION}.rpm.tar.gz
@@ -149,7 +158,7 @@ echo -e "\nEnabling firewalld rules..."
 
 systemctl enable --now firewalld
 firewall-cmd --zone=public --add-source=${CLUSTER_SUBNET_MASK} --permanent
-firewall-cmd --zone=public --add-port={6817/tcp, 6818/tcp} --permanent
+firewall-cmd --zone=public --add-port={6817/tcp,6818/tcp} --permanent
 firewall-cmd --reload
 
 

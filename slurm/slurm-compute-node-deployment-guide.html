@@ -440,6 +440,19 @@ system they will be deployed on.</p>
 </div>
 </div></blockquote>
 <ol class="arabic simple" start="2">
+<li><p>Exclude DNF/Yum Slurm packages:</p></li>
+</ol>
+<blockquote>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cat &gt;&gt; /etc/dnf/dnf.conf <span class="s">&lt;&lt;EOL</span>
+
+<span class="s"># Exclude slurm Packages</span>
+<span class="s">excludepkgs=slurm*</span>
+
+<span class="s">EOL</span>
+</pre></div>
+</div>
+</div></blockquote>
+<ol class="arabic simple" start="3">
 <li><p>Create the deploy directory and go to it:</p></li>
 </ol>
 <blockquote>
@@ -448,7 +461,7 @@ system they will be deployed on.</p>
 </pre></div>
 </div>
 </div></blockquote>
-<ol class="arabic simple" start="3">
+<ol class="arabic simple" start="4">
 <li><p>Upload TAR file:</p></li>
 </ol>
 <blockquote>
@@ -460,7 +473,7 @@ system they will be deployed on.</p>
 </pre></div>
 </div>
 </div></blockquote>
-<ol class="arabic simple" start="4">
+<ol class="arabic simple" start="5">
 <li><p>Extract RPMs:</p></li>
 </ol>
 <blockquote>
@@ -472,7 +485,7 @@ system they will be deployed on.</p>
 </pre></div>
 </div>
 </div></blockquote>
-<ol class="arabic simple" start="5">
+<ol class="arabic simple" start="6">
 <li><p>Copy Munge authentication key:</p></li>
 </ol>
 <blockquote>
@@ -485,7 +498,7 @@ chown -R munge:munge /etc/munge
 </pre></div>
 </div>
 </div></blockquote>
-<ol class="arabic simple" start="6">
+<ol class="arabic simple" start="7">
 <li><p>Enable Munge service:</p></li>
 </ol>
 <blockquote>
@@ -493,7 +506,7 @@ chown -R munge:munge /etc/munge
 </pre></div>
 </div>
 </div></blockquote>
-<ol class="arabic simple" start="7">
+<ol class="arabic simple" start="8">
 <li><p>Create Slurm user account and group:</p></li>
 </ol>
 <blockquote>
@@ -502,7 +515,7 @@ useradd -m -c <span class="s2">&quot;SLURM workload manager&quot;</span> -d /var
 </pre></div>
 </div>
 </div></blockquote>
-<ol class="arabic simple" start="8">
+<ol class="arabic simple" start="9">
 <li><p>Install Slurm Compute/Client RPMs:</p></li>
 </ol>
 <blockquote>
@@ -514,7 +527,7 @@ useradd -m -c <span class="s2">&quot;SLURM workload manager&quot;</span> -d /var
 </pre></div>
 </div>
 </div></blockquote>
-<ol class="arabic simple" start="9">
+<ol class="arabic simple" start="10">
 <li><p>Copy configuration files:</p></li>
 </ol>
 <blockquote>
@@ -529,7 +542,7 @@ chown -R slurm:slurm /etc/slurm/
 </pre></div>
 </div>
 </div></blockquote>
-<ol class="arabic simple" start="10">
+<ol class="arabic simple" start="11">
 <li><p>Create log files:</p></li>
 </ol>
 <blockquote>
@@ -542,7 +555,7 @@ chown -R slurm:slurm /var/log/slurm
 </pre></div>
 </div>
 </div></blockquote>
-<ol class="arabic simple" start="11">
+<ol class="arabic simple" start="12">
 <li><p>Create spool files:</p></li>
 </ol>
 <blockquote>
@@ -552,7 +565,7 @@ chown -R slurm:slurm /var/spool/slurmd
 </pre></div>
 </div>
 </div></blockquote>
-<ol class="arabic simple" start="12">
+<ol class="arabic simple" start="13">
 <li><p>Setup Slurm log rotation:</p></li>
 </ol>
 <blockquote>
@@ -572,7 +585,7 @@ chmod <span class="m">644</span> /etc/logrotate.d/slurm
 </pre></div>
 </div>
 </div></blockquote>
-<ol class="arabic simple" start="13">
+<ol class="arabic simple" start="14">
 <li><p>Configure firewalld rules:</p></li>
 </ol>
 <blockquote>
@@ -582,12 +595,12 @@ chmod <span class="m">644</span> /etc/logrotate.d/slurm
 </div>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>systemctl <span class="nb">enable</span> --now firewalld
 firewall-cmd --zone<span class="o">=</span>public --add-source<span class="o">=</span><span class="m">192</span>.168.1.0/24 --permanent
-firewall-cmd --zone<span class="o">=</span>public --add-port<span class="o">={</span><span class="m">6817</span>/tcp, <span class="m">6818</span>/tcp<span class="o">}</span> --permanent
+firewall-cmd --zone<span class="o">=</span>public --add-port<span class="o">={</span><span class="m">6817</span>/tcp,6818/tcp<span class="o">}</span> --permanent
 firewall-cmd --reload
 </pre></div>
 </div>
 </div></blockquote>
-<ol class="arabic simple" start="14">
+<ol class="arabic simple" start="15">
 <li><p>Enable Slurm Compute/Client services:</p></li>
 </ol>
 <blockquote>
@@ -633,7 +646,7 @@ firewall-cmd --reload
             
             <a href="https://github.com/pradyunsg/furo">Furo</a>
             <div class="last-updated">
-              Last updated on Dec 17, 2022</div>
+              Last updated on Dec 28, 2022</div>
           </div>
           <div class="right-details">
             <div class="icons">

@@ -422,7 +422,7 @@
 <section id="references">
 <h2>References<a class="headerlink" href="#references" title="Permalink to this heading">#</a></h2>
 <blockquote>
-<div><p>These instructions were written for Slurm <code class="docutils literal notranslate"><span class="pre">22.05.3</span></code>. <br /></p>
+<div><p>These instructions were written for Slurm <code class="docutils literal notranslate"><span class="pre">22.05.6</span></code>. <br /></p>
 </div></blockquote>
 <blockquote>
 <div><p>The official Slurm source code can be downloaded from: <br />
@@ -450,8 +450,8 @@
 </div></blockquote>
 <blockquote>
 <div><p>The required source files have been provided: <br />
-<a class="reference download internal" download="" href="../_downloads/1ae2e8671356f4dfce2109ed604aa4b8/slurm-22.05.3.tar.bz2"><code class="xref download docutils literal notranslate"><span class="pre">../_static/slurm/slurm-22.05.3.tar.bz2</span></code></a> <br />
-SHA1: 55e9a1a1d2ddb67b119c2900982c908ba2846c1e</p>
+<a class="reference download internal" download="" href="../_downloads/2461c6f80b3a8f4cc46ad76d49be8917/slurm-22.05.6.tar.bz2"><code class="xref download docutils literal notranslate"><span class="pre">../_static/slurm/slurm-22.05.6.tar.bz2</span></code></a> <br />
+SHA1: eb282954911b807b365d35298bddff459eb7383a</p>
 </div></blockquote>
 <blockquote>
 <div><p>The example configuration files have been provided: <br />
@@ -519,6 +519,19 @@ dnf distro-sync
 </div>
 </div></blockquote>
 <ol class="arabic simple" start="5">
+<li><p>Exclude DNF/Yum Slurm packages:</p></li>
+</ol>
+<blockquote>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cat &gt;&gt; /etc/dnf/dnf.conf <span class="s">&lt;&lt;EOL</span>
+
+<span class="s"># Exclude slurm Packages</span>
+<span class="s">excludepkgs=slurm*</span>
+
+<span class="s">EOL</span>
+</pre></div>
+</div>
+</div></blockquote>
+<ol class="arabic simple" start="6">
 <li><p>Create the build directory and go to it:</p></li>
 </ol>
 <blockquote>
@@ -527,7 +540,7 @@ dnf distro-sync
 </pre></div>
 </div>
 </div></blockquote>
-<ol class="arabic simple" start="6">
+<ol class="arabic simple" start="7">
 <li><p>Upload files:</p></li>
 </ol>
 <blockquote>
@@ -542,7 +555,7 @@ scp slurmdbd.conf         root@slurm.engwsc.example.com:/root/tmp/
 </pre></div>
 </div>
 </div></blockquote>
-<ol class="arabic simple" start="7">
+<ol class="arabic simple" start="8">
 <li><p>Set a database password for Slurm Accounting:</p></li>
 </ol>
 <blockquote>
@@ -555,7 +568,7 @@ will be used for the Slurm Accouting Database.</p>
 </pre></div>
 </div>
 </div></blockquote>
-<ol class="arabic simple" start="8">
+<ol class="arabic simple" start="9">
 <li><p>Set a ClusterName, SlurmctldHost, and AccountingStorageHost:</p></li>
 </ol>
 <blockquote>
@@ -564,12 +577,12 @@ will be used for the Slurm Accouting Database.</p>
 <p>Replace <code class="docutils literal notranslate"><span class="pre">engwsc.example.com</span></code> with the domain name of your network.</p>
 </div>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sed -i <span class="s1">&#39;s/ClusterName=.*/ClusterName=engwsc/g&#39;</span> /root/tmp/slurm.conf
-sed -i <span class="s1">&#39;s/SlurmctldHost=.*/SlurmctldHost=slurm.engwsc.example.com/g&#39;</span> /root/tmp/slurm.conf
+sed -i <span class="s1">&#39;s/SlurmctldHost=.*/SlurmctldHost=slurm/g&#39;</span> /root/tmp/slurm.conf
 sed -i <span class="s1">&#39;s/AccountingStorageHost=.*/AccountingStorageHost=slurm.engwsc.example.com/g&#39;</span> /root/tmp/slurm.conf
 </pre></div>
 </div>
 </div></blockquote>
-<ol class="arabic simple" start="9">
+<ol class="arabic simple" start="10">
 <li><p>Modify <code class="docutils literal notranslate"><span class="pre">/root/tmp/slurm.conf</span></code> with the configuration of the cluster:</p></li>
 </ol>
 <blockquote>
@@ -587,14 +600,14 @@ configuration of your cluster.</p>
 <span class="nv">NodeName</span><span class="o">=</span>comp02.engwsc.example.com <span class="nv">CPUs</span><span class="o">=</span><span class="m">32</span> <span class="nv">RealMemory</span><span class="o">=</span><span class="m">524288</span> <span class="nv">Sockets</span><span class="o">=</span><span class="m">1</span> <span class="nv">CoresPerSocket</span><span class="o">=</span><span class="m">32</span> <span class="nv">ThreadsPerCore</span><span class="o">=</span><span class="m">1</span> <span class="nv">State</span><span class="o">=</span>UNKNOWN
 <span class="nv">NodeName</span><span class="o">=</span>comp03.engwsc.example.com <span class="nv">CPUs</span><span class="o">=</span><span class="m">32</span> <span class="nv">RealMemory</span><span class="o">=</span><span class="m">524288</span> <span class="nv">Sockets</span><span class="o">=</span><span class="m">1</span> <span class="nv">CoresPerSocket</span><span class="o">=</span><span class="m">32</span> <span class="nv">ThreadsPerCore</span><span class="o">=</span><span class="m">1</span> <span class="nv">State</span><span class="o">=</span>UNKNOWN
 <span class="nv">NodeName</span><span class="o">=</span>comp04.engwsc.example.com <span class="nv">CPUs</span><span class="o">=</span><span class="m">32</span> <span class="nv">RealMemory</span><span class="o">=</span><span class="m">524288</span> <span class="nv">Sockets</span><span class="o">=</span><span class="m">1</span> <span class="nv">CoresPerSocket</span><span class="o">=</span><span class="m">32</span> <span class="nv">ThreadsPerCore</span><span class="o">=</span><span class="m">1</span> <span class="nv">State</span><span class="o">=</span>UNKNOWN
-<span class="nv">PartitionName</span><span class="o">=</span>default <span class="nv">Nodes</span><span class="o">=</span>ALL <span class="nv">Default</span><span class="o">=</span>YES <span class="nv">MaxTime</span><span class="o">=</span><span class="m">1440</span> <span class="nv">State</span><span class="o">=</span>UP
+<span class="nv">PartitionName</span><span class="o">=</span>common <span class="nv">Nodes</span><span class="o">=</span>ALL <span class="nv">Default</span><span class="o">=</span>YES <span class="nv">MaxTime</span><span class="o">=</span><span class="m">1440</span> <span class="nv">State</span><span class="o">=</span>UP
 </pre></div>
 </div>
 </div></blockquote>
 </section>
 <section id="munge">
 <h3>Munge<a class="headerlink" href="#munge" title="Permalink to this heading">#</a></h3>
-<ol class="arabic simple" start="10">
+<ol class="arabic simple" start="11">
 <li><p>Create a Munge authentication key:</p></li>
 </ol>
 <blockquote>
@@ -611,7 +624,7 @@ chmod <span class="m">600</span> /etc/munge/munge.key
 </pre></div>
 </div>
 </div></blockquote>
-<ol class="arabic simple" start="11">
+<ol class="arabic simple" start="12">
 <li><p>Enable Munge service:</p></li>
 </ol>
 <blockquote>
@@ -622,7 +635,7 @@ chmod <span class="m">600</span> /etc/munge/munge.key
 </section>
 <section id="slurm">
 <h3>Slurm<a class="headerlink" href="#slurm" title="Permalink to this heading">#</a></h3>
-<ol class="arabic simple" start="12">
+<ol class="arabic simple" start="13">
 <li><p>Create local Slurm user account and group:</p></li>
 </ol>
 <blockquote>
@@ -631,7 +644,7 @@ useradd -m -c <span class="s2">&quot;SLURM workload manager&quot;</span> -d /var
 </pre></div>
 </div>
 </div></blockquote>
-<ol class="arabic simple" start="13">
+<ol class="arabic simple" start="14">
 <li><p>Build Slurm RPM:</p></li>
 </ol>
 <blockquote>
@@ -639,22 +652,22 @@ useradd -m -c <span class="s2">&quot;SLURM workload manager&quot;</span> -d /var
 </pre></div>
 </div>
 </div></blockquote>
-<ol class="arabic simple" start="14">
+<ol class="arabic simple" start="15">
 <li><p>Install Slurm Controller RPMs:</p></li>
 </ol>
 <blockquote>
 <div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>rpm -ivh <span class="se">\</span>
-    /root/rpmbuild/RPMS/x86_64/slurm-22.05.3.el8.x86_64.rpm <span class="se">\</span>
-    /root/rpmbuild/RPMS/x86_64/slurm-example-configs-22.05.3.el8.x86_64.rpm <span class="se">\</span>
-    /root/rpmbuild/RPMS/x86_64/slurm-perlapi-22.05.3.el8.x86_64.rpm <span class="se">\</span>
-    /root/rpmbuild/RPMS/x86_64/slurm-slurmctld-22.05.3.el8.x86_64.rpm <span class="se">\</span>
-    /root/rpmbuild/RPMS/x86_64/slurm-slurmd-22.05.3.el8.x86_64.rpm <span class="se">\</span>
-    /root/rpmbuild/RPMS/x86_64/slurm-slurmdbd-22.05.3.el8.x86_64.rpm <span class="se">\</span>
-    /root/rpmbuild/RPMS/x86_64/slurm-torque-22.05.3.el8.x86_64.rpm
+    /root/rpmbuild/RPMS/x86_64/slurm-22.05.3-1.el8.x86_64.rpm <span class="se">\</span>
+    /root/rpmbuild/RPMS/x86_64/slurm-example-configs-22.05.3-1.el8.x86_64.rpm <span class="se">\</span>
+    /root/rpmbuild/RPMS/x86_64/slurm-perlapi-22.05.3-1.el8.x86_64.rpm <span class="se">\</span>
+    /root/rpmbuild/RPMS/x86_64/slurm-slurmctld-22.05.3-1.el8.x86_64.rpm <span class="se">\</span>
+    /root/rpmbuild/RPMS/x86_64/slurm-slurmd-22.05.3-1.el8.x86_64.rpm <span class="se">\</span>
+    /root/rpmbuild/RPMS/x86_64/slurm-slurmdbd-22.05.3-1.el8.x86_64.rpm <span class="se">\</span>
+    /root/rpmbuild/RPMS/x86_64/slurm-torque-22.05.3-1.el8.x86_64.rpm
 </pre></div>
 </div>
 </div></blockquote>
-<ol class="arabic simple" start="15">
+<ol class="arabic simple" start="16">
 <li><p>Copy configuration files to Slurm RPMs path for inclusion in the tar file:</p></li>
 </ol>
 <blockquote>
@@ -670,7 +683,7 @@ cp /root/tmp/slurmdbd.conf /root/rpmbuild/RPMS/x86_64/
 </pre></div>
 </div>
 </div></blockquote>
-<ol class="arabic simple" start="16">
+<ol class="arabic simple" start="17">
 <li><p>TAR RPMs for use by Compute/Client systems:</p></li>
 </ol>
 <blockquote>
@@ -685,7 +698,7 @@ sha256sum -b slurm-22.05.3.rpm.tar.gz &gt; slurm-22.05.3.rpm.tar.gz.sha256
 </pre></div>
 </div>
 </div></blockquote>
-<ol class="arabic simple" start="17">
+<ol class="arabic simple" start="18">
 <li><p>Install the configuration files:</p></li>
 </ol>
 <blockquote>
@@ -704,7 +717,7 @@ chown -R slurm:slurm /etc/slurm/
 </pre></div>
 </div>
 </div></blockquote>
-<ol class="arabic simple" start="18">
+<ol class="arabic simple" start="19">
 <li><p>Create log files:</p></li>
 </ol>
 <blockquote>
@@ -721,7 +734,7 @@ chown -R slurm:slurm /var/log/slurm
 </pre></div>
 </div>
 </div></blockquote>
-<ol class="arabic simple" start="19">
+<ol class="arabic simple" start="20">
 <li><p>Create spool files:</p></li>
 </ol>
 <blockquote>
@@ -736,7 +749,7 @@ chown -R slurm:slurm /var/spool/slurmdbd
 </pre></div>
 </div>
 </div></blockquote>
-<ol class="arabic simple" start="20">
+<ol class="arabic simple" start="21">
 <li><p>Setup log rotation:</p></li>
 </ol>
 <blockquote>
@@ -761,7 +774,7 @@ chmod <span class="m">644</span> /etc/logrotate.d/slurm
 </section>
 <section id="mariadb">
 <h3>MariaDB<a class="headerlink" href="#mariadb" title="Permalink to this heading">#</a></h3>
-<ol class="arabic simple" start="21">
+<ol class="arabic simple" start="22">
 <li><p>Enable MariaDB service:</p></li>
 </ol>
 <blockquote>
@@ -769,7 +782,7 @@ chmod <span class="m">644</span> /etc/logrotate.d/slurm
 </pre></div>
 </div>
 </div></blockquote>
-<ol class="arabic simple" start="22">
+<ol class="arabic simple" start="23">
 <li><p>Secure databases:</p></li>
 </ol>
 <blockquote>
@@ -791,7 +804,7 @@ mysql_secure_installation
 </pre></div>
 </div>
 </div></blockquote>
-<ol class="arabic simple" start="23">
+<ol class="arabic simple" start="24">
 <li><p>Modify the innodb configuration:</p></li>
 </ol>
 <blockquote>
@@ -806,7 +819,7 @@ cat &gt;&gt; /etc/my.cnf.d/innodb.cnf <span class="s">&lt;&lt;EOL</span>
 </pre></div>
 </div>
 </div></blockquote>
-<ol class="arabic simple" start="24">
+<ol class="arabic simple" start="25">
 <li><p>Delete MariaDB logs and restart service:</p></li>
 </ol>
 <blockquote>
@@ -816,7 +829,7 @@ systemctl start mariadb
 </pre></div>
 </div>
 </div></blockquote>
-<ol class="arabic simple" start="25">
+<ol class="arabic simple" start="26">
 <li><p>Create accounting database for Slurm:</p></li>
 </ol>
 <blockquote>
@@ -833,7 +846,7 @@ mysql -u root -pMARIADB_ROOT_PASSWD --execute <span class="s2">&quot;create data
 </section>
 <section id="firewall">
 <h3>Firewall<a class="headerlink" href="#firewall" title="Permalink to this heading">#</a></h3>
-<ol class="arabic simple" start="26">
+<ol class="arabic simple" start="27">
 <li><p>Configure firewalld rules:</p></li>
 </ol>
 <blockquote>
@@ -846,7 +859,7 @@ firewall-cmd --remove-port<span class="o">=</span><span class="m">3306</span>/tc
 firewall-cmd --remove-port<span class="o">=</span><span class="m">3306</span>/udp --permanent <span class="m">2</span>&gt; /dev/null
 
 firewall-cmd --zone<span class="o">=</span>public --add-source<span class="o">=</span><span class="m">192</span>.168.1.0/24 --permanent
-firewall-cmd --zone<span class="o">=</span>public --add-port<span class="o">={</span><span class="m">6817</span>/tcp, <span class="m">6818</span>/tcp, <span class="m">6819</span>/tcp<span class="o">}</span> --permanent
+firewall-cmd --zone<span class="o">=</span>public --add-port<span class="o">={</span><span class="m">6817</span>/tcp,6818/tcp,6819/tcp<span class="o">}</span> --permanent
 firewall-cmd --reload
 </pre></div>
 </div>
@@ -854,7 +867,7 @@ firewall-cmd --reload
 </section>
 <section id="slurm-controller-services">
 <h3>Slurm Controller Services<a class="headerlink" href="#slurm-controller-services" title="Permalink to this heading">#</a></h3>
-<ol class="arabic simple" start="27">
+<ol class="arabic simple" start="28">
 <li><p>Enable Slurm Controller services:</p></li>
 </ol>
 <blockquote>
@@ -902,7 +915,7 @@ systemctl <span class="nb">enable</span> --now slurmctld
             
             <a href="https://github.com/pradyunsg/furo">Furo</a>
             <div class="last-updated">
-              Last updated on Dec 17, 2022</div>
+              Last updated on Dec 28, 2022</div>
           </div>
           <div class="right-details">
             <div class="icons">

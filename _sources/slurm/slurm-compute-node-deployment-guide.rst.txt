@@ -56,14 +56,25 @@ Deployment Steps
     dnf -y install munge munge-libs hwloc hwloc-libs ncurses curl rrdtool mariadb \
         mariadb-devel ibacm infiniband-diags
 
-2. Create the deploy directory and go to it:
+2. Exclude DNF/Yum Slurm packages:
+
+  .. code-block:: bash
+
+    cat >> /etc/dnf/dnf.conf <<EOL
+
+    # Exclude slurm Packages
+    excludepkgs=slurm*
+
+    EOL
+
+3. Create the deploy directory and go to it:
 
   .. code-block:: bash
 
     mkdir -p /root/tmp
     cd /root/tmp
 
-3. Upload TAR file:
+4. Upload TAR file:
 
   .. note::
 
@@ -73,7 +84,7 @@ Deployment Steps
 
     scp slurm-22.05.3.rpm.tar.gz root@comp01.engwsc.example.com:/root/tmp
 
-4. Extract RPMs:
+5. Extract RPMs:
 
   .. note::
 
@@ -83,7 +94,7 @@ Deployment Steps
 
     tar -xvf slurm-22.05.3.rpm.tar.gz
 
-5. Copy Munge authentication key:
+6. Copy Munge authentication key:
 
 
   .. code-block:: bash
@@ -95,20 +106,20 @@ Deployment Steps
     chmod 600 /etc/munge/munge.key
     chown -R munge:munge /etc/munge
 
-6. Enable Munge service:
+7. Enable Munge service:
 
   .. code-block:: bash
 
     systemctl enable --now munge
 
-7. Create Slurm user account and group:
+8. Create Slurm user account and group:
 
   .. code-block:: bash
 
     groupadd -g 64030 slurm
     useradd -m -c "SLURM workload manager" -d /var/lib/slurm -u 64030 -g slurm -s /bin/bash slurm
 
-8. Install Slurm Compute/Client RPMs:
+9. Install Slurm Compute/Client RPMs:
 
   .. code-block:: bash
 
@@ -118,7 +129,7 @@ Deployment Steps
         slurm-slurmd-22.05.3-1.el8.x86_64.rpm \
         slurm-torque-22.05.3-1.el8.x86_64.rpm
 
-9. Copy configuration files:
+10. Copy configuration files:
 
   .. code-block:: bash
 
@@ -131,7 +142,7 @@ Deployment Steps
     chmod 600 /etc/slurm/slurm.conf
     chown -R slurm:slurm /etc/slurm/
 
-10. Create log files:
+11. Create log files:
 
   .. code-block:: bash
 
@@ -142,7 +153,7 @@ Deployment Steps
     chmod 644 /var/log/slurm/*.log
     chown -R slurm:slurm /var/log/slurm
 
-11. Create spool files:
+12. Create spool files:
 
   .. code-block:: bash
 
@@ -150,7 +161,7 @@ Deployment Steps
     chmod 700 /var/spool/slurmd
     chown -R slurm:slurm /var/spool/slurmd
 
-12. Setup Slurm log rotation:
+13. Setup Slurm log rotation:
 
   .. code-block:: bash
 
@@ -168,7 +179,7 @@ Deployment Steps
 
     chmod 644 /etc/logrotate.d/slurm
 
-13. Configure firewalld rules:
+14. Configure firewalld rules:
 
   .. important::
 
@@ -178,10 +189,10 @@ Deployment Steps
 
     systemctl enable --now firewalld
     firewall-cmd --zone=public --add-source=192.168.1.0/24 --permanent
-    firewall-cmd --zone=public --add-port={6817/tcp, 6818/tcp} --permanent
+    firewall-cmd --zone=public --add-port={6817/tcp,6818/tcp} --permanent
     firewall-cmd --reload
 
-14. Enable Slurm Compute/Client services:
+15. Enable Slurm Compute/Client services:
 
   .. code-block:: bash
 

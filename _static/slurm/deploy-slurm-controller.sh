@@ -50,13 +50,14 @@ echo -e "\n[$(date +"%Y-%m-%d %H:%M:%S")] Deploying Slurm Controller...\n"
 
 # Cluster and hostname
 CLUSTER_NAME="engwsc"
-SLURM_HOSTNAME="slurm.engwsc.example.com"
+SLURM_HOSTNAME="slurm"
+SLURM_FQDN="${SLURM_HOSTNAME}.engwsc.example.com"
 
 # Cluster Subnet Mask (Firewall Rule)
 CLUSTER_SUBNET_MASK="192.168.1.0/24"
 
 # Slurm Version
-SLURM_VERSION="22.05.3"
+SLURM_VERSION="22.05.6"
 
 # Slurm User UID, GID
 SLURMUSERID=64030
@@ -125,6 +126,14 @@ dnf install -y gcc binutils ncurses-devel automake autoconf \
     rrdtool-perl mailx lz4 lz4-libs lz4-devel libcurl \
     libcurl-devel infiniband-diags-devel ibacm
 
+# Exclude DNF/Yum Slurm packages
+echo -e "\nExcluding Slurm Packages..."
+cat >> /etc/dnf/dnf.conf <<EOL
+
+# Exclude slurm Packages
+excludepkgs=slurm*
+
+EOL
 
 echo -e "\nConfiguring Slurm..."
 
@@ -146,7 +155,7 @@ sed -i "s/StoragePass=.*/StoragePass=${MARIADB_SLURM_USER_PASSWD}/g" /root/tmp/s
 #
 sed -i "s/ClusterName=.*/ClusterName=${CLUSTER_NAME}/g" /root/tmp/slurm.conf
 sed -i "s/SlurmctldHost=.*/SlurmctldHost=${SLURM_HOSTNAME}/g" /root/tmp/slurm.conf
-sed -i "s/AccountingStorageHost=.*/AccountingStorageHost=${SLURM_HOSTNAME}/g" /root/tmp/slurm.conf
+sed -i "s/AccountingStorageHost=.*/AccountingStorageHost=${SLURM_FQDN}/g" /root/tmp/slurm.conf
 
 
 ###############################################################################
@@ -331,7 +340,7 @@ firewall-cmd --remove-port=3306/tcp --permanent 2> /dev/null
 firewall-cmd --remove-port=3306/udp --permanent 2> /dev/null
 
 firewall-cmd --zone=public --add-source=${CLUSTER_SUBNET_MASK} --permanent
-firewall-cmd --zone=public --add-port={6817/tcp, 6818/tcp, 6819/tcp} --permanent
+firewall-cmd --zone=public --add-port={6817/tcp,6818/tcp,6819/tcp} --permanent
 firewall-cmd --reload
 
 
