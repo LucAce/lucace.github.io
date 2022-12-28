@@ -548,7 +548,7 @@ dnf distro-sync
 <p class="admonition-title">Note</p>
 <p>Any file transfer method can be used.</p>
 </div>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>scp slurm-22.05.3.tar.bz2 root@slurm.engwsc.example.com:/root/tmp/
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>scp slurm-22.05.6.tar.bz2 root@slurm.engwsc.example.com:/root/tmp/
 scp cgroup.conf           root@slurm.engwsc.example.com:/root/tmp/
 scp slurm.conf            root@slurm.engwsc.example.com:/root/tmp/
 scp slurmdbd.conf         root@slurm.engwsc.example.com:/root/tmp/
@@ -588,18 +588,18 @@ sed -i <span class="s1">&#39;s/AccountingStorageHost=.*/AccountingStorageHost=sl
 <blockquote>
 <div><div class="admonition important">
 <p class="admonition-title">Important</p>
-<p>The following is just an example configuration.  Replace with the
-configuration of your cluster.</p>
+<p>The following is just an example configuration.  Replace with the configuration of your cluster.</p>
 </div>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># COMPUTE NODES (Adjust to match real hardware)</span>
-<span class="nv">NodeName</span><span class="o">=</span>user01.engwsc.example.com <span class="nv">CPUs</span><span class="o">=</span><span class="m">32</span> <span class="nv">RealMemory</span><span class="o">=</span><span class="m">524288</span> <span class="nv">Sockets</span><span class="o">=</span><span class="m">1</span> <span class="nv">CoresPerSocket</span><span class="o">=</span><span class="m">32</span> <span class="nv">ThreadsPerCore</span><span class="o">=</span><span class="m">1</span> <span class="nv">State</span><span class="o">=</span>UNKNOWN
-<span class="nv">NodeName</span><span class="o">=</span>user02.engwsc.example.com <span class="nv">CPUs</span><span class="o">=</span><span class="m">32</span> <span class="nv">RealMemory</span><span class="o">=</span><span class="m">524288</span> <span class="nv">Sockets</span><span class="o">=</span><span class="m">1</span> <span class="nv">CoresPerSocket</span><span class="o">=</span><span class="m">32</span> <span class="nv">ThreadsPerCore</span><span class="o">=</span><span class="m">1</span> <span class="nv">State</span><span class="o">=</span>UNKNOWN
-<span class="nv">NodeName</span><span class="o">=</span>user03.engwsc.example.com <span class="nv">CPUs</span><span class="o">=</span><span class="m">32</span> <span class="nv">RealMemory</span><span class="o">=</span><span class="m">524288</span> <span class="nv">Sockets</span><span class="o">=</span><span class="m">1</span> <span class="nv">CoresPerSocket</span><span class="o">=</span><span class="m">32</span> <span class="nv">ThreadsPerCore</span><span class="o">=</span><span class="m">1</span> <span class="nv">State</span><span class="o">=</span>UNKNOWN
-<span class="nv">NodeName</span><span class="o">=</span>user04.engwsc.example.com <span class="nv">CPUs</span><span class="o">=</span><span class="m">32</span> <span class="nv">RealMemory</span><span class="o">=</span><span class="m">524288</span> <span class="nv">Sockets</span><span class="o">=</span><span class="m">1</span> <span class="nv">CoresPerSocket</span><span class="o">=</span><span class="m">32</span> <span class="nv">ThreadsPerCore</span><span class="o">=</span><span class="m">1</span> <span class="nv">State</span><span class="o">=</span>UNKNOWN
-<span class="nv">NodeName</span><span class="o">=</span>comp01.engwsc.example.com <span class="nv">CPUs</span><span class="o">=</span><span class="m">32</span> <span class="nv">RealMemory</span><span class="o">=</span><span class="m">524288</span> <span class="nv">Sockets</span><span class="o">=</span><span class="m">1</span> <span class="nv">CoresPerSocket</span><span class="o">=</span><span class="m">32</span> <span class="nv">ThreadsPerCore</span><span class="o">=</span><span class="m">1</span> <span class="nv">State</span><span class="o">=</span>UNKNOWN
-<span class="nv">NodeName</span><span class="o">=</span>comp02.engwsc.example.com <span class="nv">CPUs</span><span class="o">=</span><span class="m">32</span> <span class="nv">RealMemory</span><span class="o">=</span><span class="m">524288</span> <span class="nv">Sockets</span><span class="o">=</span><span class="m">1</span> <span class="nv">CoresPerSocket</span><span class="o">=</span><span class="m">32</span> <span class="nv">ThreadsPerCore</span><span class="o">=</span><span class="m">1</span> <span class="nv">State</span><span class="o">=</span>UNKNOWN
-<span class="nv">NodeName</span><span class="o">=</span>comp03.engwsc.example.com <span class="nv">CPUs</span><span class="o">=</span><span class="m">32</span> <span class="nv">RealMemory</span><span class="o">=</span><span class="m">524288</span> <span class="nv">Sockets</span><span class="o">=</span><span class="m">1</span> <span class="nv">CoresPerSocket</span><span class="o">=</span><span class="m">32</span> <span class="nv">ThreadsPerCore</span><span class="o">=</span><span class="m">1</span> <span class="nv">State</span><span class="o">=</span>UNKNOWN
-<span class="nv">NodeName</span><span class="o">=</span>comp04.engwsc.example.com <span class="nv">CPUs</span><span class="o">=</span><span class="m">32</span> <span class="nv">RealMemory</span><span class="o">=</span><span class="m">524288</span> <span class="nv">Sockets</span><span class="o">=</span><span class="m">1</span> <span class="nv">CoresPerSocket</span><span class="o">=</span><span class="m">32</span> <span class="nv">ThreadsPerCore</span><span class="o">=</span><span class="m">1</span> <span class="nv">State</span><span class="o">=</span>UNKNOWN
+<span class="c1"># User Nodes should typically not run job items</span>
+<span class="nv">NodeName</span><span class="o">=</span>user01.engwsc.example.com <span class="nv">CPUs</span><span class="o">=</span><span class="m">0</span>  <span class="nv">State</span><span class="o">=</span>UNKNOWN
+<span class="nv">NodeName</span><span class="o">=</span>user02.engwsc.example.com <span class="nv">CPUs</span><span class="o">=</span><span class="m">0</span>  <span class="nv">State</span><span class="o">=</span>UNKNOWN
+<span class="nv">NodeName</span><span class="o">=</span>user03.engwsc.example.com <span class="nv">CPUs</span><span class="o">=</span><span class="m">0</span>  <span class="nv">State</span><span class="o">=</span>UNKNOWN
+<span class="nv">NodeName</span><span class="o">=</span>user04.engwsc.example.com <span class="nv">CPUs</span><span class="o">=</span><span class="m">0</span>  <span class="nv">State</span><span class="o">=</span>UNKNOWN
+<span class="nv">NodeName</span><span class="o">=</span>comp01.engwsc.example.com <span class="nv">CPUs</span><span class="o">=</span><span class="m">32</span> <span class="nv">State</span><span class="o">=</span>UNKNOWN
+<span class="nv">NodeName</span><span class="o">=</span>comp02.engwsc.example.com <span class="nv">CPUs</span><span class="o">=</span><span class="m">32</span> <span class="nv">State</span><span class="o">=</span>UNKNOWN
+<span class="nv">NodeName</span><span class="o">=</span>comp03.engwsc.example.com <span class="nv">CPUs</span><span class="o">=</span><span class="m">32</span> <span class="nv">State</span><span class="o">=</span>UNKNOWN
+<span class="nv">NodeName</span><span class="o">=</span>comp04.engwsc.example.com <span class="nv">CPUs</span><span class="o">=</span><span class="m">32</span> <span class="nv">State</span><span class="o">=</span>UNKNOWN
 <span class="nv">PartitionName</span><span class="o">=</span>common <span class="nv">Nodes</span><span class="o">=</span>ALL <span class="nv">Default</span><span class="o">=</span>YES <span class="nv">MaxTime</span><span class="o">=</span><span class="m">1440</span> <span class="nv">State</span><span class="o">=</span>UP
 </pre></div>
 </div>
@@ -648,7 +648,7 @@ useradd -m -c <span class="s2">&quot;SLURM workload manager&quot;</span> -d /var
 <li><p>Build Slurm RPM:</p></li>
 </ol>
 <blockquote>
-<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>rpmbuild -ta slurm-22.05.3.tar.bz2
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>rpmbuild -ta slurm-22.05.6.tar.bz2
 </pre></div>
 </div>
 </div></blockquote>
@@ -657,13 +657,13 @@ useradd -m -c <span class="s2">&quot;SLURM workload manager&quot;</span> -d /var
 </ol>
 <blockquote>
 <div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>rpm -ivh <span class="se">\</span>
-    /root/rpmbuild/RPMS/x86_64/slurm-22.05.3-1.el8.x86_64.rpm <span class="se">\</span>
-    /root/rpmbuild/RPMS/x86_64/slurm-example-configs-22.05.3-1.el8.x86_64.rpm <span class="se">\</span>
-    /root/rpmbuild/RPMS/x86_64/slurm-perlapi-22.05.3-1.el8.x86_64.rpm <span class="se">\</span>
-    /root/rpmbuild/RPMS/x86_64/slurm-slurmctld-22.05.3-1.el8.x86_64.rpm <span class="se">\</span>
-    /root/rpmbuild/RPMS/x86_64/slurm-slurmd-22.05.3-1.el8.x86_64.rpm <span class="se">\</span>
-    /root/rpmbuild/RPMS/x86_64/slurm-slurmdbd-22.05.3-1.el8.x86_64.rpm <span class="se">\</span>
-    /root/rpmbuild/RPMS/x86_64/slurm-torque-22.05.3-1.el8.x86_64.rpm
+    /root/rpmbuild/RPMS/x86_64/slurm-22.05.6-1.el8.x86_64.rpm <span class="se">\</span>
+    /root/rpmbuild/RPMS/x86_64/slurm-example-configs-22.05.6-1.el8.x86_64.rpm <span class="se">\</span>
+    /root/rpmbuild/RPMS/x86_64/slurm-perlapi-22.05.6-1.el8.x86_64.rpm <span class="se">\</span>
+    /root/rpmbuild/RPMS/x86_64/slurm-slurmctld-22.05.6-1.el8.x86_64.rpm <span class="se">\</span>
+    /root/rpmbuild/RPMS/x86_64/slurm-slurmd-22.05.6-1.el8.x86_64.rpm <span class="se">\</span>
+    /root/rpmbuild/RPMS/x86_64/slurm-slurmdbd-22.05.6-1.el8.x86_64.rpm <span class="se">\</span>
+    /root/rpmbuild/RPMS/x86_64/slurm-torque-22.05.6-1.el8.x86_64.rpm
 </pre></div>
 </div>
 </div></blockquote>
@@ -690,11 +690,11 @@ cp /root/tmp/slurmdbd.conf /root/rpmbuild/RPMS/x86_64/
 <div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">EXEC_PWD</span><span class="o">=</span><span class="sb">`</span><span class="nb">pwd</span><span class="sb">`</span>
 
 <span class="nb">cd</span> /root/rpmbuild/RPMS/x86_64/
-tar -cf <span class="si">${</span><span class="nv">EXEC_PWD</span><span class="si">}</span>/slurm-22.05.3.tar slurm-*.rpm cgroup.conf slurm.conf slurmdbd.conf munge.key
+tar -cf <span class="si">${</span><span class="nv">EXEC_PWD</span><span class="si">}</span>/slurm-22.05.6.tar slurm-*.rpm cgroup.conf slurm.conf slurmdbd.conf munge.key
 
 <span class="nb">cd</span> <span class="si">${</span><span class="nv">EXEC_PWD</span><span class="si">}</span>
-gzip -9 slurm-22.05.3.rpm.tar
-sha256sum -b slurm-22.05.3.rpm.tar.gz &gt; slurm-22.05.3.rpm.tar.gz.sha256
+gzip -9 slurm-22.05.6.rpm.tar
+sha256sum -b slurm-22.05.6.rpm.tar.gz &gt; slurm-22.05.6.rpm.tar.gz.sha256
 </pre></div>
 </div>
 </div></blockquote>

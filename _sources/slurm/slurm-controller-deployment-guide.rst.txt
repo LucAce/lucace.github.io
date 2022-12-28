@@ -169,7 +169,7 @@ Build Setup
 
   .. code-block:: bash
 
-    scp slurm-22.05.3.tar.bz2 root@slurm.engwsc.example.com:/root/tmp/
+    scp slurm-22.05.6.tar.bz2 root@slurm.engwsc.example.com:/root/tmp/
     scp cgroup.conf           root@slurm.engwsc.example.com:/root/tmp/
     scp slurm.conf            root@slurm.engwsc.example.com:/root/tmp/
     scp slurmdbd.conf         root@slurm.engwsc.example.com:/root/tmp/
@@ -201,20 +201,20 @@ Build Setup
 
   .. important::
 
-    The following is just an example configuration.  Replace with the
-    configuration of your cluster.
+    The following is just an example configuration.  Replace with the configuration of your cluster.
 
   .. code-block:: bash
 
     # COMPUTE NODES (Adjust to match real hardware)
-    NodeName=user01.engwsc.example.com CPUs=32 RealMemory=524288 Sockets=1 CoresPerSocket=32 ThreadsPerCore=1 State=UNKNOWN
-    NodeName=user02.engwsc.example.com CPUs=32 RealMemory=524288 Sockets=1 CoresPerSocket=32 ThreadsPerCore=1 State=UNKNOWN
-    NodeName=user03.engwsc.example.com CPUs=32 RealMemory=524288 Sockets=1 CoresPerSocket=32 ThreadsPerCore=1 State=UNKNOWN
-    NodeName=user04.engwsc.example.com CPUs=32 RealMemory=524288 Sockets=1 CoresPerSocket=32 ThreadsPerCore=1 State=UNKNOWN
-    NodeName=comp01.engwsc.example.com CPUs=32 RealMemory=524288 Sockets=1 CoresPerSocket=32 ThreadsPerCore=1 State=UNKNOWN
-    NodeName=comp02.engwsc.example.com CPUs=32 RealMemory=524288 Sockets=1 CoresPerSocket=32 ThreadsPerCore=1 State=UNKNOWN
-    NodeName=comp03.engwsc.example.com CPUs=32 RealMemory=524288 Sockets=1 CoresPerSocket=32 ThreadsPerCore=1 State=UNKNOWN
-    NodeName=comp04.engwsc.example.com CPUs=32 RealMemory=524288 Sockets=1 CoresPerSocket=32 ThreadsPerCore=1 State=UNKNOWN
+    # User Nodes should typically not run job items
+    NodeName=user01.engwsc.example.com CPUs=0  State=UNKNOWN
+    NodeName=user02.engwsc.example.com CPUs=0  State=UNKNOWN
+    NodeName=user03.engwsc.example.com CPUs=0  State=UNKNOWN
+    NodeName=user04.engwsc.example.com CPUs=0  State=UNKNOWN
+    NodeName=comp01.engwsc.example.com CPUs=32 State=UNKNOWN
+    NodeName=comp02.engwsc.example.com CPUs=32 State=UNKNOWN
+    NodeName=comp03.engwsc.example.com CPUs=32 State=UNKNOWN
+    NodeName=comp04.engwsc.example.com CPUs=32 State=UNKNOWN
     PartitionName=common Nodes=ALL Default=YES MaxTime=1440 State=UP
 
 
@@ -257,20 +257,20 @@ Slurm
 
   .. code-block:: bash
 
-    rpmbuild -ta slurm-22.05.3.tar.bz2
+    rpmbuild -ta slurm-22.05.6.tar.bz2
 
 15. Install Slurm Controller RPMs:
 
   .. code-block:: bash
 
     rpm -ivh \
-        /root/rpmbuild/RPMS/x86_64/slurm-22.05.3-1.el8.x86_64.rpm \
-        /root/rpmbuild/RPMS/x86_64/slurm-example-configs-22.05.3-1.el8.x86_64.rpm \
-        /root/rpmbuild/RPMS/x86_64/slurm-perlapi-22.05.3-1.el8.x86_64.rpm \
-        /root/rpmbuild/RPMS/x86_64/slurm-slurmctld-22.05.3-1.el8.x86_64.rpm \
-        /root/rpmbuild/RPMS/x86_64/slurm-slurmd-22.05.3-1.el8.x86_64.rpm \
-        /root/rpmbuild/RPMS/x86_64/slurm-slurmdbd-22.05.3-1.el8.x86_64.rpm \
-        /root/rpmbuild/RPMS/x86_64/slurm-torque-22.05.3-1.el8.x86_64.rpm
+        /root/rpmbuild/RPMS/x86_64/slurm-22.05.6-1.el8.x86_64.rpm \
+        /root/rpmbuild/RPMS/x86_64/slurm-example-configs-22.05.6-1.el8.x86_64.rpm \
+        /root/rpmbuild/RPMS/x86_64/slurm-perlapi-22.05.6-1.el8.x86_64.rpm \
+        /root/rpmbuild/RPMS/x86_64/slurm-slurmctld-22.05.6-1.el8.x86_64.rpm \
+        /root/rpmbuild/RPMS/x86_64/slurm-slurmd-22.05.6-1.el8.x86_64.rpm \
+        /root/rpmbuild/RPMS/x86_64/slurm-slurmdbd-22.05.6-1.el8.x86_64.rpm \
+        /root/rpmbuild/RPMS/x86_64/slurm-torque-22.05.6-1.el8.x86_64.rpm
 
 16. Copy configuration files to Slurm RPMs path for inclusion in the tar file:
 
@@ -293,11 +293,11 @@ Slurm
     EXEC_PWD=`pwd`
 
     cd /root/rpmbuild/RPMS/x86_64/
-    tar -cf ${EXEC_PWD}/slurm-22.05.3.tar slurm-*.rpm cgroup.conf slurm.conf slurmdbd.conf munge.key
+    tar -cf ${EXEC_PWD}/slurm-22.05.6.tar slurm-*.rpm cgroup.conf slurm.conf slurmdbd.conf munge.key
 
     cd ${EXEC_PWD}
-    gzip -9 slurm-22.05.3.rpm.tar
-    sha256sum -b slurm-22.05.3.rpm.tar.gz > slurm-22.05.3.rpm.tar.gz.sha256
+    gzip -9 slurm-22.05.6.rpm.tar
+    sha256sum -b slurm-22.05.6.rpm.tar.gz > slurm-22.05.6.rpm.tar.gz.sha256
 
 18. Install the configuration files:
 
