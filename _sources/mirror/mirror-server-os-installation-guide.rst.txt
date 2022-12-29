@@ -48,9 +48,9 @@ Configuration
 OS Installation Steps
 *********************
 
-1. Boot VM using AlmaLinux / Rocky Linux 8.6 ISO
+1. Boot VM using AlmaLinux / Rocky Linux 8.7 ISO
 
-2. Select ``Install AlmaLinux / Rocky Linux 8.6`` and press ``ENTER``
+2. Select ``Install AlmaLinux / Rocky Linux 8.7`` and press ``ENTER``
 
 3. Select your language to use during the installation process and press ``Continue``
 

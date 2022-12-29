@@ -19,7 +19,13 @@ The following instructions are for deploying the Virtual Machine Managers.
 Prerequisites
 *************
 
+This guide is written for a Red Hat Enterprise Linux 8 based operating system which
+is operating within a cluster of systems and the following are the prerequisites:
+
 * :doc:`vmm-os-installation-guide`
+
+If deploying as a standalone service, adjust the hostname fields accordingly and
+omit steps involving IdM, NFS, and follow-on deployment guides.
 
 
 *********************
@@ -215,8 +221,8 @@ Deployment Steps
 
   .. code-block:: bash
 
-    scp rhel-8.6-x86_64-dvd.iso root@vmm1.engwsc.example.com:/srv/kvm/iso/rhel-8.6-x86_64-dvd.iso
-    scp rhel-8.6-x86_64-dvd.iso root@vmm2.engwsc.example.com:/srv/kvm/iso/rhel-8.6-x86_64-dvd.iso
+    scp rhel-8.7-x86_64-dvd.iso root@vmm1.engwsc.example.com:/srv/kvm/iso/rhel-8.7-x86_64-dvd.iso
+    scp rhel-8.7-x86_64-dvd.iso root@vmm2.engwsc.example.com:/srv/kvm/iso/rhel-8.7-x86_64-dvd.iso
 
 7 Reboot system:
 
@@ -258,8 +264,8 @@ Deployment Steps
     * In the "Installation type" drop-down select
       "Local install Media (ISO image or distro install tree)
     * In the "Installation source" drop-down/box add the path to the ISO
-      (ex. /srv/kvm/iso/rhel-8.6-x86_64-dvd.iso)
-    * In the "Operating system" drop-down/box add or select "Red Hat Enterprise Linux 8.6 (Ootpa)"
+      (ex. /srv/kvm/iso/rhel-8.7-x86_64-dvd.iso)
+    * In the "Operating system" drop-down/box add or select "Red Hat Enterprise Linux 8.7 (Ootpa)"
     * In the "Storage" drop-down/box select "guest_images"
     * In the "Volume" box select the appropriate VM guest image file (ex. idm.qcow2)
     * In the "Memory" box select 16 GiB (see guides for the amount but typically it is 16GiB)

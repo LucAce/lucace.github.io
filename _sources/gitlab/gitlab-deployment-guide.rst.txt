@@ -19,9 +19,15 @@ The following instructions are for deploying GitLab.
 Prerequisites
 *************
 
+This guide is written for a Red Hat Enterprise Linux 8 based operating system which
+is operating within a cluster of systems and the following are the prerequisites:
+
 * :doc:`gitlab-os-installation-guide`
 * :doc:`../idm/idm-client-deployment-guide`
 * :doc:`../nfs/nfs-client-deployment-guide`
+
+If deploying as a standalone service, adjust the hostname fields accordingly and
+omit steps involving IdM, NFS, and follow-on deployment guides.
 
 
 *********************
@@ -40,7 +46,7 @@ References
 
 ..
 
-  These instructions were written for GitLab Community Edition (CE) ``15.4.2``
+  These instructions were written for and tested on GitLab Community Edition (CE) ``15.4.2``.
 
 ..
 

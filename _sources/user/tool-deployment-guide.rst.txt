@@ -20,6 +20,9 @@ Application and Tools on the User and Compute nodes.
 Prerequisites
 *************
 
+This guide is written for a Red Hat Enterprise Linux 8 based operating system which
+is operating within a cluster of systems and the following are the prerequisites:
+
 * :doc:`user-deployment-guide`
 
 

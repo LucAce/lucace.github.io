@@ -405,6 +405,8 @@
 <p>The following instructions are for deploying the Slurm Controller.</p>
 <section id="prerequisites">
 <h2>Prerequisites<a class="headerlink" href="#prerequisites" title="Permalink to this heading">#</a></h2>
+<p>This guide is written for a Red Hat Enterprise Linux 8 based operating system which
+is operating within a cluster of systems and the following are the prerequisites:</p>
 <ul class="simple">
 <li><p><a class="reference internal" href="slurm-controller-os-installation-guide.html"><span class="doc">Slurm Controller OS Installation Guide</span></a></p></li>
 <li><p><a class="reference internal" href="../idm/idm-client-deployment-guide.html"><span class="doc">IdM Client Deployment Guide</span></a></p></li>
@@ -591,11 +593,6 @@ sed -i <span class="s1">&#39;s/AccountingStorageHost=.*/AccountingStorageHost=sl
 <p>The following is just an example configuration.  Replace with the configuration of your cluster.</p>
 </div>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># COMPUTE NODES (Adjust to match real hardware)</span>
-<span class="c1"># User Nodes should typically not run job items</span>
-<span class="nv">NodeName</span><span class="o">=</span>user01.engwsc.example.com <span class="nv">CPUs</span><span class="o">=</span><span class="m">0</span>  <span class="nv">State</span><span class="o">=</span>UNKNOWN
-<span class="nv">NodeName</span><span class="o">=</span>user02.engwsc.example.com <span class="nv">CPUs</span><span class="o">=</span><span class="m">0</span>  <span class="nv">State</span><span class="o">=</span>UNKNOWN
-<span class="nv">NodeName</span><span class="o">=</span>user03.engwsc.example.com <span class="nv">CPUs</span><span class="o">=</span><span class="m">0</span>  <span class="nv">State</span><span class="o">=</span>UNKNOWN
-<span class="nv">NodeName</span><span class="o">=</span>user04.engwsc.example.com <span class="nv">CPUs</span><span class="o">=</span><span class="m">0</span>  <span class="nv">State</span><span class="o">=</span>UNKNOWN
 <span class="nv">NodeName</span><span class="o">=</span>comp01.engwsc.example.com <span class="nv">CPUs</span><span class="o">=</span><span class="m">32</span> <span class="nv">State</span><span class="o">=</span>UNKNOWN
 <span class="nv">NodeName</span><span class="o">=</span>comp02.engwsc.example.com <span class="nv">CPUs</span><span class="o">=</span><span class="m">32</span> <span class="nv">State</span><span class="o">=</span>UNKNOWN
 <span class="nv">NodeName</span><span class="o">=</span>comp03.engwsc.example.com <span class="nv">CPUs</span><span class="o">=</span><span class="m">32</span> <span class="nv">State</span><span class="o">=</span>UNKNOWN

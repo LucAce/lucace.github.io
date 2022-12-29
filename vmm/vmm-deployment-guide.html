@@ -405,9 +405,13 @@
 <p>The following instructions are for deploying the Virtual Machine Managers.</p>
 <section id="prerequisites">
 <h2>Prerequisites<a class="headerlink" href="#prerequisites" title="Permalink to this heading">#</a></h2>
+<p>This guide is written for a Red Hat Enterprise Linux 8 based operating system which
+is operating within a cluster of systems and the following are the prerequisites:</p>
 <ul class="simple">
 <li><p><a class="reference internal" href="vmm-os-installation-guide.html"><span class="doc">Virtual Machine Manager OS Installation Guide</span></a></p></li>
 </ul>
+<p>If deploying as a standalone service, adjust the hostname fields accordingly and
+omit steps involving IdM, NFS, and follow-on deployment guides.</p>
 </section>
 <section id="follow-on-deployments">
 <h2>Follow-on Deployments<a class="headerlink" href="#follow-on-deployments" title="Permalink to this heading">#</a></h2>
@@ -593,8 +597,8 @@ virsh net-autostart <span class="si">${</span><span class="nv">BRIDGE_NAME</span
 <p class="admonition-title">Note</p>
 <p>The ISO file name will vary depending OS and version being used.</p>
 </div>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>scp rhel-8.6-x86_64-dvd.iso root@vmm1.engwsc.example.com:/srv/kvm/iso/rhel-8.6-x86_64-dvd.iso
-scp rhel-8.6-x86_64-dvd.iso root@vmm2.engwsc.example.com:/srv/kvm/iso/rhel-8.6-x86_64-dvd.iso
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>scp rhel-8.7-x86_64-dvd.iso root@vmm1.engwsc.example.com:/srv/kvm/iso/rhel-8.7-x86_64-dvd.iso
+scp rhel-8.7-x86_64-dvd.iso root@vmm2.engwsc.example.com:/srv/kvm/iso/rhel-8.7-x86_64-dvd.iso
 </pre></div>
 </div>
 </div></blockquote>
@@ -633,8 +637,8 @@ and Virtual Machine Manager 02 nodes.</p>
 <span class="o">*</span> <span class="n">In</span> <span class="n">the</span> <span class="s2">&quot;Installation type&quot;</span> <span class="n">drop</span><span class="o">-</span><span class="n">down</span> <span class="n">select</span>
   <span class="s2">&quot;Local install Media (ISO image or distro install tree)</span>
 <span class="o">*</span> <span class="n">In</span> <span class="n">the</span> <span class="s2">&quot;Installation source&quot;</span> <span class="n">drop</span><span class="o">-</span><span class="n">down</span><span class="o">/</span><span class="n">box</span> <span class="n">add</span> <span class="n">the</span> <span class="n">path</span> <span class="n">to</span> <span class="n">the</span> <span class="n">ISO</span>
-  <span class="p">(</span><span class="n">ex</span><span class="o">.</span> <span class="o">/</span><span class="n">srv</span><span class="o">/</span><span class="n">kvm</span><span class="o">/</span><span class="n">iso</span><span class="o">/</span><span class="n">rhel</span><span class="o">-</span><span class="mf">8.6</span><span class="o">-</span><span class="n">x86_64</span><span class="o">-</span><span class="n">dvd</span><span class="o">.</span><span class="n">iso</span><span class="p">)</span>
-<span class="o">*</span> <span class="n">In</span> <span class="n">the</span> <span class="s2">&quot;Operating system&quot;</span> <span class="n">drop</span><span class="o">-</span><span class="n">down</span><span class="o">/</span><span class="n">box</span> <span class="n">add</span> <span class="ow">or</span> <span class="n">select</span> <span class="s2">&quot;Red Hat Enterprise Linux 8.6 (Ootpa)&quot;</span>
+  <span class="p">(</span><span class="n">ex</span><span class="o">.</span> <span class="o">/</span><span class="n">srv</span><span class="o">/</span><span class="n">kvm</span><span class="o">/</span><span class="n">iso</span><span class="o">/</span><span class="n">rhel</span><span class="o">-</span><span class="mf">8.7</span><span class="o">-</span><span class="n">x86_64</span><span class="o">-</span><span class="n">dvd</span><span class="o">.</span><span class="n">iso</span><span class="p">)</span>
+<span class="o">*</span> <span class="n">In</span> <span class="n">the</span> <span class="s2">&quot;Operating system&quot;</span> <span class="n">drop</span><span class="o">-</span><span class="n">down</span><span class="o">/</span><span class="n">box</span> <span class="n">add</span> <span class="ow">or</span> <span class="n">select</span> <span class="s2">&quot;Red Hat Enterprise Linux 8.7 (Ootpa)&quot;</span>
 <span class="o">*</span> <span class="n">In</span> <span class="n">the</span> <span class="s2">&quot;Storage&quot;</span> <span class="n">drop</span><span class="o">-</span><span class="n">down</span><span class="o">/</span><span class="n">box</span> <span class="n">select</span> <span class="s2">&quot;guest_images&quot;</span>
 <span class="o">*</span> <span class="n">In</span> <span class="n">the</span> <span class="s2">&quot;Volume&quot;</span> <span class="n">box</span> <span class="n">select</span> <span class="n">the</span> <span class="n">appropriate</span> <span class="n">VM</span> <span class="n">guest</span> <span class="n">image</span> <span class="n">file</span> <span class="p">(</span><span class="n">ex</span><span class="o">.</span> <span class="n">idm</span><span class="o">.</span><span class="n">qcow2</span><span class="p">)</span>
 <span class="o">*</span> <span class="n">In</span> <span class="n">the</span> <span class="s2">&quot;Memory&quot;</span> <span class="n">box</span> <span class="n">select</span> <span class="mi">16</span> <span class="n">GiB</span> <span class="p">(</span><span class="n">see</span> <span class="n">guides</span> <span class="k">for</span> <span class="n">the</span> <span class="n">amount</span> <span class="n">but</span> <span class="n">typically</span> <span class="n">it</span> <span class="ow">is</span> <span class="mi">16</span><span class="n">GiB</span><span class="p">)</span>

@@ -405,11 +405,15 @@
 <p>The following instructions are for deploying GitLab.</p>
 <section id="prerequisites">
 <h2>Prerequisites<a class="headerlink" href="#prerequisites" title="Permalink to this heading">#</a></h2>
+<p>This guide is written for a Red Hat Enterprise Linux 8 based operating system which
+is operating within a cluster of systems and the following are the prerequisites:</p>
 <ul class="simple">
 <li><p><a class="reference internal" href="gitlab-os-installation-guide.html"><span class="doc">GitLab OS Installation Guide</span></a></p></li>
 <li><p><a class="reference internal" href="../idm/idm-client-deployment-guide.html"><span class="doc">IdM Client Deployment Guide</span></a></p></li>
 <li><p><a class="reference internal" href="../nfs/nfs-client-deployment-guide.html"><span class="doc">NFS Client Deployment Guide</span></a></p></li>
 </ul>
+<p>If deploying as a standalone service, adjust the hostname fields accordingly and
+omit steps involving IdM, NFS, and follow-on deployment guides.</p>
 </section>
 <section id="follow-on-deployments">
 <h2>Follow-on Deployments<a class="headerlink" href="#follow-on-deployments" title="Permalink to this heading">#</a></h2>
@@ -422,7 +426,7 @@
 <section id="references">
 <h2>References<a class="headerlink" href="#references" title="Permalink to this heading">#</a></h2>
 <blockquote>
-<div><p>These instructions were written for GitLab Community Edition (CE) <code class="docutils literal notranslate"><span class="pre">15.4.2</span></code></p>
+<div><p>These instructions were written for and tested on GitLab Community Edition (CE) <code class="docutils literal notranslate"><span class="pre">15.4.2</span></code>.</p>
 </div></blockquote>
 <blockquote>
 <div><p>Instructions are based on the following documentation: <br />

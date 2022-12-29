@@ -19,6 +19,9 @@ The following instructions are for deploying the Telegraf agent.
 Prerequisites
 *************
 
+This guide is written for a Red Hat Enterprise Linux 8 based operating system which
+is operating within a cluster of systems and the following are the prerequisites:
+
 * :doc:`influxdb-deployment-guide`
 
 
@@ -28,12 +31,12 @@ References
 
 ..
 
-  These instructions were written for Telegraf ``v1.24``
+  These instructions were written for Telegraf ``v1.25``
 
 ..
 
   Official Telegraf installation instructions: |br|
-  https://docs.influxdata.com/telegraf/1.24/install/
+  https://docs.influxdata.com/telegraf/1.25/install/
 
 
 ******************

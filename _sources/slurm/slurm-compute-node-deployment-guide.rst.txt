@@ -19,6 +19,9 @@ The following instructions are for deploying the Slurm Compute/Client agents.
 Prerequisites
 *************
 
+This guide is written for a Red Hat Enterprise Linux 8 based operating system which
+is operating within a cluster of systems and the following are the prerequisites:
+
 * :doc:`../idm/idm-client-deployment-guide`
 * :doc:`../nfs/nfs-client-deployment-guide`
 * :doc:`../idm/passwordless-ssh-deployment-guide`
