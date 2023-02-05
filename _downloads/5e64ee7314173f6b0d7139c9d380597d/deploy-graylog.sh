@@ -186,7 +186,7 @@ systemctl enable --now elasticsearch
 #
 # Graylog
 #
-rpm -Uvh https://packages.graylog2.org/repo/packages/graylog-4.3-repository_latest.rpm
+rpm -Uvh https://packages.graylog2.org/repo/packages/graylog-5.0-repository_latest.rpm
 
 dnf -y distro-sync
 dnf -y install graylog-server

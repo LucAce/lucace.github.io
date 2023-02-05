@@ -135,5 +135,14 @@ virsh net-define /tmp/bridge.xml
 virsh net-start ${BRIDGE_NAME}
 virsh net-autostart ${BRIDGE_NAME}
 
+# Suppress Negotiate Headers
+cat >> /etc/cockpit/cockpit.conf <<EOF
+[gssapi]
+action = none
+
+[negotiate]
+action = none
+EOF
+
 echo -e "\n[$(date +"%Y-%m-%d %H:%M:%S")] Deploying Virtual Machine Manager 1 Complete\n"
 exit 0
