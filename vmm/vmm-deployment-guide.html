@@ -602,13 +602,31 @@ scp rhel-8.7-x86_64-dvd.iso root@vmm2.engwsc.example.com:/srv/kvm/iso/rhel-8.7-x
 </pre></div>
 </div>
 </div></blockquote>
-<p>7 Reboot system:</p>
+<ol class="arabic simple" start="7">
+<li><p>Suppress Negotiate Headers:</p></li>
+</ol>
+<blockquote>
+<div><div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This is optional and prevents falling back to HTML login boxes in Windows browsers.</p>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cat &gt;&gt; /etc/cockpit/cockpit.conf <span class="s">&lt;&lt;EOF</span>
+<span class="s">[gssapi]</span>
+<span class="s">action = none</span>
+
+<span class="s">[negotiate]</span>
+<span class="s">action = none</span>
+<span class="s">EOF</span>
+</pre></div>
+</div>
+</div></blockquote>
+<p>8 Reboot system:</p>
 <blockquote>
 <div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>reboot
 </pre></div>
 </div>
 </div></blockquote>
-<ol class="arabic simple" start="8">
+<ol class="arabic simple" start="9">
 <li><p>Log into Cockpit:</p></li>
 </ol>
 <div class="admonition important">
@@ -621,7 +639,7 @@ scp rhel-8.7-x86_64-dvd.iso root@vmm2.engwsc.example.com:/srv/kvm/iso/rhel-8.7-x
 Virtual Machine Manager 2: <a class="reference external" href="https://vmm02.engwsc.example.com:9090">https://vmm02.engwsc.example.com:9090</a> <br /></p>
 <img alt="../_images/cockpit_login.png" src="../_images/cockpit_login.png" />
 </div></blockquote>
-<ol class="arabic simple" start="9">
+<ol class="arabic simple" start="10">
 <li><p>Create the Virtual Machine Guests:</p></li>
 </ol>
 <blockquote>

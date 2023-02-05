@@ -224,13 +224,29 @@ Deployment Steps
     scp rhel-8.7-x86_64-dvd.iso root@vmm1.engwsc.example.com:/srv/kvm/iso/rhel-8.7-x86_64-dvd.iso
     scp rhel-8.7-x86_64-dvd.iso root@vmm2.engwsc.example.com:/srv/kvm/iso/rhel-8.7-x86_64-dvd.iso
 
-7 Reboot system:
+7. Suppress Negotiate Headers:
+
+  .. note::
+
+    This is optional and prevents falling back to HTML login boxes in Windows browsers.
+
+  .. code-block:: bash
+
+    cat >> /etc/cockpit/cockpit.conf <<EOF
+    [gssapi]
+    action = none
+
+    [negotiate]
+    action = none
+    EOF
+
+8 Reboot system:
 
   .. code-block:: bash
 
     reboot
 
-8. Log into Cockpit:
+9. Log into Cockpit:
 
 .. important::
 
@@ -245,7 +261,7 @@ Deployment Steps
 
   .. image:: ../_static/vmm/cockpit_login.png
 
-9. Create the Virtual Machine Guests:
+10. Create the Virtual Machine Guests:
 
   The next step will need to be repeated for all VMs hosted by Virtual Machine Manager 01
   and Virtual Machine Manager 02 nodes.
