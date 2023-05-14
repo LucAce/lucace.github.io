@@ -40,7 +40,7 @@ dnf -y install \
     vim-X11 cmake p7zip \
     ncurses ncurses-devel \
     lm_sensors lm_sensors-devel \
-    hwloc hwloc-libs
+    hwloc hwloc-libs gnome-tweaks
 
 echo -e "\n[$(date +"%Y-%m-%d %H:%M:%S")] Deploying tool Complete\n"
 exit 0

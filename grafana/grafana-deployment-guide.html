@@ -475,13 +475,14 @@ Password: <code class="docutils literal notranslate"><span class="pre">GRAFANA_A
 <div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cat &gt; /etc/yum.repos.d/grafana.repo <span class="s">&lt;&lt;EOF</span>
 <span class="s">[grafana]</span>
 <span class="s">name = grafana</span>
-<span class="s">baseurl = https://packages.grafana.com/oss/rpm</span>
+<span class="s">baseurl = https://rpm.grafana.com</span>
 <span class="s">repo_gpgcheck = 1</span>
 <span class="s">enabled = 1</span>
 <span class="s">gpgcheck = 1</span>
-<span class="s">gpgkey = https://packages.grafana.com/gpg.key</span>
+<span class="s">gpgkey = https://rpm.grafana.com/gpg.key</span>
 <span class="s">sslverify = 1</span>
 <span class="s">sslcacert = /etc/pki/tls/certs/ca-bundle.crt</span>
+<span class="s">exclude = *beta*</span>
 <span class="s">EOF</span>
 </pre></div>
 </div>
@@ -685,7 +686,7 @@ firewall-cmd --reload
             
             <a href="https://github.com/pradyunsg/furo">Furo</a>
             <div class="last-updated">
-              Last updated on Feb 05, 2023</div>
+              Last updated on May 14, 2023</div>
           </div>
           <div class="right-details">
             <div class="icons">

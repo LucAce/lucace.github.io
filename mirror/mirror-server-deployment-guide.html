@@ -682,23 +682,24 @@ yum-config-manager --enable influxdb
 </ol>
 <blockquote>
 <div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Download and copy the GPG key to the repository path</span>
-wget https://packages.grafana.com/gpg.key <span class="se">\</span>
+wget https://rpm.grafana.com/gpg.key <span class="se">\</span>
     -O /srv/repos/RPM-GPG-KEY-grafana
 
 <span class="c1"># Import GPG key</span>
-rpm --import https://packages.grafana.com/gpg.key
+rpm --import https://rpm.grafana.com/gpg.key
 
 <span class="c1"># Create repository file</span>
 cat &gt; /etc/yum.repos.d/grafana.repo <span class="s">&lt;&lt;EOF</span>
 <span class="s">[grafana]</span>
-<span class="s">name=grafana</span>
-<span class="s">baseurl=https://packages.grafana.com/oss/rpm</span>
-<span class="s">repo_gpgcheck=1</span>
-<span class="s">enabled=0</span>
-<span class="s">gpgcheck=1</span>
-<span class="s">gpgkey=https://packages.grafana.com/gpg.key</span>
-<span class="s">sslverify=1</span>
-<span class="s">sslcacert=/etc/pki/tls/certs/ca-bundle.crt</span>
+<span class="s">name = grafana</span>
+<span class="s">baseurl = https://rpm.grafana.com</span>
+<span class="s">repo_gpgcheck = 1</span>
+<span class="s">enabled = 0</span>
+<span class="s">gpgcheck = 1</span>
+<span class="s">gpgkey = https://rpm.grafana.com/gpg.key</span>
+<span class="s">sslverify = 1</span>
+<span class="s">sslcacert = /etc/pki/tls/certs/ca-bundle.crt</span>
+<span class="s">exclude = *beta*</span>
 <span class="s">EOF</span>
 
 <span class="c1"># Disable this repository as it is not used locally</span>
@@ -875,7 +876,7 @@ firewall-cmd --reload
             
             <a href="https://github.com/pradyunsg/furo">Furo</a>
             <div class="last-updated">
-              Last updated on Feb 05, 2023</div>
+              Last updated on May 14, 2023</div>
           </div>
           <div class="right-details">
             <div class="icons">

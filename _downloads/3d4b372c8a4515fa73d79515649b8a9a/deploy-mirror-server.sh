@@ -229,23 +229,24 @@ yum-config-manager --enable influxdb
 # Add Grafana Repository
 
 # Download and copy the GPG key to the repository path
-wget https://packages.grafana.com/gpg.key \
+wget https://rpm.grafana.com/gpg.key \
     -O /srv/repos/RPM-GPG-KEY-grafana
 
 # Import GPG key
-rpm --import https://packages.grafana.com/gpg.key
+rpm --import https://rpm.grafana.com/gpg.key
 
 # Create repository file
 cat > /etc/yum.repos.d/grafana.repo <<EOF
 [grafana]
-name=grafana
-baseurl=https://packages.grafana.com/oss/rpm
-repo_gpgcheck=1
-enabled=0
-gpgcheck=1
-gpgkey=https://packages.grafana.com/gpg.key
-sslverify=1
-sslcacert=/etc/pki/tls/certs/ca-bundle.crt
+name = grafana
+baseurl = https://rpm.grafana.com
+repo_gpgcheck = 1
+enabled = 0
+gpgcheck = 1
+gpgkey = https://rpm.grafana.com/gpg.key
+sslverify = 1
+sslcacert = /etc/pki/tls/certs/ca-bundle.crt
+exclude = *beta*
 EOF
 
 # Disable this repository as it is not used locally
