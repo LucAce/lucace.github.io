@@ -46,7 +46,7 @@ References
 
 ..
 
-  These instructions were written for and tested on GitLab Community Edition (CE) ``15.4.2``.
+  These instructions were written for and tested on GitLab Community Edition (CE) ``15.11.3``.
 
 ..
 

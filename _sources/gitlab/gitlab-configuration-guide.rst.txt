@@ -70,27 +70,28 @@ Configuration Steps
 
   ::
 
-    * Create administrator New User"
-    * Use a "username" that is used for administrative purposes only
-      - For example, "a123456"
+    * Provide the name of the administrator
+    * Provide a "username" that is used for administrative purposes only
+    * Provide the email of the administrator
+    * Select "Can create group" is checked
+    * Select "Private profile" is checked
     * Change "Access level" to "Administrator"
-    * Select "User is validated and can use free CI minutes on shared runners."
-    * Click "Create user"
+    * Click on "Create user"
     * Go to: https://gitlab.engwsc.example.com/admin/users/
-    * Click on Edit to the right of the new user
+    * Click on "Edit" to the right of the new user
     * Assign user a password
     * Confirm user password
-    * Click "Save Changes"
+    * Click on "Save Changes"
     * Log-out of GitLab
     * Sign in as new user
 
-3. Remove "root" User:
+3. Remove "Administrator" User:
 
   Go to: https://gitlab.engwsc.example.com/admin/users
 
   ::
 
-    * Click on "User administration" drop-down associated with user "Administrator"
+    * Click on the three vertical dots associated with user "Administrator"
     * Click "Delete user and contributions"
     * Type in "Administrator"
     * Click "Delete user and contributions"
@@ -130,8 +131,8 @@ Configuration Steps
     * Select "Internal, Public" (Private is unselected)
     * Under "Import sources"
     * Deselect all import sources (GitHub, Bitbucket Cloud, ...)
-    * Deselect "Allow group owners to manage LDAP-related settings"
-    * Deselect "Project export enabled"
+    * Deselect "Enabled" under "Project export"
+    * Deselect "Enabled" under "Allow migrating GitLab groups and projects by direct transfer"
     * Select "Disable feed token"
     * Click "Save changes"
 
@@ -249,7 +250,6 @@ Configuration Steps
 15. Disable Help page Marketing:
 
   Go to: https://gitlab.engwsc.example.com/admin/application_settings/preferences#js-sign-in-and-help-page
-
 
   ::
 
