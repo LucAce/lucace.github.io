@@ -51,11 +51,11 @@ References
 ..
 
   Instructions are based on the following documentation: |br|
-  - https://docs.graylog.org/docs/operating-system-packages |br|
-  - https://docs.graylog.org/docs/web-interface |br|
-  - https://docs.graylog.org/docs/centos |br|
-  - https://docs.graylog.org/docs/https |br|
-  - https://docs.graylog.org/docs/syslog
+  - https://go2docs.graylog.org/5-0/downloading_and_installing_graylog/operating_system_packages.htm |br|
+  - https://go2docs.graylog.org/5-0/setting_up_graylog/web_interface.htm |br|
+  - https://go2docs.graylog.org/5-0/downloading_and_installing_graylog/red_hat_installation.htm |br|
+  - https://go2docs.graylog.org/5-0/setting_up_graylog/https.html |br|
+  - https://go2docs.graylog.org/5-0/getting_in_log_data/ingest_syslog.html
 
 
 ***************
@@ -68,7 +68,7 @@ Post Deployment
   https://graylog.engwsc.example.com
 
   Username: ``admin`` |br|
-  Password: ``password_secret`` (from step 16)
+  Password: ``password_secret`` (from step 14)
 
 ******************
 Deployment Scripts
