@@ -72,7 +72,7 @@ Post Deployment
 Deployment Scripts
 ******************
 
-.. note::
+..
 
   An example bash script of the instructions has been provided:
   :download:`deploy-gitlab.sh<../_static/gitlab/deploy-gitlab.sh>`
