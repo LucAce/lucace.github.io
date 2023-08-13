@@ -49,8 +49,8 @@ Deployment Scripts
 
 .. note::
 
-  An example bash script of the instructions has been provided: |br|
-  :download:`../_static/user/deploy-xrdp.sh`
+  An example bash script of the instructions has been provided:
+  :download:`deploy-xrdp.sh<../_static/user/deploy-xrdp.sh>`
 
 
 ***************

@@ -421,8 +421,8 @@ is operating within a cluster of systems and the following are the prerequisites
 <section id="deployment-scripts">
 <h2>Deployment Scripts<a class="headerlink" href="#deployment-scripts" title="Permalink to this heading">#</a></h2>
 <blockquote>
-<div><p>An example bash script of the instructions has been provided: <br />
-<a class="reference download internal" download="" href="../_downloads/49fc3dd4b934fbbb67f8d44a488c565b/deploy-nfs-client.sh"><code class="xref download docutils literal notranslate"><span class="pre">../_static/nfs/deploy-nfs-client.sh</span></code></a></p>
+<div><p>An example bash script of the instructions has been provided:
+<a class="reference download internal" download="" href="../_downloads/49fc3dd4b934fbbb67f8d44a488c565b/deploy-nfs-client.sh"><code class="xref download docutils literal notranslate"><span class="pre">deploy-nfs-client.sh</span></code></a></p>
 </div></blockquote>
 </section>
 <section id="deployment-steps">
@@ -485,6 +485,14 @@ mkdir -p /scratch
 </div>
 </div></blockquote>
 <ol class="arabic simple" start="5">
+<li><p>Reload fstab in systemd:</p></li>
+</ol>
+<blockquote>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>systemctl daemon-reload
+</pre></div>
+</div>
+</div></blockquote>
+<ol class="arabic simple" start="6">
 <li><p>Mount the NFS paths:</p></li>
 </ol>
 <blockquote>
@@ -532,7 +540,7 @@ mount /scratch
             
             <a href="https://github.com/pradyunsg/furo">Furo</a>
             <div class="last-updated">
-              Last updated on May 31, 2023</div>
+              Last updated on Aug 12, 2023</div>
           </div>
           <div class="right-details">
             <div class="icons">

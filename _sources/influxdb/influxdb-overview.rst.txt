@@ -48,7 +48,7 @@ on the system itself.
 
 .. note::
 
-  An example ``/etc/hosts`` file has been provided: :download:`../_static/hosts`
+  An example ``/etc/hosts`` file has been provided: :download:`hosts<../_static/hosts>`
 
 
 InfluxDB

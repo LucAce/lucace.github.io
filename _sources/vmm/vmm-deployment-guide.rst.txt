@@ -55,9 +55,9 @@ Deployment Scripts
 
 ..
 
-  An example bash script of the instructions has been provided: |br|
-  :download:`../_static/vmm/deploy-vmm01.sh` |br|
-  :download:`../_static/vmm/deploy-vmm02.sh`
+  An example bash script of the instructions has been provided:
+  :download:`deploy-vmm01.sh<../_static/vmm/deploy-vmm01.sh>` |br|
+  :download:`deploy-vmm02.sh<../_static/vmm/deploy-vmm02.sh>`
 
   Username: ``root`` |br|
   Password: ``ROOT_PASSWORD``
@@ -221,8 +221,8 @@ Deployment Steps
 
   .. code-block:: bash
 
-    scp rhel-8.7-x86_64-dvd.iso root@vmm1.engwsc.example.com:/srv/kvm/iso/rhel-8.7-x86_64-dvd.iso
-    scp rhel-8.7-x86_64-dvd.iso root@vmm2.engwsc.example.com:/srv/kvm/iso/rhel-8.7-x86_64-dvd.iso
+    scp rhel-8.8-x86_64-dvd.iso root@vmm1.engwsc.example.com:/srv/kvm/iso/rhel-8.8-x86_64-dvd.iso
+    scp rhel-8.8-x86_64-dvd.iso root@vmm2.engwsc.example.com:/srv/kvm/iso/rhel-8.8-x86_64-dvd.iso
 
 7. Suppress Negotiate Headers:
 
@@ -281,8 +281,8 @@ Deployment Steps
     * In the "Installation type" drop-down select
       "Local install Media (ISO image or distro install tree)
     * In the "Installation source" drop-down/box add the path to the ISO
-      (ex. /srv/kvm/iso/rhel-8.7-x86_64-dvd.iso)
-    * In the "Operating system" drop-down/box add or select "Red Hat Enterprise Linux 8.7 (Ootpa)"
+      (ex. /srv/kvm/iso/rhel-8.8-x86_64-dvd.iso)
+    * In the "Operating system" drop-down/box add or select "Red Hat Enterprise Linux 8.8 (Ootpa)"
     * In the "Storage" drop-down/box select "guest_images"
     * In the "Volume" box select the appropriate VM guest image file (ex. idm.qcow2)
     * In the "Memory" box select 16 GiB (see guides for the amount but typically it is 16GiB)

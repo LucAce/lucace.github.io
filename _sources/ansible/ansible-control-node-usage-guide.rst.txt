@@ -70,7 +70,7 @@ Deployment Steps
   .. note::
 
     An YAML based hosts file has been provided: |br|
-    :download:`../_static/ansible/hosts.yml`
+    :download:`hosts.yml<../_static/ansible/hosts.yml>`
 
   .. code-block:: bash
 
@@ -215,7 +215,7 @@ Deployment Steps
   .. note::
 
     A copy of this yaml file had been provided: |br|
-    :download:`../_static/ansible/upgrade-all-nodes.yml`
+    :download:`upgrade-all-nodes.yml<../_static/ansible/upgrade-all-nodes.yml>`
 
   .. code-block:: bash
 
@@ -237,7 +237,7 @@ Deployment Steps
   .. note::
 
     A copy of this bash script had been provided: |br|
-    :download:`../_static/ansible/upgrade-all-nodes.sh`
+    :download:`upgrade-all-nodes.sh<../_static/ansible/upgrade-all-nodes.sh>`
 
   .. code-block:: bash
 

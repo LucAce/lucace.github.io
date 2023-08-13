@@ -53,8 +53,8 @@ References
 Deployment Scripts
 ******************
 
-  An example bash script of the instructions has been provided: |br|
-  :download:`../_static/idm/deploy-idm-users.sh`
+  An example bash script of the instructions has been provided:
+  :download:`deploy-idm-users.sh<../_static/idm/deploy-idm-users.sh>`
 
 
 ****************

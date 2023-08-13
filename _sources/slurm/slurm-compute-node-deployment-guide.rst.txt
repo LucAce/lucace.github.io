@@ -40,8 +40,8 @@ Deployment Scripts
 
 ..
 
-  An example bash script of the instructions has been provided: |br|
-  :download:`../_static/slurm/deploy-slurm-compute-node.sh`
+  An example bash script of the instructions has been provided:
+  :download:`deploy-slurm-compute-node.sh<../_static/slurm/deploy-slurm-compute-node.sh>`
 
 
 ****************

@@ -60,8 +60,8 @@ Deployment Scripts
 
 .. note::
 
-  An example bash script of the instructions has been provided: |br|
-  :download:`../_static/docker/deploy-docker.sh`
+  An example bash script of the instructions has been provided:
+  :download:`deploy-docker.sh<../_static/docker/deploy-docker.sh>`
 
 
 ****************

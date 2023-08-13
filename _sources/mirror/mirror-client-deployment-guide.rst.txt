@@ -42,8 +42,8 @@ Deployment Scripts
 
 .. note::
 
-  An example bash script of the instructions has been provided: |br|
-  :download:`../_static/mirror/deploy-mirror-client.sh`
+  An example bash script of the instructions has been provided:
+  :download:`deploy-mirror-client.sh<../_static/mirror/deploy-mirror-client.sh>`
 
 
 ****************

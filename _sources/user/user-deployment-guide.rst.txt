@@ -47,8 +47,8 @@ Deployment Scripts
 
 ..
 
-  An example bash script of the instructions has been provided: |br|
-  :download:`../_static/user/deploy-user.sh`
+  An example bash script of the instructions has been provided:
+  :download:`deploy-user.sh<../_static/user/deploy-user.sh>`
 
 
 ****************

@@ -48,9 +48,9 @@ Configuration
 OS Installation Steps
 *********************
 
-1. Boot VM using Red Hat Enterprise Linux (RHEL) 8.7 ISO
+1. Boot VM using Red Hat Enterprise Linux (RHEL) 8.8 ISO
 
-2. Select ``Install Red Hat Enterprise Linux 8.7`` and press ``ENTER``
+2. Select ``Install Red Hat Enterprise Linux 8.8`` and press ``ENTER``
 
 3. Select your language to use during the installation process and press ``Continue``
 

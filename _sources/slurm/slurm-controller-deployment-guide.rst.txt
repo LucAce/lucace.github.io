@@ -72,21 +72,21 @@ Deployment Scripts
 
 ..
 
-  An example bash script of the instructions has been provided: |br|
-  :download:`../_static/slurm/deploy-slurm-controller.sh`
+  An example bash script of the instructions has been provided:
+  :download:`deploy-slurm-controller.sh<../_static/slurm/deploy-slurm-controller.sh>`
 
 ..
 
   The required source files have been provided: |br|
-  :download:`../_static/slurm/slurm-22.05.6.tar.bz2` |br|
+  :download:`slurm-22.05.6.tar.bz2<../_static/slurm/slurm-22.05.6.tar.bz2>` |br|
   SHA1: eb282954911b807b365d35298bddff459eb7383a
 
 ..
 
   The example configuration files have been provided: |br|
-  :download:`../_static/slurm/cgroup.conf` |br|
-  :download:`../_static/slurm/slurm.conf` |br|
-  :download:`../_static/slurm/slurmdbd.conf`
+  :download:`cgroup.conf<../_static/slurm/cgroup.conf>` |br|
+  :download:`slurm.conf<../_static/slurm/slurm.conf>` |br|
+  :download:`slurmdbd.conf<../_static/slurm/slurmdbd.conf>`
 
 
 ****************

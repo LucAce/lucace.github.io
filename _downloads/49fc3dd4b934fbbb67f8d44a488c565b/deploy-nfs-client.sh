@@ -83,6 +83,9 @@ ${NFS_SERVER}.${DOMAIN_NAME}:/srv/nfs/scratch /scratch nfs4 defaults,tcp,soft,nf
 
 EOL
 
+# Reload fstab in systemd
+systemctl daemon-reload
+
 # Mount paths
 mount /app
 mount /home

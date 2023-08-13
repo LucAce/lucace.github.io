@@ -31,7 +31,7 @@ References
 
 ..
 
-  These instructions were written for FreeIPA ``4.9.8``
+  These instructions were written for FreeIPA ``4.9.11``
 
 ..
 
@@ -43,8 +43,8 @@ References
 Deployment Scripts
 ******************
 
-  An example bash script of the instructions has been provided: |br|
-  :download:`../_static/idm/deploy-idm-client.sh`
+  An example bash script of the instructions has been provided:
+  :download:`deploy-idm-client.sh<../_static/idm/deploy-idm-client.sh>`
 
 
 ****************

@@ -39,8 +39,8 @@ References
 Deployment Scripts
 ******************
 
-  An example bash script of the instructions has been provided: |br|
-  :download:`../_static/nfs/deploy-nfs-client.sh`
+  An example bash script of the instructions has been provided:
+  :download:`deploy-nfs-client.sh<../_static/nfs/deploy-nfs-client.sh>`
 
 
 ****************
@@ -96,7 +96,13 @@ Deployment Steps
 
     EOL
 
-5. Mount the NFS paths:
+5. Reload fstab in systemd:
+
+  .. code-block:: bash
+
+    systemctl daemon-reload
+
+6. Mount the NFS paths:
 
   .. code-block:: bash
 

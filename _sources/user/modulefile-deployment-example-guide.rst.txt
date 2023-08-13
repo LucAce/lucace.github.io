@@ -38,8 +38,8 @@ Deployment Scripts
 
 .. note::
 
-  An example bash script of the instructions has been provided: |br|
-  :download:`../_static/user/deploy-modulefile.sh`
+  An example bash script of the instructions has been provided:
+  :download:`deploy-modulefile.sh<../_static/user/deploy-modulefile.sh>`
 
 
 ****************
@@ -80,7 +80,7 @@ Deployment Steps
   .. note::
 
     A copy of this build script had been provided: |br|
-    :download:`../_static/user/build.sh`
+    :download:`build.sh<../_static/user/build.sh>`
 
   .. code-block:: bash
 
@@ -132,7 +132,7 @@ Deployment Steps
   .. note::
 
     A copy of this modulefile had been provided: |br|
-    :download:`../_static/user/3.2.1`
+    :download:`3.2.1<../_static/user/3.2.1>`
 
   .. code-block:: bash
 

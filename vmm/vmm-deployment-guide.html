@@ -432,9 +432,9 @@ Virtual Machine Manager 2: <a class="reference external" href="https://vmm02.eng
 <section id="deployment-scripts">
 <h2>Deployment Scripts<a class="headerlink" href="#deployment-scripts" title="Permalink to this heading">#</a></h2>
 <blockquote>
-<div><p>An example bash script of the instructions has been provided: <br />
-<a class="reference download internal" download="" href="../_downloads/a086fae2ac84b10cbb926495f4ed5ecf/deploy-vmm01.sh"><code class="xref download docutils literal notranslate"><span class="pre">../_static/vmm/deploy-vmm01.sh</span></code></a> <br />
-<a class="reference download internal" download="" href="../_downloads/52e5f14030267ed8de81732ad0f08b3d/deploy-vmm02.sh"><code class="xref download docutils literal notranslate"><span class="pre">../_static/vmm/deploy-vmm02.sh</span></code></a></p>
+<div><p>An example bash script of the instructions has been provided:
+<a class="reference download internal" download="" href="../_downloads/a086fae2ac84b10cbb926495f4ed5ecf/deploy-vmm01.sh"><code class="xref download docutils literal notranslate"><span class="pre">deploy-vmm01.sh</span></code></a> <br />
+<a class="reference download internal" download="" href="../_downloads/52e5f14030267ed8de81732ad0f08b3d/deploy-vmm02.sh"><code class="xref download docutils literal notranslate"><span class="pre">deploy-vmm02.sh</span></code></a></p>
 <p>Username: <code class="docutils literal notranslate"><span class="pre">root</span></code> <br />
 Password: <code class="docutils literal notranslate"><span class="pre">ROOT_PASSWORD</span></code></p>
 </div></blockquote>
@@ -597,8 +597,8 @@ virsh net-autostart <span class="si">${</span><span class="nv">BRIDGE_NAME</span
 <p class="admonition-title">Note</p>
 <p>The ISO file name will vary depending OS and version being used.</p>
 </div>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>scp rhel-8.7-x86_64-dvd.iso root@vmm1.engwsc.example.com:/srv/kvm/iso/rhel-8.7-x86_64-dvd.iso
-scp rhel-8.7-x86_64-dvd.iso root@vmm2.engwsc.example.com:/srv/kvm/iso/rhel-8.7-x86_64-dvd.iso
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>scp rhel-8.8-x86_64-dvd.iso root@vmm1.engwsc.example.com:/srv/kvm/iso/rhel-8.8-x86_64-dvd.iso
+scp rhel-8.8-x86_64-dvd.iso root@vmm2.engwsc.example.com:/srv/kvm/iso/rhel-8.8-x86_64-dvd.iso
 </pre></div>
 </div>
 </div></blockquote>
@@ -657,8 +657,8 @@ and Virtual Machine Manager 02 nodes.</p>
 <span class="o">*</span> <span class="n">In</span> <span class="n">the</span> <span class="s2">&quot;Installation type&quot;</span> <span class="n">drop</span><span class="o">-</span><span class="n">down</span> <span class="n">select</span>
   <span class="s2">&quot;Local install Media (ISO image or distro install tree)</span>
 <span class="o">*</span> <span class="n">In</span> <span class="n">the</span> <span class="s2">&quot;Installation source&quot;</span> <span class="n">drop</span><span class="o">-</span><span class="n">down</span><span class="o">/</span><span class="n">box</span> <span class="n">add</span> <span class="n">the</span> <span class="n">path</span> <span class="n">to</span> <span class="n">the</span> <span class="n">ISO</span>
-  <span class="p">(</span><span class="n">ex</span><span class="o">.</span> <span class="o">/</span><span class="n">srv</span><span class="o">/</span><span class="n">kvm</span><span class="o">/</span><span class="n">iso</span><span class="o">/</span><span class="n">rhel</span><span class="o">-</span><span class="mf">8.7</span><span class="o">-</span><span class="n">x86_64</span><span class="o">-</span><span class="n">dvd</span><span class="o">.</span><span class="n">iso</span><span class="p">)</span>
-<span class="o">*</span> <span class="n">In</span> <span class="n">the</span> <span class="s2">&quot;Operating system&quot;</span> <span class="n">drop</span><span class="o">-</span><span class="n">down</span><span class="o">/</span><span class="n">box</span> <span class="n">add</span> <span class="ow">or</span> <span class="n">select</span> <span class="s2">&quot;Red Hat Enterprise Linux 8.7 (Ootpa)&quot;</span>
+  <span class="p">(</span><span class="n">ex</span><span class="o">.</span> <span class="o">/</span><span class="n">srv</span><span class="o">/</span><span class="n">kvm</span><span class="o">/</span><span class="n">iso</span><span class="o">/</span><span class="n">rhel</span><span class="o">-</span><span class="mf">8.8</span><span class="o">-</span><span class="n">x86_64</span><span class="o">-</span><span class="n">dvd</span><span class="o">.</span><span class="n">iso</span><span class="p">)</span>
+<span class="o">*</span> <span class="n">In</span> <span class="n">the</span> <span class="s2">&quot;Operating system&quot;</span> <span class="n">drop</span><span class="o">-</span><span class="n">down</span><span class="o">/</span><span class="n">box</span> <span class="n">add</span> <span class="ow">or</span> <span class="n">select</span> <span class="s2">&quot;Red Hat Enterprise Linux 8.8 (Ootpa)&quot;</span>
 <span class="o">*</span> <span class="n">In</span> <span class="n">the</span> <span class="s2">&quot;Storage&quot;</span> <span class="n">drop</span><span class="o">-</span><span class="n">down</span><span class="o">/</span><span class="n">box</span> <span class="n">select</span> <span class="s2">&quot;guest_images&quot;</span>
 <span class="o">*</span> <span class="n">In</span> <span class="n">the</span> <span class="s2">&quot;Volume&quot;</span> <span class="n">box</span> <span class="n">select</span> <span class="n">the</span> <span class="n">appropriate</span> <span class="n">VM</span> <span class="n">guest</span> <span class="n">image</span> <span class="n">file</span> <span class="p">(</span><span class="n">ex</span><span class="o">.</span> <span class="n">idm</span><span class="o">.</span><span class="n">qcow2</span><span class="p">)</span>
 <span class="o">*</span> <span class="n">In</span> <span class="n">the</span> <span class="s2">&quot;Memory&quot;</span> <span class="n">box</span> <span class="n">select</span> <span class="mi">16</span> <span class="n">GiB</span> <span class="p">(</span><span class="n">see</span> <span class="n">guides</span> <span class="k">for</span> <span class="n">the</span> <span class="n">amount</span> <span class="n">but</span> <span class="n">typically</span> <span class="n">it</span> <span class="ow">is</span> <span class="mi">16</span><span class="n">GiB</span><span class="p">)</span>
@@ -749,7 +749,7 @@ and Virtual Machine Manager 02 nodes.</p>
             
             <a href="https://github.com/pradyunsg/furo">Furo</a>
             <div class="last-updated">
-              Last updated on May 31, 2023</div>
+              Last updated on Aug 12, 2023</div>
           </div>
           <div class="right-details">
             <div class="icons">

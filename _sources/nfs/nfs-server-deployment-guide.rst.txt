@@ -59,8 +59,8 @@ Post Deployment
 Deployment Scripts
 ******************
 
-  An example bash script of the instructions has been provided: |br|
-  :download:`../_static/nfs/deploy-nfs-server.sh`
+  An example bash script of the instructions has been provided:
+  :download:`deploy-nfs-server.sh<../_static/nfs/deploy-nfs-server.sh>`
 
 
 ****************

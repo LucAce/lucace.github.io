@@ -73,8 +73,8 @@ Deployment Scripts
 
 .. note::
 
-  An example bash script of the instructions has been provided: |br|
-  :download:`../_static/grafana/deploy-grafana.sh`
+  An example bash script of the instructions has been provided:
+  :download:`deploy-grafana.sh<../_static/grafana/deploy-grafana.sh>`
 
 
 ****************

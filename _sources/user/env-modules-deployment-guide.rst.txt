@@ -49,8 +49,8 @@ Deployment Scripts
 
 .. note::
 
-  An example bash script of the instructions has been provided: |br|
-  :download:`../_static/user/deploy-env-modules.sh`
+  An example bash script of the instructions has been provided:
+  :download:`deploy-env-modules.sh<../_static/user/deploy-env-modules.sh>`
 
 
 ****************

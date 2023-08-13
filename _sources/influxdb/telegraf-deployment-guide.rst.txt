@@ -45,8 +45,8 @@ Deployment Scripts
 
 ..
 
-  An example bash script of the instructions has been provided: |br|
-  :download:`../_static/influxdb/deploy-telegraf.sh`
+  An example bash script of the instructions has been provided:
+  :download:`deploy-telegraf.sh<../_static/influxdb/deploy-telegraf.sh>`
 
 
 ****************
@@ -99,7 +99,7 @@ Deployment Steps
     cat > /etc/default/telegraf <<EOF
     INFLUX_TOKEN=INFLUX_API_TOKEN
     EOF
-    
+
     chmod 600 /etc/default/telegraf
 
 5. Configure telegraf.conf file:

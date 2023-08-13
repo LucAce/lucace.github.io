@@ -44,8 +44,8 @@ Deployment Scripts
 
 .. note::
 
-  An example bash script of the instructions has been provided: |br|
-  :download:`../_static/graylog/deploy-rsyslog.sh`
+  An example bash script of the instructions has been provided:
+  :download:`deploy-rsyslog.sh<../_static/graylog/deploy-rsyslog.sh>`
 
 
 ****************
