@@ -126,6 +126,7 @@ Guides
 
   #. :doc:`nfs-server-os-installation-guide`
   #. :doc:`nfs-server-deployment-guide`
+  #. :doc:`nfs-client-deployment-guide` (The server can also be a client)
 
 ..
 
