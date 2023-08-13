@@ -33,6 +33,9 @@ Prerequisites
 *************
 
 * :doc:`idm-server-deployment-guide`
+* :doc:`../nfs/nfs-client-deployment-guide`
+* :doc:`../slurm/slurm-controller-deployment-guide`
+* :doc:`../user/user-deployment-guide`
 
 
 **********
@@ -41,7 +44,7 @@ References
 
 ..
 
-  These instructions were written for FreeIPA ``4.9.8``
+  These instructions were written for FreeIPA ``4.9.11``
 
 ..
 
