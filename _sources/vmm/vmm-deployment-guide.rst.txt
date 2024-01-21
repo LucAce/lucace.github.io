@@ -55,7 +55,7 @@ Deployment Scripts
 
 ..
 
-  An example bash script of the instructions has been provided:
+  An example bash script of the instructions has been provided: |br|
   :download:`deploy-vmm01.sh<../_static/vmm/deploy-vmm01.sh>` |br|
   :download:`deploy-vmm02.sh<../_static/vmm/deploy-vmm02.sh>`
 

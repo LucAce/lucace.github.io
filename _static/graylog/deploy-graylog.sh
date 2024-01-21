@@ -75,8 +75,7 @@ dnf -y upgrade
 dnf -y install epel-release
 
 dnf -y distro-sync
-dnf -y install pwgen java-1.8.0-openjdk-headless \
-    checkpolicy policycoreutils selinux-policy-devel
+dnf -y install pwgen checkpolicy policycoreutils selinux-policy-devel
 
 
 #
@@ -94,7 +93,6 @@ gpgkey=https://www.mongodb.org/static/pgp/server-6.0.asc
 EOF
 
 # Install MongoDB
-dnf -y distro-sync
 dnf -y install mongodb-org
 
 # Add SELinux policy to permit access to cgroup
@@ -151,53 +149,65 @@ systemctl enable --now mongod
 
 
 #
-# ElasticSearch
+# OpenSearch
 #
 
-# Add the ElasticSearch Yum Repository
-rpm --import https://artifacts.elastic.co/GPG-KEY-elasticsearch
+# Add the OpenSearch Yum Repository
+curl -SL \
+    https://artifacts.opensearch.org/releases/bundle/opensearch/2.x/opensearch-2.x.repo \
+    -o /etc/yum.repos.d/opensearch-2.x.repo
 
-cat > /etc/yum.repos.d/elasticsearch.repo <<EOF
-[elasticsearch-7.x]
-name=Elasticsearch repository for 7.x packages
-baseurl=https://artifacts.elastic.co/packages/oss-7.x/yum
-gpgcheck=1
-gpgkey=https://artifacts.elastic.co/GPG-KEY-elasticsearch
-enabled=1
-autorefresh=1
-type=rpm-md
+# Install OpenSearch
+dnf -y install opensearch
+
+# Configure OpenSearch:
+cp /etc/opensearch/opensearch.yml /etc/opensearch/opensearch.yml.bak
+
+cat > /etc/opensearch/opensearch.yml <<EOF
+cluster.name: graylog
+node.name: ${HOSTNAME}
+path.data: /var/lib/opensearch
+path.logs: /var/log/opensearch
+discovery.type: single-node
+network.host: 0.0.0.0
+action.auto_create_index: false
+plugins.security.disabled: true
 EOF
 
-# Install ElasticSearch
-dnf -y distro-sync
-dnf -y install elasticsearch-oss
+# If using RHEL 9, Configure OpenSearch:
+# sed -i "s|/var/run/opensearch|/run/opensearch|g" /usr/lib/tmpfiles.d/opensearch.conf
 
-# Configure ElasticSearch for Graylog
-tee -a /etc/elasticsearch/elasticsearch.yml > /dev/null <<EOT
-cluster.name: graylog
-action.auto_create_index: false
-EOT
+# Configure OpenSearch JVM:
+sed -i "s|-Xms1g|-Xms4g|g" /etc/opensearch/jvm.options
+sed -i "s|-Xmx1g|-Xmx4g|g" /etc/opensearch/jvm.options
 
-# Start ElasticSearch
+# Configure Kernel Parameters:
+sysctl -w vm.max_map_count=262144
+echo 'vm.max_map_count=262144' >> /etc/sysctl.conf
+
+# Start OpenSearch:
 systemctl daemon-reload
-systemctl enable --now elasticsearch
+systemctl enable --now opensearch
 
 
 #
 # Graylog
 #
-rpm -Uvh https://packages.graylog2.org/repo/packages/graylog-5.0-repository_latest.rpm
 
-dnf -y distro-sync
+# Install Graylog
+rpm -Uvh https://packages.graylog2.org/repo/packages/graylog-5.2-repository_latest.rpm
 dnf -y install graylog-server
 
-# Set Graylog Secrets
+# Set Required Graylog Secrets
 sed -i "s|password_secret =.*|password_secret = ${GRAYLOG_SECRET}|g" /etc/graylog/server/server.conf
 sed -i "s|root_password_sha2 =.*|root_password_sha2 = ${GRAYLOG_SECRET_SHA256}|g" /etc/graylog/server/server.conf
 
 # Configure SELinux
 setsebool -P httpd_can_network_connect 1
 semanage port -a -t http_port_t -p tcp ${GRAYLOG_PORT}
+
+# Configure Graylog
+sed -i "s|#elasticsearch_hosts =.*|elasticsearch_hosts = http://127.0.0.1:9200|g" /etc/graylog/server/server.conf
 
 # Start Graylog
 systemctl daemon-reload
@@ -289,7 +299,7 @@ server
 }
 EOF
 
-# Enable NGINX service
+# Start NGINX
 systemctl daemon-reload
 systemctl enable --now nginx
 

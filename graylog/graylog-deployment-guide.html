@@ -426,15 +426,15 @@ omit steps involving IdM, NFS, and follow-on deployment guides.</p>
 <section id="references">
 <h2>References<a class="headerlink" href="#references" title="Permalink to this heading">#</a></h2>
 <blockquote>
-<div><p>These instructions were written for Graylog Open <code class="docutils literal notranslate"><span class="pre">5.0.x</span></code></p>
+<div><p>These instructions were written for Graylog Open <code class="docutils literal notranslate"><span class="pre">5.2.x</span></code></p>
 </div></blockquote>
 <blockquote>
 <div><p>Instructions are based on the following documentation: <br />
-- <a class="reference external" href="https://go2docs.graylog.org/5-0/downloading_and_installing_graylog/operating_system_packages.htm">https://go2docs.graylog.org/5-0/downloading_and_installing_graylog/operating_system_packages.htm</a> <br />
-- <a class="reference external" href="https://go2docs.graylog.org/5-0/setting_up_graylog/web_interface.htm">https://go2docs.graylog.org/5-0/setting_up_graylog/web_interface.htm</a> <br />
-- <a class="reference external" href="https://go2docs.graylog.org/5-0/downloading_and_installing_graylog/red_hat_installation.htm">https://go2docs.graylog.org/5-0/downloading_and_installing_graylog/red_hat_installation.htm</a> <br />
-- <a class="reference external" href="https://go2docs.graylog.org/5-0/setting_up_graylog/https.html">https://go2docs.graylog.org/5-0/setting_up_graylog/https.html</a> <br />
-- <a class="reference external" href="https://go2docs.graylog.org/5-0/getting_in_log_data/ingest_syslog.html">https://go2docs.graylog.org/5-0/getting_in_log_data/ingest_syslog.html</a></p>
+- <a class="reference external" href="https://go2docs.graylog.org/5-2/downloading_and_installing_graylog/operating_system_packages.htm">https://go2docs.graylog.org/5-2/downloading_and_installing_graylog/operating_system_packages.htm</a> <br />
+- <a class="reference external" href="https://go2docs.graylog.org/5-2/setting_up_graylog/web_interface.htm">https://go2docs.graylog.org/5-2/setting_up_graylog/web_interface.htm</a> <br />
+- <a class="reference external" href="https://go2docs.graylog.org/5-2/downloading_and_installing_graylog/red_hat_installation.htm">https://go2docs.graylog.org/5-2/downloading_and_installing_graylog/red_hat_installation.htm</a> <br />
+- <a class="reference external" href="https://go2docs.graylog.org/5-2/setting_up_graylog/https.html">https://go2docs.graylog.org/5-2/setting_up_graylog/https.html</a> <br />
+- <a class="reference external" href="https://go2docs.graylog.org/5-2/getting_in_log_data/ingest_syslog.html">https://go2docs.graylog.org/5-2/getting_in_log_data/ingest_syslog.html</a></p>
 </div></blockquote>
 </section>
 <section id="post-deployment">
@@ -443,7 +443,7 @@ omit steps involving IdM, NFS, and follow-on deployment guides.</p>
 <div><p>The Graylog can be accessed at the following URL: <br />
 <a class="reference external" href="https://graylog.engwsc.example.com">https://graylog.engwsc.example.com</a></p>
 <p>Username: <code class="docutils literal notranslate"><span class="pre">admin</span></code> <br />
-Password: <code class="docutils literal notranslate"><span class="pre">password_secret</span></code> (from step 14)</p>
+Password: <code class="docutils literal notranslate"><span class="pre">password_secret</span></code> (from step 17)</p>
 </div></blockquote>
 </section>
 <section id="deployment-scripts">
@@ -479,8 +479,7 @@ Password: <code class="docutils literal notranslate"><span class="pre">password_
 <div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>dnf -y install epel-release
 
 dnf -y distro-sync
-dnf -y install pwgen java-1.8.0-openjdk-headless <span class="se">\</span>
-    checkpolicy policycoreutils selinux-policy-devel
+dnf -y install pwgen checkpolicy policycoreutils selinux-policy-devel
 </pre></div>
 </div>
 </div></blockquote>
@@ -505,8 +504,7 @@ dnf -y install pwgen java-1.8.0-openjdk-headless <span class="se">\</span>
 <li><p>Install MongoDB:</p></li>
 </ol>
 <blockquote>
-<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>dnf -y distro-sync
-dnf -y install mongodb-org
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>dnf -y install mongodb-org
 </pre></div>
 </div>
 </div></blockquote>
@@ -578,71 +576,93 @@ systemctl <span class="nb">enable</span> --now mongod
 </div>
 </div></blockquote>
 </section>
-<section id="elasticsearch">
-<h3>ElasticSearch<a class="headerlink" href="#elasticsearch" title="Permalink to this heading">#</a></h3>
+<section id="opensearch">
+<h3>OpenSearch<a class="headerlink" href="#opensearch" title="Permalink to this heading">#</a></h3>
 <ol class="arabic simple" start="9">
-<li><p>Add the ElasticSearch Yum Repository:</p></li>
+<li><p>Add the OpenSearch Yum Repository:</p></li>
 </ol>
 <blockquote>
-<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>rpm --import https://artifacts.elastic.co/GPG-KEY-elasticsearch
-
-cat &gt; /etc/yum.repos.d/elasticsearch.repo <span class="s">&lt;&lt;EOF</span>
-<span class="s">[elasticsearch-7.x]</span>
-<span class="s">name=Elasticsearch repository for 7.x packages</span>
-<span class="s">baseurl=https://artifacts.elastic.co/packages/oss-7.x/yum</span>
-<span class="s">gpgcheck=1</span>
-<span class="s">gpgkey=https://artifacts.elastic.co/GPG-KEY-elasticsearch</span>
-<span class="s">enabled=1</span>
-<span class="s">autorefresh=1</span>
-<span class="s">type=rpm-md</span>
-<span class="s">EOF</span>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl -SL <span class="se">\</span>
+    https://artifacts.opensearch.org/releases/bundle/opensearch/2.x/opensearch-2.x.repo <span class="se">\</span>
+    -o /etc/yum.repos.d/opensearch-2.x.repo
 </pre></div>
 </div>
 </div></blockquote>
 <ol class="arabic simple" start="10">
-<li><p>Install ElasticSearch:</p></li>
+<li><p>Install OpenSearch:</p></li>
 </ol>
 <blockquote>
-<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>dnf -y distro-sync
-dnf -y install elasticsearch-oss
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>dnf -y install opensearch
 </pre></div>
 </div>
 </div></blockquote>
 <ol class="arabic simple" start="11">
-<li><p>Configure ElasticSearch for Graylog:</p></li>
+<li><p>Configure OpenSearch:</p></li>
 </ol>
 <blockquote>
-<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cat &gt; /etc/elasticsearch/elasticsearch.yml <span class="s">&lt;&lt;EOF</span>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cp /etc/opensearch/opensearch.yml /etc/opensearch/opensearch.yml.bak
+
+cat &gt; /etc/opensearch/opensearch.yml <span class="s">&lt;&lt;EOF</span>
 <span class="s">cluster.name: graylog</span>
+<span class="s">node.name: ${HOSTNAME}</span>
+<span class="s">path.data: /var/lib/opensearch</span>
+<span class="s">path.logs: /var/log/opensearch</span>
+<span class="s">discovery.type: single-node</span>
+<span class="s">network.host: 0.0.0.0</span>
 <span class="s">action.auto_create_index: false</span>
+<span class="s">plugins.security.disabled: true</span>
 <span class="s">EOF</span>
 </pre></div>
 </div>
 </div></blockquote>
 <ol class="arabic simple" start="12">
-<li><p>Start ElasticSearch:</p></li>
+<li><p>If using RHEL 9, Configure OpenSearch:</p></li>
+</ol>
+<blockquote>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sed -i <span class="s2">&quot;s|/var/run/opensearch|/run/opensearch|g&quot;</span> /usr/lib/tmpfiles.d/opensearch.conf
+</pre></div>
+</div>
+</div></blockquote>
+<ol class="arabic simple" start="16">
+<li><p>Configure OpenSearch JVM:</p></li>
+</ol>
+<blockquote>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sed -i <span class="s2">&quot;s|-Xms1g|-Xms4g|g&quot;</span> /etc/opensearch/jvm.options
+sed -i <span class="s2">&quot;s|-Xmx1g|-Xmx4g|g&quot;</span> /etc/opensearch/jvm.options
+</pre></div>
+</div>
+</div></blockquote>
+<ol class="arabic simple" start="14">
+<li><p>Configure Kernel Parameters:</p></li>
+</ol>
+<blockquote>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sysctl -w vm.max_map_count<span class="o">=</span><span class="m">262144</span>
+<span class="nb">echo</span> <span class="s1">&#39;vm.max_map_count=262144&#39;</span> &gt;&gt; /etc/sysctl.conf
+</pre></div>
+</div>
+</div></blockquote>
+<ol class="arabic simple" start="15">
+<li><p>Start OpenSearch:</p></li>
 </ol>
 <blockquote>
 <div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>systemctl daemon-reload
-systemctl <span class="nb">enable</span> --now elasticsearch
+systemctl <span class="nb">enable</span> --now opensearch
 </pre></div>
 </div>
 </div></blockquote>
 </section>
 <section id="graylog">
 <h3>Graylog<a class="headerlink" href="#graylog" title="Permalink to this heading">#</a></h3>
-<ol class="arabic simple" start="13">
+<ol class="arabic simple" start="16">
 <li><p>Install Graylog:</p></li>
 </ol>
 <blockquote>
-<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>rpm -Uvh https://packages.graylog2.org/repo/packages/graylog-5.0-repository_latest.rpm
-
-dnf -y distro-sync
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>rpm -Uvh https://packages.graylog2.org/repo/packages/graylog-5.2-repository_latest.rpm
 dnf -y install graylog-server
 </pre></div>
 </div>
 </div></blockquote>
-<ol class="arabic simple" start="14">
+<ol class="arabic simple" start="17">
 <li><p>Set required <code class="docutils literal notranslate"><span class="pre">password_secret</span></code> and <code class="docutils literal notranslate"><span class="pre">root_password_sha2</span></code>:</p></li>
 </ol>
 <blockquote>
@@ -662,7 +682,7 @@ sed -i <span class="s2">&quot;s|root_password_sha2 =.*|root_password_sha2 = </sp
 </pre></div>
 </div>
 </div></blockquote>
-<ol class="arabic simple" start="15">
+<ol class="arabic simple" start="18">
 <li><p>Configure SELinux:</p></li>
 </ol>
 <blockquote>
@@ -671,7 +691,15 @@ semanage port -a -t http_port_t -p tcp <span class="m">9000</span>
 </pre></div>
 </div>
 </div></blockquote>
-<ol class="arabic simple" start="16">
+<ol class="arabic simple" start="19">
+<li><p>Configure Graylog:</p></li>
+</ol>
+<blockquote>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sed -i <span class="s2">&quot;s|#elasticsearch_hosts =.*|elasticsearch_hosts = http://127.0.0.1:9200|g&quot;</span> /etc/graylog/server/server.conf
+</pre></div>
+</div>
+</div></blockquote>
+<ol class="arabic simple" start="20">
 <li><p>Start Graylog:</p></li>
 </ol>
 <blockquote>
@@ -683,7 +711,7 @@ systemctl <span class="nb">enable</span> --now graylog-server
 </section>
 <section id="nginx">
 <h3>NGINX<a class="headerlink" href="#nginx" title="Permalink to this heading">#</a></h3>
-<ol class="arabic simple" start="17">
+<ol class="arabic simple" start="21">
 <li><p>Install NGINX:</p></li>
 </ol>
 <blockquote>
@@ -692,7 +720,7 @@ dnf -y install nginx
 </pre></div>
 </div>
 </div></blockquote>
-<ol class="arabic simple" start="18">
+<ol class="arabic simple" start="22">
 <li><p>Create Self-Signed SSL Certificate:</p></li>
 </ol>
 <blockquote>
@@ -745,7 +773,7 @@ chmod <span class="m">600</span> /etc/pki/nginx/graylog.engwsc.example.com.key
 </pre></div>
 </div>
 </div></blockquote>
-<ol class="arabic simple" start="19">
+<ol class="arabic simple" start="23">
 <li><p>Configure NGINX:</p></li>
 </ol>
 <blockquote>
@@ -787,8 +815,8 @@ cat &gt; /etc/nginx/conf.d/graylog.conf <span class="s">&lt;&lt;EOF</span>
 </pre></div>
 </div>
 </div></blockquote>
-<ol class="arabic simple" start="20">
-<li><p>Enable NGINX service:</p></li>
+<ol class="arabic simple" start="24">
+<li><p>Start NGINX:</p></li>
 </ol>
 <blockquote>
 <div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>systemctl daemon-reload
@@ -796,7 +824,7 @@ systemctl <span class="nb">enable</span> --now nginx
 </pre></div>
 </div>
 </div></blockquote>
-<ol class="arabic simple" start="21">
+<ol class="arabic simple" start="25">
 <li><p>Set firewalld rules:</p></li>
 </ol>
 <blockquote>
@@ -815,7 +843,7 @@ firewall-cmd --reload
 </section>
 <section id="graylog-configuration">
 <h3>Graylog Configuration<a class="headerlink" href="#graylog-configuration" title="Permalink to this heading">#</a></h3>
-<ol class="arabic simple" start="22">
+<ol class="arabic simple" start="26">
 <li><p>Log into Graylog:</p></li>
 </ol>
 <div class="admonition important">
@@ -827,7 +855,7 @@ firewall-cmd --reload
 <p>Graylog: <a class="reference external" href="https://graylog.engwsc.example.com">https://graylog.engwsc.example.com</a></p>
 <img alt="../_images/login-page.png" src="../_images/login-page.png" />
 </div></blockquote>
-<ol class="arabic simple" start="23">
+<ol class="arabic simple" start="27">
 <li><p>Create Input:</p></li>
 </ol>
 <blockquote>
@@ -858,7 +886,7 @@ firewall-cmd --reload
 <li><p>In the “TLS client authentication” box enter: disabled</p></li>
 <li><p>Click the “TCP keepalive” check box (box should be checked)</p></li>
 <li><p>Ensure the “Allow overriding date?” check box is checked</p></li>
-<li><p>Click the “Save” button</p></li>
+<li><p>Click the “Launch Input” button</p></li>
 </ul>
 <img alt="../_images/form1-page.png" src="../_images/form1-page.png" />
 <p><br /></p>
@@ -908,7 +936,7 @@ firewall-cmd --reload
             
             <a href="https://github.com/pradyunsg/furo">Furo</a>
             <div class="last-updated">
-              Last updated on Aug 13, 2023</div>
+              Last updated on Jan 21, 2024</div>
           </div>
           <div class="right-details">
             <div class="icons">
@@ -939,7 +967,7 @@ firewall-cmd --reload
 <li><a class="reference internal" href="#deployment-scripts">Deployment Scripts</a></li>
 <li><a class="reference internal" href="#deployment-steps">Deployment Steps</a><ul>
 <li><a class="reference internal" href="#mongodb">MongoDB</a></li>
-<li><a class="reference internal" href="#elasticsearch">ElasticSearch</a></li>
+<li><a class="reference internal" href="#opensearch">OpenSearch</a></li>
 <li><a class="reference internal" href="#graylog">Graylog</a></li>
 <li><a class="reference internal" href="#nginx">NGINX</a></li>
 <li><a class="reference internal" href="#graylog-configuration">Graylog Configuration</a></li>

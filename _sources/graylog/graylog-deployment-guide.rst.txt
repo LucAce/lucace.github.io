@@ -46,16 +46,16 @@ References
 
 ..
 
-  These instructions were written for Graylog Open ``5.0.x``
+  These instructions were written for Graylog Open ``5.2.x``
 
 ..
 
   Instructions are based on the following documentation: |br|
-  - https://go2docs.graylog.org/5-0/downloading_and_installing_graylog/operating_system_packages.htm |br|
-  - https://go2docs.graylog.org/5-0/setting_up_graylog/web_interface.htm |br|
-  - https://go2docs.graylog.org/5-0/downloading_and_installing_graylog/red_hat_installation.htm |br|
-  - https://go2docs.graylog.org/5-0/setting_up_graylog/https.html |br|
-  - https://go2docs.graylog.org/5-0/getting_in_log_data/ingest_syslog.html
+  - https://go2docs.graylog.org/5-2/downloading_and_installing_graylog/operating_system_packages.htm |br|
+  - https://go2docs.graylog.org/5-2/setting_up_graylog/web_interface.htm |br|
+  - https://go2docs.graylog.org/5-2/downloading_and_installing_graylog/red_hat_installation.htm |br|
+  - https://go2docs.graylog.org/5-2/setting_up_graylog/https.html |br|
+  - https://go2docs.graylog.org/5-2/getting_in_log_data/ingest_syslog.html
 
 
 ***************
@@ -68,7 +68,7 @@ Post Deployment
   https://graylog.engwsc.example.com
 
   Username: ``admin`` |br|
-  Password: ``password_secret`` (from step 14)
+  Password: ``password_secret`` (from step 17)
 
 ******************
 Deployment Scripts
@@ -103,8 +103,7 @@ Deployment Steps
     dnf -y install epel-release
 
     dnf -y distro-sync
-    dnf -y install pwgen java-1.8.0-openjdk-headless \
-        checkpolicy policycoreutils selinux-policy-devel
+    dnf -y install pwgen checkpolicy policycoreutils selinux-policy-devel
 
 
 MongoDB
@@ -127,7 +126,6 @@ MongoDB
 
   .. code-block:: bash
 
-    dnf -y distro-sync
     dnf -y install mongodb-org
 
 6. Add SELinux policy to permit access to cgroup:
@@ -191,64 +189,79 @@ MongoDB
     systemctl daemon-reload
     systemctl enable --now mongod
 
+OpenSearch
+~~~~~~~~~~
 
-ElasticSearch
-~~~~~~~~~~~~~
-
-9. Add the ElasticSearch Yum Repository:
-
-  .. code-block:: bash
-
-    rpm --import https://artifacts.elastic.co/GPG-KEY-elasticsearch
-
-    cat > /etc/yum.repos.d/elasticsearch.repo <<EOF
-    [elasticsearch-7.x]
-    name=Elasticsearch repository for 7.x packages
-    baseurl=https://artifacts.elastic.co/packages/oss-7.x/yum
-    gpgcheck=1
-    gpgkey=https://artifacts.elastic.co/GPG-KEY-elasticsearch
-    enabled=1
-    autorefresh=1
-    type=rpm-md
-    EOF
-
-10. Install ElasticSearch:
+9. Add the OpenSearch Yum Repository:
 
   .. code-block:: bash
 
-    dnf -y distro-sync
-    dnf -y install elasticsearch-oss
+    curl -SL \
+        https://artifacts.opensearch.org/releases/bundle/opensearch/2.x/opensearch-2.x.repo \
+        -o /etc/yum.repos.d/opensearch-2.x.repo
 
-11. Configure ElasticSearch for Graylog:
+10. Install OpenSearch:
 
   .. code-block:: bash
 
-    cat > /etc/elasticsearch/elasticsearch.yml <<EOF
+    dnf -y install opensearch
+
+11. Configure OpenSearch:
+
+  .. code-block:: bash
+
+    cp /etc/opensearch/opensearch.yml /etc/opensearch/opensearch.yml.bak
+
+    cat > /etc/opensearch/opensearch.yml <<EOF
     cluster.name: graylog
+    node.name: ${HOSTNAME}
+    path.data: /var/lib/opensearch
+    path.logs: /var/log/opensearch
+    discovery.type: single-node
+    network.host: 0.0.0.0
     action.auto_create_index: false
+    plugins.security.disabled: true
     EOF
 
-12. Start ElasticSearch:
+12. If using RHEL 9, Configure OpenSearch:
+
+  .. code-block:: bash
+
+    sed -i "s|/var/run/opensearch|/run/opensearch|g" /usr/lib/tmpfiles.d/opensearch.conf
+
+16. Configure OpenSearch JVM:
+
+  .. code-block:: bash
+
+    sed -i "s|-Xms1g|-Xms4g|g" /etc/opensearch/jvm.options
+    sed -i "s|-Xmx1g|-Xmx4g|g" /etc/opensearch/jvm.options
+
+14. Configure Kernel Parameters:
+
+  .. code-block:: bash
+
+    sysctl -w vm.max_map_count=262144
+    echo 'vm.max_map_count=262144' >> /etc/sysctl.conf
+
+15. Start OpenSearch:
 
   .. code-block:: bash
 
     systemctl daemon-reload
-    systemctl enable --now elasticsearch
+    systemctl enable --now opensearch
 
 
 Graylog
 ~~~~~~~
 
-13. Install Graylog:
+16. Install Graylog:
 
   .. code-block:: bash
 
-    rpm -Uvh https://packages.graylog2.org/repo/packages/graylog-5.0-repository_latest.rpm
-
-    dnf -y distro-sync
+    rpm -Uvh https://packages.graylog2.org/repo/packages/graylog-5.2-repository_latest.rpm
     dnf -y install graylog-server
 
-14. Set required ``password_secret`` and ``root_password_sha2``:
+17. Set required ``password_secret`` and ``root_password_sha2``:
 
   .. important::
 
@@ -266,14 +279,20 @@ Graylog
     sed -i "s|password_secret =.*|password_secret = ${SECRET}|g" /etc/graylog/server/server.conf
     sed -i "s|root_password_sha2 =.*|root_password_sha2 = ${SECRET_SHA256}|g" /etc/graylog/server/server.conf
 
-15. Configure SELinux:
+18. Configure SELinux:
 
   .. code-block:: bash
 
     setsebool -P httpd_can_network_connect 1
     semanage port -a -t http_port_t -p tcp 9000
 
-16. Start Graylog:
+19. Configure Graylog:
+
+  .. code-block:: bash
+
+    sed -i "s|#elasticsearch_hosts =.*|elasticsearch_hosts = http://127.0.0.1:9200|g" /etc/graylog/server/server.conf
+
+20. Start Graylog:
 
   .. code-block:: bash
 
@@ -284,14 +303,14 @@ Graylog
 NGINX
 ~~~~~
 
-17. Install NGINX:
+21. Install NGINX:
 
   .. code-block:: bash
 
     dnf -y distro-sync
     dnf -y install nginx
 
-18. Create Self-Signed SSL Certificate:
+22. Create Self-Signed SSL Certificate:
 
   .. important::
 
@@ -342,7 +361,7 @@ NGINX
     chown root:root /etc/pki/nginx/graylog.engwsc.example.com.crt
     chmod 600 /etc/pki/nginx/graylog.engwsc.example.com.key
 
-19. Configure NGINX:
+23. Configure NGINX:
 
   .. important::
 
@@ -382,14 +401,14 @@ NGINX
     }
     EOF
 
-20. Enable NGINX service:
+24. Start NGINX:
 
   .. code-block:: bash
 
     systemctl daemon-reload
     systemctl enable --now nginx
 
-21. Set firewalld rules:
+25. Set firewalld rules:
 
   .. important::
 
@@ -407,7 +426,7 @@ NGINX
 Graylog Configuration
 ~~~~~~~~~~~~~~~~~~~~~
 
-22. Log into Graylog:
+26. Log into Graylog:
 
 .. important::
 
@@ -421,7 +440,7 @@ Graylog Configuration
 
   .. image:: ../_static/graylog/login-page.png
 
-23. Create Input:
+27. Create Input:
 
 ..
 
@@ -456,7 +475,7 @@ Graylog Configuration
   * In the "TLS client authentication" box enter: disabled
   * Click the "TCP keepalive" check box (box should be checked)
   * Ensure the "Allow overriding date?" check box is checked
-  * Click the "Save" button
+  * Click the "Launch Input" button
 
   .. image:: ../_static/graylog/form1-page.png
 
