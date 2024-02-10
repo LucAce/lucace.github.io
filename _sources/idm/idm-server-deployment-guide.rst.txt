@@ -144,6 +144,7 @@ This guide is writen for a standalone VM instance.
   .. important::
 
     Replace ``idm.engwsc.example.com`` with your hostname.
+    
   .. code-block:: bash
 
     dig +short idm.engwsc.example.com A

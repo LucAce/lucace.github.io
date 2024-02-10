@@ -600,11 +600,15 @@ systemctl <span class="nb">enable</span> --now mongod
 <li><p>Configure OpenSearch:</p></li>
 </ol>
 <blockquote>
-<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cp /etc/opensearch/opensearch.yml /etc/opensearch/opensearch.yml.bak
+<div><div class="admonition important">
+<p class="admonition-title">Important</p>
+<p>Replace <code class="docutils literal notranslate"><span class="pre">graylog.engwsc.example.com</span></code> with your hostname.</p>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cp /etc/opensearch/opensearch.yml /etc/opensearch/opensearch.yml.bak
 
 cat &gt; /etc/opensearch/opensearch.yml <span class="s">&lt;&lt;EOF</span>
 <span class="s">cluster.name: graylog</span>
-<span class="s">node.name: ${HOSTNAME}</span>
+<span class="s">node.name: graylog.engwsc.example.com</span>
 <span class="s">path.data: /var/lib/opensearch</span>
 <span class="s">path.logs: /var/log/opensearch</span>
 <span class="s">discovery.type: single-node</span>
@@ -936,7 +940,7 @@ firewall-cmd --reload
             
             <a href="https://github.com/pradyunsg/furo">Furo</a>
             <div class="last-updated">
-              Last updated on Jan 21, 2024</div>
+              Last updated on Feb 10, 2024</div>
           </div>
           <div class="right-details">
             <div class="icons">

@@ -208,13 +208,17 @@ OpenSearch
 
 11. Configure OpenSearch:
 
+  .. important::
+
+    Replace ``graylog.engwsc.example.com`` with your hostname.
+
   .. code-block:: bash
 
     cp /etc/opensearch/opensearch.yml /etc/opensearch/opensearch.yml.bak
 
     cat > /etc/opensearch/opensearch.yml <<EOF
     cluster.name: graylog
-    node.name: ${HOSTNAME}
+    node.name: graylog.engwsc.example.com
     path.data: /var/lib/opensearch
     path.logs: /var/log/opensearch
     discovery.type: single-node
