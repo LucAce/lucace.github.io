@@ -58,7 +58,7 @@ dnf -y install epel-release
 dnf -y distro-sync
 
 # Install xrdp
-dnf -y install xorgxrdp xrdp
+dnf -y install xorgxrdp xrdp xrdp-selinux
 
 # Create Self-signed SSL certificate
 

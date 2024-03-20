@@ -87,7 +87,7 @@ Deployment Steps
 
   .. code-block:: bash
 
-    dnf -y install xorgxrdp xrdp
+    dnf -y install xorgxrdp xrdp xrdp-selinux
 
 3. Create Self-signed SSL certificate:
 
