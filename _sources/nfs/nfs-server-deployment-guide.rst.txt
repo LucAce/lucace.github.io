@@ -134,11 +134,11 @@ Deployment Steps
     sh -c 'cat >> /etc/exports <<EOL
 
     # NFS Exports
-    /srv/nfs/app     192.168.1.0/24(rw,sync,secure,wdelay,subtree_check,no_root_squash)
-    /srv/nfs/backup  192.168.1.0/24(rw,sync,secure,wdelay,subtree_check,no_root_squash)
-    /srv/nfs/home    192.168.1.0/24(rw,sync,secure,wdelay,subtree_check,no_root_squash)
-    /srv/nfs/mirror  192.168.1.0/24(rw,sync,secure,wdelay,subtree_check,no_root_squash)
-    /srv/nfs/scratch 192.168.1.0/24(rw,sync,secure,wdelay,subtree_check,no_root_squash)
+    /srv/nfs/app     192.168.1.0/24(rw,sync,secure,wdelay,no_subtree_check,no_root_squash)
+    /srv/nfs/backup  192.168.1.0/24(rw,sync,secure,wdelay,no_subtree_check,no_root_squash)
+    /srv/nfs/home    192.168.1.0/24(rw,sync,secure,wdelay,no_subtree_check,no_root_squash)
+    /srv/nfs/mirror  192.168.1.0/24(rw,sync,secure,wdelay,no_subtree_check,no_root_squash)
+    /srv/nfs/scratch 192.168.1.0/24(rw,sync,secure,wdelay,no_subtree_check,no_root_squash)
 
     EOL'
 

@@ -77,11 +77,11 @@ semanage fcontext -a -t user_home_dir_t /srv/nfs/home
 # Create exports file
 cat >> /etc/exports <<EOL
 # NFS Exports
-/srv/nfs/app     ${ALLOWED_IPV4}(rw,sync,secure,wdelay,subtree_check,no_root_squash)
-/srv/nfs/backup  ${ALLOWED_IPV4}(rw,sync,secure,wdelay,subtree_check,no_root_squash)
-/srv/nfs/home    ${ALLOWED_IPV4}(rw,sync,secure,wdelay,subtree_check,no_root_squash)
-/srv/nfs/mirror  ${ALLOWED_IPV4}(rw,sync,secure,wdelay,subtree_check,no_root_squash)
-/srv/nfs/scratch ${ALLOWED_IPV4}(rw,sync,secure,wdelay,subtree_check,no_root_squash)
+/srv/nfs/app     ${ALLOWED_IPV4}(rw,sync,secure,wdelay,no_subtree_check,no_root_squash)
+/srv/nfs/backup  ${ALLOWED_IPV4}(rw,sync,secure,wdelay,no_subtree_check,no_root_squash)
+/srv/nfs/home    ${ALLOWED_IPV4}(rw,sync,secure,wdelay,no_subtree_check,no_root_squash)
+/srv/nfs/mirror  ${ALLOWED_IPV4}(rw,sync,secure,wdelay,no_subtree_check,no_root_squash)
+/srv/nfs/scratch ${ALLOWED_IPV4}(rw,sync,secure,wdelay,no_subtree_check,no_root_squash)
 
 EOL
 

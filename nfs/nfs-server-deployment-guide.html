@@ -518,11 +518,11 @@ semanage<span class="w"> </span>fcontext<span class="w"> </span>-a<span class="w
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sh<span class="w"> </span>-c<span class="w"> </span><span class="s1">&#39;cat &gt;&gt; /etc/exports &lt;&lt;EOL</span>
 
 <span class="s1"># NFS Exports</span>
-<span class="s1">/srv/nfs/app     192.168.1.0/24(rw,sync,secure,wdelay,subtree_check,no_root_squash)</span>
-<span class="s1">/srv/nfs/backup  192.168.1.0/24(rw,sync,secure,wdelay,subtree_check,no_root_squash)</span>
-<span class="s1">/srv/nfs/home    192.168.1.0/24(rw,sync,secure,wdelay,subtree_check,no_root_squash)</span>
-<span class="s1">/srv/nfs/mirror  192.168.1.0/24(rw,sync,secure,wdelay,subtree_check,no_root_squash)</span>
-<span class="s1">/srv/nfs/scratch 192.168.1.0/24(rw,sync,secure,wdelay,subtree_check,no_root_squash)</span>
+<span class="s1">/srv/nfs/app     192.168.1.0/24(rw,sync,secure,wdelay,no_subtree_check,no_root_squash)</span>
+<span class="s1">/srv/nfs/backup  192.168.1.0/24(rw,sync,secure,wdelay,no_subtree_check,no_root_squash)</span>
+<span class="s1">/srv/nfs/home    192.168.1.0/24(rw,sync,secure,wdelay,no_subtree_check,no_root_squash)</span>
+<span class="s1">/srv/nfs/mirror  192.168.1.0/24(rw,sync,secure,wdelay,no_subtree_check,no_root_squash)</span>
+<span class="s1">/srv/nfs/scratch 192.168.1.0/24(rw,sync,secure,wdelay,no_subtree_check,no_root_squash)</span>
 
 <span class="s1">EOL&#39;</span>
 </pre></div>
@@ -595,7 +595,7 @@ firewall-cmd<span class="w"> </span>--reload
             
             <a href="https://github.com/pradyunsg/furo">Furo</a>
             <div class="last-updated">
-              Last updated on Mar 19, 2024</div>
+              Last updated on Apr 30, 2024</div>
           </div>
           <div class="right-details">
             
