@@ -52,7 +52,7 @@ Post Deployment
 ..
 
   The Cockpit Management Web Interface can be accessed at the following URLs:|br|
-  NSF Server Node: https://nfs01.engwsc.example.com:9090 |br|
+  NFS Server Node: https://nfs01.engwsc.example.com:9090 |br|
 
 
 ******************
